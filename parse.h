@@ -40,9 +40,11 @@ typedef struct _MessageData{
 	/* uuid_t uuid; */
 	char *roomid;
 	char *roomalias;
-	char *addfriend;
-	char *friendid;
-	char *crname;
+	/* char *addfriend; */
+	/* char **addfriend; */
+	Chatroom addfriend;
+	/* char *friendid; */
+	/* char *crname; */
 
 } MessageData;
 

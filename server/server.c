@@ -300,12 +300,18 @@ server_add_friend(user, md)
   User *user;
   MessageData md;
 {
-	printf("ADDING A FRINED: %s\n", md.addfriend);
-	printf("ADDING A FRINED ID: %s\n", md.friendid);
-	if(db_check_if_user_exists(md.addfriend)){
-		db_insert_into_chatroom_users(md.friendid, md.addfriend);
-		char * chatrooms = db_select_chatroom(md.addfriend);
-		db_update_users_chatrooms(chatrooms, md.addfriend, md.friendid, md.crname);
+	/* printf("ADDING A FRINED: %s\n", md.addfriend); */
+	printf("ADDING A FRINED: %s\n", md.addfriend.room[0]);
+	/* printf("ADDING A FRINED ID: %s\n", md.friendid); */
+	printf("ADDING A FRINED ID: %s\n", md.addfriend.room[1]);
+	/* if(db_check_if_user_exists(md.addfriend)){ */
+	if(db_check_if_user_exists(md.addfriend.room[0])){
+		/* db_insert_into_chatroom_users(md.friendid, md.addfriend); */
+		db_insert_into_chatroom_users(md.addfriend.room[1], md.addfriend.room[0]);
+		/* char * chatrooms = db_select_chatroom(md.addfriend); */
+		char * chatrooms = db_select_chatroom(md.addfriend.room[0]);
+		/* db_update_users_chatrooms(chatrooms, md.addfriend, md.friendid, md.crname); */
+		db_update_users_chatrooms(chatrooms, md.addfriend.room[0], md.addfriend.room[1], md.addfriend.room[2]);
 	}else{
 		onion_websocket_printf(user->ws, "{\"error\": \"user does not exist\"}");
 	}
@@ -384,7 +390,9 @@ server_websocket_chat(data, ws, data_ready_len)
 			return OCS_NEED_MORE_DATA;
 		}
 
-		else if(md.addfriend && md.friendid && md.crname){
+		/* else if(md.addfriend && md.friendid && md.crname){ */
+		/* else if(md.addfriend.room[0] && md.addfriend.room[1] && md.addfriend.room[2]){ */
+		else if(md.addfriend.room){
 			server_add_friend(user, md);
 		}
 

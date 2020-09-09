@@ -47,7 +47,7 @@ ws.onopen = function(){
 
 
 let Chatrooms = new Map();
-let currentChatroom = null;
+let currentChatroomid = null;
 let currentChatroomname = null;
 let chatroomlength = 0;
 
@@ -96,7 +96,7 @@ ws.onmessage = function(ev){
 
 				chatroom = Chatrooms.get(el_rooms[i].getElementsByTagName('span')[0].innerText);
 
-				currentChatroom = chatroom;
+				currentChatroomid = chatroom;
 
 				el_rooms[i].style.backgroundColor = "#525959";
 				// el_rooms[i].style.color = "#ffffff";
@@ -161,9 +161,10 @@ el_addfriend.onclick = function(){
 popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 	name = popup_addfriend.getElementsByTagName('input')[0].value;
 
-	if(currentChatroom && name != ""){
-		// console.log(currentChatroom);
-		ws.send('addfriend: '+name+"\n"+'friendid: '+currentChatroom+'\nroomname: '+currentChatroomname+"\n\n");
+	if(currentChatroomid && name != ""){
+		// console.log(currentChatroomid);
+		// ws.send('addfriend: '+name+"\n"+'friendid: '+currentChatroomid+'\nroomname: '+currentChatroomname+"\n\n");
+		ws.send('addfriend: '+name+";"+currentChatroomid+";"+currentChatroomname+";\n\n");
 	}
 
 	document.body.removeChild(popup_addfriend);

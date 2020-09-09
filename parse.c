@@ -103,15 +103,16 @@ mcb(data, cmp, other)
 
 		if(!strcmp(cmp, "addfriend")){
 			
-			md->addfriend = strdup(tmp);
+			/* md->addfriend = strdup(tmp); */
+			parseChatRoomList(tmp, &md->addfriend);
 		}
-		if(!strcmp(cmp, "friendid")){
-			md->friendid = strdup(tmp);
-		}
+		/* if(!strcmp(cmp, "friendid")){ */
+		/* 	md->friendid = strdup(tmp); */
+		/* } */
 
-		if(!strcmp(cmp, "roomname")){
-			md->crname = strdup(tmp);
-		}
+		/* if(!strcmp(cmp, "roomname")){ */
+		/* 	md->crname = strdup(tmp); */
+		/* } */
 
 	}
 
@@ -136,8 +137,8 @@ parseMessage(data, md)
 	md->roomid = NULL;
 
 	md->lldate = 0;
-	md->addfriend = NULL;
-	md->crname = NULL;
+	md->addfriend.room = NULL;
+	/* md->crname = NULL; */
 
 	for(;headersize < maxheadersize; headersize++){
 
@@ -148,8 +149,8 @@ parseMessage(data, md)
 		data += mcb(data, "initchatroom", md);
 		data += mcb(data, "addroom", md);
 		data += mcb(data, "addfriend", md);
-		data += mcb(data, "friendid", md);
-		data += mcb(data, "roomname", md);
+		/* data += mcb(data, "friendid", md); */
+		/* data += mcb(data, "roomname", md); */
 
 		if(*data == '\n' && *(data+1) == '\n'){
 			break;
