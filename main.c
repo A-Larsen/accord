@@ -24,7 +24,7 @@ main()
 
 	/* onion_set_port(o, "80"); */
 	onion_url *urls = onion_root_url(o);
-	init_Server(urls);
+	server_init(urls);
 
 	onion_url_add(urls, "", server_connection_home);
 	onion_url_add(urls, "chat", server_connection_chat);

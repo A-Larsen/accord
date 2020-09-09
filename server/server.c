@@ -73,7 +73,7 @@ server_add_dir(urls, dir)
 			}
 			else if(!strcmp(dir, "public/")){
 				memcpy(&PUBLIC[n], &data, sizeof(data));
-				addStaticFile(urls, PUBLIC[n].name);
+				server_add_static_file(urls, PUBLIC[n].name);
 				PUBLICN++;
 			}
 
@@ -86,7 +86,7 @@ server_add_dir(urls, dir)
 }
 
 int 
-server_create_user(name, cr)
+user_create(name, cr)
   char *name;
   Chatroom cr;
 {
@@ -121,20 +121,20 @@ server_create_user(name, cr)
 }
 
 int 
-init_Server(urls)
+server_init(urls)
   onion_url *urls;
 {
 	srand(time(0));
 	int rc;
 	server_add_dir(NULL, "views/");
 	server_add_dir(urls, "public/");
-	rc = initDBs();
+	rc = db_init();
 
 	return rc;
 }
 
 void 
-addStaticFile(urls, name)
+server_add_static_file(urls, name)
   onion_url *urls;
   char *name;
 {
@@ -196,7 +196,7 @@ void server_websocket_get_connectedUsers(user, exclude)
 	ConnectedUsers cu;
 	/* cu.len = 0; */
 
-	Clist c = getChatroomUsers(user->chatroom.current);
+	Clist c = db_get_chatroom_users(user->chatroom.current);
 	char *a[usercount+1];
 	int len = 0;
 
@@ -242,7 +242,7 @@ void server_websocket_get_connectedUsers(user, exclude)
 
 
 int 
-closeUser(user)
+user_close(user)
   User *user;
 {
 	/* User *usercheck = malloc(sizeof(User)); */
@@ -302,10 +302,10 @@ server_add_friend(user, md)
 {
 	printf("ADDING A FRINED: %s\n", md.addfriend);
 	printf("ADDING A FRINED ID: %s\n", md.friendid);
-	if(checkIfUsersExists(md.addfriend)){
-		insertIntoChatroomUsers(md.friendid, md.addfriend);
-		char * chatrooms = selectChatroomFromUsername(md.addfriend);
-		updateUsersChatrooms(chatrooms, md.addfriend, md.friendid, md.crname);
+	if(db_check_if_user_exists(md.addfriend)){
+		db_insert_into_chatroom_users(md.friendid, md.addfriend);
+		char * chatrooms = db_select_chatroom(md.addfriend);
+		db_update_users_chatrooms(chatrooms, md.addfriend, md.friendid, md.crname);
 	}else{
 		onion_websocket_printf(user->ws, "{\"error\": \"user does not exist\"}");
 	}
@@ -320,7 +320,7 @@ server_load_chatroom(user, md)
 	ONION_INFO("INIT CHATROOM: %s", md.initchatroom);
 	user->chatroom.current = strdup(md.initchatroom);
 	server_websocket_get_connectedUsers(user, "");
-	initLogin(&user->chatroom, user->ws);
+	db_init_login(&user->chatroom, user->ws);
 }
 
 void 
@@ -332,7 +332,7 @@ server_send_message(user, md)
 	char *message = parseToJSONforClient(user->name, md);
 
 	server_websocket_printf_connected(user, message);
-	storeMessage(&user->chatroom,
+	db_store_message(&user->chatroom,
 				user->name, 
 				md.message, 
 				md.lldate);
@@ -346,7 +346,7 @@ server_websocket_chat(data, ws, data_ready_len)
 {
 
 	if(CLOSING && closinguser){
-		closeUser(closinguser);
+		user_close(closinguser);
 		return OCS_CLOSE_CONNECTION;
 	}
 
@@ -391,7 +391,7 @@ server_websocket_chat(data, ws, data_ready_len)
 		else if(md.roomid){
 			printf("ROOMID: %s\n", md.roomid);
 			printf("ROOM ALIAS: %s\n", md.roomalias);
-			addChatroom(md.roomid, md.roomalias, user->name);
+			db_add_chatroom(md.roomid, md.roomalias, user->name);
 			onion_websocket_printf(user->ws, "{\"reload\": \"/login\"}");
 		}
 
@@ -487,8 +487,8 @@ server_connection_login(_, req, res)
 
 	Chatroom cr;
 
-	if(findUser(user_name, user_password, &cr)){
-		if( ( FOUNDUSER = server_create_user(strdup(user_name), cr) ) ){
+	if(db_find_user(user_name, user_password, &cr)){
+		if( ( FOUNDUSER = user_create(strdup(user_name), cr) ) ){
 			ONION_INFO("user found");
 			onion_response_write0(res, 
 					"<script>window.location.replace('/chat');</script>");
@@ -519,7 +519,7 @@ server_connection_signup(_, req, res)
 	const char *user_password = onion_request_get_post(req, "password");
 	printf("%s %s\n", user_name, user_password);
 
-	if(createUser(user_name, user_password)){
+	if(db_create_user(user_name, user_password)){
 		onion_response_write0(res, 
 				"<script>window.location.replace('/login');</script>");
 
@@ -545,5 +545,5 @@ server_free()
 	}
 
 	free(USERS);
-	dbfree();
+	db_free();
 }

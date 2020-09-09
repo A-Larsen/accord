@@ -45,9 +45,9 @@ void server_free();
 
 char *server_get_view(char *name);
 
-int init_Server();
+int server_init();
 
-void addStaticFile(onion_url *urls, char *path);
+void server_add_static_file(onion_url *urls, char *path);
 
 onion_connection_status server_connection_chat(void *data, onion_request * req,
                                           onion_response * res);

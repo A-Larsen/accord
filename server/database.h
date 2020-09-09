@@ -20,21 +20,21 @@ typedef struct _Clist{
 	int len;
 }Clist;
 
-int initDBs();
-int findUser(const char *name, const char *password, Chatroom *cr);
-int initLogin(Chatroom *cr, onion_websocket *ws);
-int storeMessage(Chatroom *cr, const char *name, char *msg, long int date);
-void dbfree();
-Clist getChatroomUsers(char *current);
+int db_init();
+int db_find_user(const char *name, const char *password, Chatroom *cr);
+int db_init_login(Chatroom *cr, onion_websocket *ws);
+int db_store_message(Chatroom *cr, const char *name, char *msg, long int date);
+void db_free();
+Clist db_get_chatroom_users(char *current);
 
-int addChatroom(char *id, char *alias, char *name);
-int insertIntoChatroomUsers(char *id, char *name);
-int updateUsersChatrooms(char *chatrooms, char * name,char * id, char *alias);
-char * selectChatroomFromUsername(char *name);
+int db_add_chatroom(char *id, char *alias, char *name);
+int db_insert_into_chatroom_users(char *id, char *name);
+int db_update_users_chatrooms(char *chatrooms, char * name,char * id, char *alias);
+char * db_select_chatroom(char *name);
 
-int createUser(const char *name, const char *password);
-bool checkIfUsersExists(char *name);
-bool checkUsersInChatroom(char *current, char *check);
+int db_create_user(const char *name, const char *password);
+bool db_check_if_user_exists(char *name);
+/* bool db_check_if_user_in_chatroom(char *current, char *check); */
   /* char *chatrooms; */
   /* char *name; */
   /* char *id; */

@@ -49,7 +49,7 @@ static int callback_search_user(data, argc, argv, azColName)
 }
 
 
-int initDBs()
+int db_init()
 {
 	static int rc;
 
@@ -73,7 +73,7 @@ int initDBs()
 }
 
 int 
-findUser(name, password, cr)
+db_find_user(name, password, cr)
   const char *name;
   const char *password;
   Chatroom *cr;
@@ -115,7 +115,7 @@ findUser(name, password, cr)
 }
 
 int 
-storeMessage(cr, name, msg, date)
+db_store_message(cr, name, msg, date)
   Chatroom *cr;
   const char *name;
   char *msg;
@@ -233,7 +233,7 @@ callback_search_chatrooms(data, argc, argv, azColName)
 }
 
 int 
-initLogin(cr, ws)
+db_init_login(cr, ws)
   Chatroom *cr;
   onion_websocket *ws;
 {
@@ -289,7 +289,7 @@ initLogin(cr, ws)
 }
 
 Clist
-getChatroomUsers(current)
+db_get_chatroom_users(current)
   char *current;
 {
 	Clist c;
@@ -328,8 +328,8 @@ getChatroomUsers(current)
 	return c;
 }
 
-int
-CreateTableChatroom(id)
+static int
+db_create_table_chatroom(id)
 	char *id;
 {
 	int rc = 0;
@@ -369,8 +369,8 @@ CreateTableChatroom(id)
 	return 1;
 }
 
-int
-createTableChatroomUsers(id)
+static int
+db_create_table_chatroom_users(id)
   char *id;
 {
 	int rc = 0;
@@ -406,8 +406,8 @@ createTableChatroomUsers(id)
 	return 1;
 }
 
-bool 
-checkUsersInChatroom(current, check)
+static bool 
+db_check_if_user_in_chatroom(current, check)
   char *current;
   char *check;
 {
@@ -442,7 +442,7 @@ checkUsersInChatroom(current, check)
 }
 
 bool
-checkIfUsersExists(name)
+db_check_if_user_exists(name)
   char *name;
 {
 	int rc = 0;
@@ -471,12 +471,12 @@ checkIfUsersExists(name)
 
 // do not insert if the name already exists
 int
-insertIntoChatroomUsers(id, name)
+db_insert_into_chatroom_users(id, name)
   char *id;
   char *name;
 {
-	/* if(checkUsersInChatroom(name) || !checkIfUsersExists(name)) */
-	if(!checkIfUsersExists(name) || checkUsersInChatroom(id, name))
+	/* if(db_check_if_user_in_chatroom(name) || !db_check_if_user_exists(name)) */
+	if(!db_check_if_user_exists(name) || db_check_if_user_in_chatroom(id, name))
 		return 0;
 
 	int rc = 0;
@@ -512,7 +512,7 @@ insertIntoChatroomUsers(id, name)
 }
 
 char * 
-selectChatroomFromUsername(name)
+db_select_chatroom(name)
   char *name;
 {
 	int rc = 0;
@@ -542,7 +542,7 @@ selectChatroomFromUsername(name)
 }
 
 int 
-updateUsersChatrooms(chatrooms, name, id, alias)
+db_update_users_chatrooms(chatrooms, name, id, alias)
   char *chatrooms;
   char *name;
   char *id;
@@ -592,31 +592,31 @@ updateUsersChatrooms(chatrooms, name, id, alias)
 }
 
 int
-addChatroom(id, alias, name)
+db_add_chatroom(id, alias, name)
   char *id;
   char *alias;
   char *name;
 {	
 
-	CreateTableChatroom(id);
+	db_create_table_chatroom(id);
 
-	createTableChatroomUsers(id);
+	db_create_table_chatroom_users(id);
 
-	insertIntoChatroomUsers(id, name);
+	db_insert_into_chatroom_users(id, name);
 
-	char * chatrooms = selectChatroomFromUsername(name);
+	char * chatrooms = db_select_chatroom(name);
 
-	updateUsersChatrooms(chatrooms, name, id, alias);
+	db_update_users_chatrooms(chatrooms, name, id, alias);
 
 	return 1;
 }
 
 int 
-createUser(name, password)
+db_create_user(name, password)
   const char *name;
   const char *password;
 {
-	if(checkIfUsersExists((char *)name))
+	if(db_check_if_user_exists((char *)name))
 		return 0;
 
 	int rc = 0;
@@ -654,7 +654,7 @@ createUser(name, password)
 }
 
 void
-dbfree()
+db_free()
 {
 	sqlite3_close(usersdb);
 	sqlite3_close(chatroomsdb);
