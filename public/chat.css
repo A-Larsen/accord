@@ -1,0 +1,263 @@
+*{
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 0;
+	margin: 0;
+	color: #d9d9d9;
+	border-color: #474b53 !important;
+	border-width: 2px;
+	overflow-x: hidden;
+}
+h1{	
+
+    background-color: #232629;
+	text-align: center;
+	color: #0096889c;
+}
+
+
+
+/*#chat-nav {*/
+#chat-nav {
+	border: solid;
+	width: 50%;
+	margin-left:25%;
+}
+#chat {
+
+	padding: 10px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 80%;
+	
+	border-bottom: solid;
+}
+
+#chat-nav p{
+	padding-top: 12px;
+	padding-bottom: 12px;
+	width: 90%;
+	text-align: left;
+
+}
+
+.messageBorder{
+	border-bottom: solid;
+}
+
+body {
+	background-color: #363a3f;
+	overflow-y: hidden;
+}
+
+#msgbox {
+	border-left: solid;
+	border-right: solid;
+	width: 50%;
+	margin-left: 25%;
+}
+
+#msg{
+	resize: none;
+	border-radius: 6px;
+	/* border-color: black; */
+	border-width: 1px;
+	margin-top: 1%;
+	/* height: 17.5%; */
+	background-color: #474b53;
+	padding: 2px;
+	width: 70%;
+	margin-left: 10%;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #525960;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/*#title {
+	position: absolute;
+	left: 30%;
+	width: 69%;
+	margin-bottom: 5%;
+}*/
+
+
+
+#rooms-nav {
+	border: solid;
+	position: absolute;
+	width: 30%;
+	/* height: 100%; */
+	height: 99%;
+	/* border-width: 1px; */
+	z-index: 1;
+}
+
+#rooms-nav h1{
+	z-index: 2;
+	/* border-right: solid; */
+	/* border-color: white; */
+	/* border-width: 1px; */
+}
+#rooms-nav p{
+	z-index:2;
+	font-size:20px;
+	padding-left: 10px;
+	padding: 1px;
+	/* border-bottom: solid; */
+	color: #98971a;
+	margin-left: 5px;
+}
+
+#rooms-nav p .name{
+	color: blue;
+	float: right;
+	margin-right: 5%;
+	color: #98971a;
+}
+
+#rooms-nav p .icon {
+
+}
+
+#rooms-nav p .online-status{
+	color: green;
+}
+
+#gap{
+	margin:0;
+	padding:0;
+	height: 10%;
+}
+
+.br {
+	display: block;
+	margin-bottom: 9%;
+}
+.date {
+	/* font-size: 8px; */
+	/* margin-left: 2%; */
+	color: #5e636e;
+	float: right;
+	margin-right: 1%;
+	/* color: #2f3237; */
+}
+
+#rooms {
+	border: solid;
+	border-color: #7f8080 !important;
+	border-width: 2px !important;
+	margin-left: 2%;
+	margin-right: 2%;
+	padding: 2px;
+	border-radius: 5px;
+}
+
+#rooms-nav {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	width: 25%;
+}
+
+#rooms p{
+	background-color: #363a3f;
+	border-width: 2px !important;
+
+	border-bottom: solid;
+	border-width: 1px !important;
+	border-color: #7f8080 !important;
+	margin-top: 1%;
+}
+
+#rooms p:last-child {
+	border-bottom: none;
+}
+.add {
+	color: #d7d7d7;
+	background-color: #474b53;
+	text-align: center;
+	font-size: 20px;
+	border: solid;
+	border-color: #868686e8 !important;
+	border-widht: 5px;
+	border-radius: 10px;
+	width: 50%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 25%;
+	text-shadow: 2px 2px #000000;
+	box-shadow: 2px 2px #000000;
+}
+
+.add:active {
+	text-shadow: 2px 2px #00000000;
+	box-shadow: 2px 2px #0000000d;
+	border-color: #7f808099 !important;
+}
+
+h1 span {
+	border-radius: 5px;
+	font-size: 80%;
+}
+
+#addroomform button, #addfriendform button{
+	background-color: #232629;
+	/* float: right; */
+}
+
+#addroomform input, #addfriendform input {
+	background-color: #232629;
+}
+
+#addroomform span, #addfriendform span {
+	color: #979dab;
+}
+
+#roomicon {
+	background-color: grey;
+}
+#friends-nav p {
+	padding-left: 15px;
+}
+#friends-nav {
+    overflow-y: scroll;
+	/* height: 100%; */
+	height: 99%;
+	border: solid;
+	position: absolute;
+	margin-left: 75%;
+	width: 25%;
+	z-index: -1;
+}
+
+
+#friends-nav p {
+	overflow-y: hidden;
+	margin-top: 10px;
+}
+
+.icon img{
+	border-radius: 100%;
+	width: 35px;
+	height: 35px;
+}
+
+.icon-info {
+	position: absolute;
+	margin-top: 10px;
+	margin-left: 5px;
+}
