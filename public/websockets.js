@@ -108,6 +108,7 @@ ws.onmessage = function(ev){
 				currentChatroomid = chatroom;
 
 				el_rooms[i].style.backgroundColor = "#525959";
+				el_mobile_nav.style.display = "none";
 				// el_rooms[i].style.color = "#ffffff";
 
 				for(let j = 0; j < el_rooms.length; j++){
