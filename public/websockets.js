@@ -433,45 +433,7 @@ function messageKeyup(e){
 	switch(e.keyCode){
 		case 13: { // enter
 			if(!shift){  
-				// let date = new Date();
-				// let timestamp = Math.floor(date.getTime()/1000.0);
-				// let header = initheader;
-
-				// if(chatroom){
-				// 	header += "chatroom: "+chatroom+"\n";
-				// }
-
-				// header += "date: "+timestamp+"\n\n";
-
-				// send message in chuncks if it is too long
-				// let msg_element = el_msg;
-				// if(popup_mobile_createMessage.getElementsByTagName('textarea')[0].value != "") msg_element = popup_mobile_createMessage.getElementsByTagName('textarea')[0]; 
-				// sendMessage(el_msg.value);
 				sendMessage(el_msg);
-
-				// // let message = parseMesage(el_msg.value);
-				// let message = parseMesage(msg_element.value);
-				// let maxchars = 150;
-				// let con = Math.floor(message.length/maxchars)+1;	
-
-				// if(!isImage){
-				// 	while(con--){
-				// 		ws.send(header+message.substring(0, maxchars));
-				// 		message = message.substring(maxchars);
-				// 	}
-				// 	isImage = false;
-
-				// }else{
-				// 	ws.send(header+message);
-				// }
-
-				// // el_msg.value = "";
-				// // el_msg.select();
-				// // el_msg.focus(); 
-				// msg_element.value = "";
-				// msg_element.select();
-				// msg_element.focus(); 
-				// el_chat.scrollTo(0, el_chat.scrollHeight);
 			}
 		}
 		break;
