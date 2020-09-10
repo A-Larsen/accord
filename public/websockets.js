@@ -91,37 +91,73 @@ ws.onmessage = function(ev){
 				chatroomlength++;
 				Chatrooms.set(room, userdata.initchatrooms[idx+1]);
 
-				document.getElementById('rooms').innerHTML += "<p><span class='roomicon'>"+room+"</span></p>"
+				let rooms = document.getElementsByClassName('rooms');
+				for(let i = 0; i < rooms.length; i++){
+					// rooms.innerHTML += ""
+					rooms[i].innerHTML += "<p><span class='roomicon'>"+room+"</span></p>"
+				}
+				// document.getElementById('rooms').innerHTML += "<p><span class='roomicon'>"+room+"</span></p>"
 
 			}
 		});
 
-		let el_rooms = document.getElementById('rooms').getElementsByTagName('p');
+		let rooms = document.getElementsByClassName('rooms');
 
-		for(let i = 0; i < el_rooms.length; i++){
-			el_rooms[i].onclick = () => {
-				document.getElementById('chat').innerHTML = "";
-				currentChatroomname = el_rooms[i].getElementsByTagName('span')[0].innerText;
+		for(let i = 0; i < rooms.length; i++){
+			let el_rooms = rooms[i].getElementsByTagName('p');
 
-				chatroom = Chatrooms.get(el_rooms[i].getElementsByTagName('span')[0].innerText);
+			for(let i = 0; i < el_rooms.length; i++){
+				el_rooms[i].onclick = () => {
+					document.getElementById('chat').innerHTML = "";
+					currentChatroomname = el_rooms[i].getElementsByTagName('span')[0].innerText;
 
-				currentChatroomid = chatroom;
+					chatroom = Chatrooms.get(el_rooms[i].getElementsByTagName('span')[0].innerText);
 
-				el_rooms[i].style.backgroundColor = "#525959";
-				el_mobile_nav.style.display = "none";
-				// el_rooms[i].style.color = "#ffffff";
+					currentChatroomid = chatroom;
 
-				for(let j = 0; j < el_rooms.length; j++){
-					if(el_rooms[j] != el_rooms[i]){
-						el_rooms[j].style.backgroundColor = "#363a3f";
-						// el_rooms[j].style.color = "#000000";
+					el_rooms[i].style.backgroundColor = "#525959";
+					el_mobile_nav.style.display = "none";
+					// el_rooms[i].style.color = "#ffffff";
 
+					for(let j = 0; j < el_rooms.length; j++){
+						if(el_rooms[j] != el_rooms[i]){
+							el_rooms[j].style.backgroundColor = "#363a3f";
+							// el_rooms[j].style.color = "#000000";
+
+						}
 					}
-				}
 
-				ws.send("initchatroom: "+chatroom+"\n");
-			};
+					ws.send("initchatroom: "+chatroom+"\n");
+				};
+			}
+
 		}
+		// let el_rooms = document.getElementById('rooms').getElementsByTagName('p');
+
+		// for(let i = 0; i < el_rooms.length; i++){
+		// 	el_rooms[i].onclick = () => {
+		// 		document.getElementById('chat').innerHTML = "";
+		// 		currentChatroomname = el_rooms[i].getElementsByTagName('span')[0].innerText;
+
+		// 		chatroom = Chatrooms.get(el_rooms[i].getElementsByTagName('span')[0].innerText);
+
+		// 		currentChatroomid = chatroom;
+
+		// 		el_rooms[i].style.backgroundColor = "#525959";
+		// 		el_mobile_nav.style.display = "none";
+		// 		// el_rooms[i].style.color = "#ffffff";
+
+		// 		for(let j = 0; j < el_rooms.length; j++){
+		// 			if(el_rooms[j] != el_rooms[i]){
+		// 				el_rooms[j].style.backgroundColor = "#363a3f";
+		// 				// el_rooms[j].style.color = "#000000";
+
+		// 			}
+		// 		}
+
+		// 		ws.send("initchatroom: "+chatroom+"\n");
+		// 	};
+		// }
 	}
 
 	let color = "red";
