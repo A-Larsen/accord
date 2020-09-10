@@ -261,3 +261,30 @@ h1 span {
 	margin-top: 10px;
 	margin-left: 5px;
 }
+
+@media screen and (max-width: 600px){
+	#friends-nav {
+		display: none;
+	}
+	#rooms-nav {
+		display: none;
+	}
+    #chat-nav {
+       margin-left: 0%;
+       width: 100%;
+    }
+    #msgbox {
+    	border: none;
+    	border-left: solid;
+	    border-right: solid;
+	    width: 100%;
+	    margin-left: 0%;
+	}
+
+    #msg{
+
+    	width: 90%;
+    	margin-left: 5%;
+    }
+}
+
