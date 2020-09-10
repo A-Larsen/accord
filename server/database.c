@@ -187,7 +187,8 @@ callback_search_chatrooms(data, argc, argv, azColName)
 {
 	int i;
 	bool founduser = false, foundmessage = false, founddate = false;
-	Darray *cr = ((Darray **)data)[0];
+	/* Darray *cr = ((Darray **)data)[0]; */
+	Chatrooms *cr = ((Chatrooms **)data)[0];
 	onion_websocket *ws = ((onion_websocket **)data)[1];
 	char *user = NULL;
 	MessageData md;
@@ -260,18 +261,18 @@ db_init_login(cr, ws)
 
 	if(rc == SQLITE_ROW){
 		/* cr->chatlen = sqlite3_column_int64(res, 0); */ 
-		cr->rooms.chatlen = sqlite3_column_int64(res, 0); 
+		cr->chatlen = sqlite3_column_int64(res, 0); 
 	}
 
 	/* printf("last messageid: %lld\n", cr->chatlen); */
-	printf("last messageid: %lld\n", cr->rooms.chatlen);
+	printf("last messageid: %lld\n", cr->chatlen);
 
 	sqlite3_finalize(res);
 
 	char *sql2 = NULL;
 
 	/* asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->chatlen - 20); */
-	asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->rooms.chatlen - 20);
+	asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->chatlen - 20);
 
 	void *data[2];
 	data[0] = cr;

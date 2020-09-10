@@ -286,7 +286,7 @@ server_websocket_send_chatrooms(user)
 	char *tmp = NULL;
 
 	/* char *a = arrayToJSONArray(user->chatroom.room, user->chatroom.len); */
-	char *a = arrayToJSONArray(user->chatroom.rooms.room, user->chatroom.rooms.len);
+	char *a = arrayToJSONArray(user->chatroom.rooms.items, user->chatroom.rooms.len);
 
 	if(a){
 		asprintf(&tmp, "{\"initchatrooms\":%s}", a);
@@ -304,17 +304,17 @@ server_add_friend(user, md)
   MessageData md;
 {
 	/* printf("ADDING A FRINED: %s\n", md.addfriend); */
-	printf("ADDING A FRINED: %s\n", md.addfriend.room[0]);
+	printf("ADDING A FRINED: %s\n", md.addfriend.items[0]);
 	/* printf("ADDING A FRINED ID: %s\n", md.friendid); */
-	printf("ADDING A FRINED ID: %s\n", md.addfriend.room[1]);
+	printf("ADDING A FRINED ID: %s\n", md.addfriend.items[1]);
 	/* if(db_check_if_user_exists(md.addfriend)){ */
-	if(db_check_if_user_exists(md.addfriend.room[0])){
+	if(db_check_if_user_exists(md.addfriend.items[0])){
 		/* db_insert_into_chatroom_users(md.friendid, md.addfriend); */
-		db_insert_into_chatroom_users(md.addfriend.room[1], md.addfriend.room[0]);
+		db_insert_into_chatroom_users(md.addfriend.items[1], md.addfriend.items[0]);
 		/* char * chatrooms = db_select_chatroom(md.addfriend); */
-		char * chatrooms = db_select_chatroom(md.addfriend.room[0]);
+		char * chatrooms = db_select_chatroom(md.addfriend.items[0]);
 		/* db_update_users_chatrooms(chatrooms, md.addfriend, md.friendid, md.crname); */
-		db_update_users_chatrooms(chatrooms, md.addfriend.room[0], md.addfriend.room[1], md.addfriend.room[2]);
+		db_update_users_chatrooms(chatrooms, md.addfriend.items[0], md.addfriend.items[1], md.addfriend.items[2]);
 	}else{
 		onion_websocket_printf(user->ws, "{\"error\": \"user does not exist\"}");
 	}
@@ -396,7 +396,7 @@ server_websocket_chat(data, ws, data_ready_len)
 
 		/* else if(md.addfriend && md.friendid && md.crname){ */
 		/* else if(md.addfriend.room[0] && md.addfriend.room[1] && md.addfriend.room[2]){ */
-		else if(md.addfriend.room){
+		else if(md.addfriend.items){
 			server_add_friend(user, md);
 		}
 

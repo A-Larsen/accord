@@ -137,7 +137,8 @@ parseMessage(data, md)
 	md->roomid = NULL;
 
 	md->lldate = 0;
-	md->addfriend.room = NULL;
+	/* md->addfriend.room = NULL; */
+	md->addfriend.items = NULL;
 	/* md->crname = NULL; */
 
 	for(;headersize < maxheadersize; headersize++){
@@ -208,10 +209,10 @@ parseArrayList(list, cr)
 		}
 	}
 
-	cr->room = chatroom;
-	cr->arraylen = arraysize;
+	cr->items = chatroom;
+	cr->size = arraysize;
 	cr->len = cidx;
-	cr->chatlen = 0;
+	/* cr->chatlen = -1; */
 
 	return 1;
 }

@@ -20,22 +20,23 @@
 
 typedef struct _Darray {
 	/* char **room; */
-	char **room;
-	long int arraylen;
+	char **items;
+	long int size;
 	int len;
-	long long int chatlen;
+	/* long long int chatlen; */
 	/* char current[15]; */
-	char *current;
+	/* char *current; */
 }Darray;
 
 typedef struct _Chatrooms {
 	Darray rooms;
 	/* char **room; */
-	/* long int arraylen; */
+	/* long int size; */
 	/* int len; */
 	/* long long int chatlen; */
 	/* char current[15]; */
 	char *current;
+	long long int chatlen;
 }Chatrooms;
 
 typedef struct _MessageData{
