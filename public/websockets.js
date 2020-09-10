@@ -420,6 +420,7 @@ function initPage(){
 
 initPage();
 
+let mobile_nav_active = false;
 
 window.addEventListener("resize", initPage);
 
@@ -428,8 +429,14 @@ window.addEventListener('focusout', ()=>{
 });
 
 el_mobile_navIcon.onclick = () => {
-	el_mobile_nav.style.display = "block";
-	el_mobile_nav.style.position = "fixed";
+	if(!mobile_nav_active){
+		el_mobile_nav.style.display = "block";
+		// el_mobile_nav.style.position = "fixed";
+	}else{
+		el_mobile_nav.style.display = "none";
+	}
+
+	mobile_nav_active = !mobile_nav_active;
 }
 
 window.addEventListener('beforeunload', (e) =>{
