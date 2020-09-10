@@ -431,7 +431,6 @@ window.addEventListener('focusout', ()=>{
 el_mobile_navIcon.onclick = () => {
 	if(!mobile_nav_active){
 		el_mobile_nav.style.display = "block";
-		// el_mobile_nav.style.position = "fixed";
 	}else{
 		el_mobile_nav.style.display = "none";
 	}
