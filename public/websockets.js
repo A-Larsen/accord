@@ -368,6 +368,44 @@ el_msg.addEventListener('keydown', (e) => {
 
 }, false);
 
+enableMobile = false;
+
+function getWidth(){
+    if (self.innerWidth) {
+        return self.innerWidth;
+    }
+
+    if (
+        document.documentElement
+        && document.documentElement.clientWidth
+    ){
+        return document.documentElement.clientWidth;
+    }
+
+    if (document.body) {
+        return document.body.clientWidth;
+    }
+}
+
+function initPage(){
+	if(getWidth() < 500 ){
+        enableMobile = true;
+    }else{
+        enableMobile = false;
+    }
+
+	if((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+	|| enableMobile
+	){
+		// console.log("mobile");
+	}
+} 
+
+initPage();
+
+
+window.addEventListener("resize", initPage);
+
 window.addEventListener('focusout', ()=>{
 	shift = false;
 });
