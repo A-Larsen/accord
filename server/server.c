@@ -88,7 +88,8 @@ server_add_dir(urls, dir)
 int 
 user_create(name, cr)
   char *name;
-  Darray cr;
+  /* Darray cr; */
+  Chatrooms cr;
 {
 	ONION_INFO("creating users '%s'", name);
 
@@ -278,12 +279,14 @@ void
 server_websocket_send_chatrooms(user)
   User *user;
 {
-	if(user->chatroom.len == 0)
+	/* if(user->chatroom.len == 0) */
+	if(user->chatroom.rooms.len == 0)
 		return;
 
 	char *tmp = NULL;
 
-	char *a = arrayToJSONArray(user->chatroom.room, user->chatroom.len);
+	/* char *a = arrayToJSONArray(user->chatroom.room, user->chatroom.len); */
+	char *a = arrayToJSONArray(user->chatroom.rooms.room, user->chatroom.rooms.len);
 
 	if(a){
 		asprintf(&tmp, "{\"initchatrooms\":%s}", a);
@@ -377,7 +380,8 @@ server_websocket_chat(data, ws, data_ready_len)
 	if(USERS[usercount] && USERS[usercount]->id == -1){
 		USERS[usercount]->id = md.id;
 
-		if(USERS[usercount]->chatroom.len > 0)
+		/* if(USERS[usercount]->chatroom.len > 0) */
+		if(USERS[usercount]->chatroom.rooms.len > 0)
 			server_websocket_send_chatrooms(USERS[usercount]);
 
 		return OCS_NEED_MORE_DATA;
@@ -493,7 +497,8 @@ server_connection_login(_, req, res)
 	const char *user_name = onion_request_get_post(req, "name");
 	const char *user_password = onion_request_get_post(req, "password");
 
-	Darray cr;
+	/* Darray cr; */
+	Chatrooms cr;
 
 	if(db_find_user(user_name, user_password, &cr)){
 		if( ( FOUNDUSER = user_create(strdup(user_name), cr) ) ){

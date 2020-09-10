@@ -76,7 +76,8 @@ int
 db_find_user(name, password, cr)
   const char *name;
   const char *password;
-  Darray *cr;
+  /* Darray *cr; */
+  Chatrooms *cr;
 {
 
 	if(!name || !password ){
@@ -108,7 +109,8 @@ db_find_user(name, password, cr)
 	rc = *userdata[2] == 'a';
 
 	if(rc){
-		parseChatRoomList(userdata[3], cr);
+		/* parseChatRoomList(userdata[3], cr); */
+		parseChatRoomList(userdata[3], &cr->rooms);
 	}
 
 	return rc;
@@ -116,7 +118,8 @@ db_find_user(name, password, cr)
 
 int 
 db_store_message(cr, name, msg, date)
-  Darray *cr;
+  /* Darray *cr; */
+  Chatrooms *cr;
   const char *name;
   char *msg;
   long int date;
@@ -234,7 +237,8 @@ callback_search_chatrooms(data, argc, argv, azColName)
 
 int 
 db_init_login(cr, ws)
-  Darray *cr;
+  /* Darray *cr; */
+  Chatrooms *cr;
   onion_websocket *ws;
 {
 
@@ -255,16 +259,19 @@ db_init_login(cr, ws)
 	rc = sqlite3_step(res);
 
 	if(rc == SQLITE_ROW){
-		cr->chatlen = sqlite3_column_int64(res, 0); 
+		/* cr->chatlen = sqlite3_column_int64(res, 0); */ 
+		cr->rooms.chatlen = sqlite3_column_int64(res, 0); 
 	}
 
-	printf("last messageid: %lld\n", cr->chatlen);
+	/* printf("last messageid: %lld\n", cr->chatlen); */
+	printf("last messageid: %lld\n", cr->rooms.chatlen);
 
 	sqlite3_finalize(res);
 
 	char *sql2 = NULL;
 
-	asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->chatlen - 20);
+	/* asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->chatlen - 20); */
+	asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->rooms.chatlen - 20);
 
 	void *data[2];
 	data[0] = cr;

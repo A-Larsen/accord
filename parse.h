@@ -19,6 +19,7 @@
 				  	"}"
 
 typedef struct _Darray {
+	/* char **room; */
 	char **room;
 	long int arraylen;
 	int len;
