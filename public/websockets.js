@@ -129,7 +129,7 @@ ws.onmessage = function(ev){
 };
 
 let popup_addroom = document.createElement('div');
-popup_addroom.setAttribute("id", "addroomform");
+popup_addroom.setAttribute("class", "popupform");
 popup_addroom.innerHTML = 
 "<h1>add a room</h1><br><br>"+
 "create a name <br><input name='addroom_name'/><br><span>(cannot excced 9 chatacters)<span><br>requires login<br>"+
@@ -145,7 +145,7 @@ popup_addroom.style.zIndex = "5";
 popup_addroom.style.backgroundColor = "#474b53";
 
 let popup_addfriend = document.createElement('div');
-popup_addfriend.setAttribute("id", "addfriendform");
+popup_addfriend.setAttribute("class", "popupform");
 popup_addfriend.innerHTML = 
 "<h1>add a friend</h1><br><br>"+
 "name <br><input name='friend_name'/><br><span>(cannot excced 9 chatacters)<span><br>"+
@@ -375,7 +375,7 @@ el_msg.addEventListener('keydown', (e) => {
 }, false);
 
 let popup_mobile_createMessage = document.createElement('div');
-popup_mobile_createMessage.setAttribute("id", "mobileCreateMessage");
+popup_mobile_createMessage.setAttribute("class", "popupform");
 popup_mobile_createMessage.style.position = "absolute";
 popup_mobile_createMessage.style.border = "solid";
 popup_mobile_createMessage.style.borderRadius = "5px";
@@ -396,11 +396,13 @@ popup_mobile_createMessage.innerHTML =
 "<button>add friend</button>&nbsp;<button>cancel</button><br>";
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "8%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "5%";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.width = "45%";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "5%";
-popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
 
+popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
+	document.body.removeChild(popup_mobile_createMessage);
 }
 
 function initPage(){

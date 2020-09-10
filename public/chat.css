@@ -214,16 +214,32 @@ h1 span {
 	font-size: 80%;
 }
 
-#addroomform button, #addfriendform button{
+/* #addroomform button, #addfriendform button{ */
+/* 	background-color: #232629; */
+/* 	/1* float: right; *1/ */
+/* } */
+
+/* #addroomform input, #addfriendform input { */
+/* 	background-color: #232629; */
+/* } */
+
+/* #addroomform span, #addfriendform span { */
+/* 	color: #979dab; */
+/* } */
+.popupform button {
 	background-color: #232629;
 	/* float: right; */
 }
 
-#addroomform input, #addfriendform input {
+.popupform input {
 	background-color: #232629;
 }
 
-#addroomform span, #addfriendform span {
+.popupform textarea {
+	background-color: #232629;
+}
+
+.popupform span {
 	color: #979dab;
 }
 
@@ -262,7 +278,7 @@ h1 span {
 	margin-left: 5px;
 }
 
-/* @media screen and (max-width: 800px){ */
+/* @media screen and (max-width: 799px){ */
 /* 	#friends-nav { */
 /* 		display: none; */
 /* 	} */
