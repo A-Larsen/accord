@@ -104,7 +104,7 @@ mcb(data, cmp, other)
 		if(!strcmp(cmp, "addfriend")){
 			
 			/* md->addfriend = strdup(tmp); */
-			parseChatRoomList(tmp, &md->addfriend);
+			parseArrayList(tmp, &md->addfriend);
 		}
 		/* if(!strcmp(cmp, "friendid")){ */
 		/* 	md->friendid = strdup(tmp); */
@@ -171,7 +171,7 @@ parseMessage(data, md)
 }
 
 int 
-parseChatRoomList(list, cr)
+parseArrayList(list, cr)
   char *list;
   Darray *cr;
 {

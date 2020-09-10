@@ -109,8 +109,8 @@ db_find_user(name, password, cr)
 	rc = *userdata[2] == 'a';
 
 	if(rc){
-		/* parseChatRoomList(userdata[3], cr); */
-		parseChatRoomList(userdata[3], &cr->rooms);
+		/* parseArrayList(userdata[3], cr); */
+		parseArrayList(userdata[3], &cr->rooms);
 	}
 
 	return rc;

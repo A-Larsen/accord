@@ -59,7 +59,7 @@ typedef struct _MessageData{
 
 } MessageData;
 
-int parseChatRoomList(char *list, Darray *cr);
+int parseArrayList(char *list, Darray *cr);
 void parseMessage(char *data, MessageData *md);
 long int parseHTML(FILE *fp, char *str);
 void nsort(void **data, int len);

@@ -17,9 +17,7 @@ debug: main.c server/server.c parse.c server/database.c
 	chromium "0.0.0.0:8080/signup"
 	gdb a.out 
 
-clean: a.out
-	sqlite3 server/users.db "DELETE FROM users;" 
-	doas rm -r server/chatrooms.db 
-	doas rm a.out
+clean:
+	./cleardbs.sh
 
 .PHONY: clean
