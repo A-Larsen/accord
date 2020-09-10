@@ -10,6 +10,7 @@ let el_friendsNav = document.getElementById('friends-nav');
 let el_roomsNav = document.getElementById('rooms-nav');
 let el_chatNav = document.getElementById('chat-nav');
 let el_msgbox = document.getElementById('msgbox');
+let el_mobile_navhead = document.getElementById('mobile-navhead');
 // let el_msg = document.getElementById('msg');
 
 el_msg.focus();
@@ -405,6 +406,7 @@ function initPage(){
  	    el_msgbox.style.marginLeft = "0%";
      	el_msg.style.width = "90%";
 		el_msg.style.marginLeft = "5%";
+		el_mobile_navhead.style.display = "block";
 
 		el_msg.onclick = function() {
 			document.body.appendChild(popup_mobile_createMessage);

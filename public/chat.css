@@ -305,3 +305,19 @@ h1 span {
 /*     } */
 /* } */
 
+#mobile-nav {
+	display: none;
+}
+
+#mobile-navhead {
+	display: none;
+	position: fixed;
+
+}
+#mobile-navhead img {
+	width: 10%;
+	margin-top: 1%;
+	margin-left: 1%;
+
+}
+
