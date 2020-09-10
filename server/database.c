@@ -76,7 +76,6 @@ int
 db_find_user(name, password, cr)
   const char *name;
   const char *password;
-  /* Darray *cr; */
   Chatrooms *cr;
 {
 
@@ -109,7 +108,6 @@ db_find_user(name, password, cr)
 	rc = *userdata[2] == 'a';
 
 	if(rc){
-		/* parseArrayList(userdata[3], cr); */
 		parseArrayList(userdata[3], &cr->rooms);
 	}
 
@@ -118,7 +116,6 @@ db_find_user(name, password, cr)
 
 int 
 db_store_message(cr, name, msg, date)
-  /* Darray *cr; */
   Chatrooms *cr;
   const char *name;
   char *msg;
@@ -187,7 +184,6 @@ callback_search_chatrooms(data, argc, argv, azColName)
 {
 	int i;
 	bool founduser = false, foundmessage = false, founddate = false;
-	/* Darray *cr = ((Darray **)data)[0]; */
 	Chatrooms *cr = ((Chatrooms **)data)[0];
 	onion_websocket *ws = ((onion_websocket **)data)[1];
 	char *user = NULL;
@@ -238,7 +234,6 @@ callback_search_chatrooms(data, argc, argv, azColName)
 
 int 
 db_init_login(cr, ws)
-  /* Darray *cr; */
   Chatrooms *cr;
   onion_websocket *ws;
 {
@@ -260,18 +255,15 @@ db_init_login(cr, ws)
 	rc = sqlite3_step(res);
 
 	if(rc == SQLITE_ROW){
-		/* cr->chatlen = sqlite3_column_int64(res, 0); */ 
 		cr->chatlen = sqlite3_column_int64(res, 0); 
 	}
 
-	/* printf("last messageid: %lld\n", cr->chatlen); */
 	printf("last messageid: %lld\n", cr->chatlen);
 
 	sqlite3_finalize(res);
 
 	char *sql2 = NULL;
 
-	/* asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->chatlen - 20); */
 	asprintf(&sql2, "SELECT * FROM %s WHERE messageid > %lld", cr->current, cr->chatlen - 20);
 
 	void *data[2];
@@ -281,7 +273,6 @@ db_init_login(cr, ws)
 	rc = sqlite3_exec(chatroomsdb, 
 					 sql2, 
 					 callback_search_chatrooms, 
-					 /* (void *)ws, &zErrMsg); */
 					 (void *)data, &zErrMsg);
 
 	if(rc != SQLITE_OK){
@@ -316,12 +307,6 @@ db_get_chatroom_users(current)
 
 	while((rc = sqlite3_step(res)) == SQLITE_ROW){
 		printf("%s_users row: %s\n", current, sqlite3_column_text(res, 0));
-		/* c.list = */ 
-		/* 	c.len == 0 ? */
-		/* 		(char **)malloc(sizeof(char *) * (c.len + 1)): */
-		/* 		(char **)realloc(c.list, sizeof(char *) * (c.len + 1)); */
-
-		/* c.list[c.len] = malloc(sizeof(char *)); */
 		c.list = (char **)dynamicArrayResize((void **)c.list, c.len + 1, sizeof(char *));
 
 		const unsigned char * text = sqlite3_column_text(res, 0);
@@ -483,7 +468,6 @@ db_insert_into_chatroom_users(id, name)
   char *id;
   char *name;
 {
-	/* if(db_check_if_user_in_chatroom(name) || !db_check_if_user_exists(name)) */
 	if(!db_check_if_user_exists(name) || db_check_if_user_in_chatroom(id, name))
 		return 0;
 

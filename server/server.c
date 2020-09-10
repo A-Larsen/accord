@@ -88,7 +88,6 @@ server_add_dir(urls, dir)
 int 
 user_create(name, cr)
   char *name;
-  /* Darray cr; */
   Chatrooms cr;
 {
 	ONION_INFO("creating users '%s'", name);
@@ -102,7 +101,6 @@ user_create(name, cr)
 	sortn((void **)USERS, usercount+1);
 
 	usercount++;
-	/* USERS = (User **)dynamicArrayResize((void **)USERS, usercount + 1, sizeof(User)); */
 
 	ONION_INFO("*RESIZING USERS ARRAY*");
 	USERS = (User **)dynamicArrayResize((void **)USERS, usercount + 1, sizeof(User));
@@ -114,6 +112,7 @@ user_create(name, cr)
 	strncpy(USERS[usercount]->name, name, len);
 	USERS[usercount]->name[len] = 0;
 
+	cr.chatlen = 0;
 	USERS[usercount]->chatroom = cr;
 	USERS[usercount]->chatroom.current = NULL;
 
@@ -195,7 +194,6 @@ void server_websocket_get_connectedUsers(user, exclude)
   char *exclude;
 {
 	ConnectedUsers cu;
-	/* cu.len = 0; */
 
 	Clist c = db_get_chatroom_users(user->chatroom.current);
 	char *a[usercount+1];
@@ -209,7 +207,6 @@ void server_websocket_get_connectedUsers(user, exclude)
 				cu.indices = (int *)dynamicArrayResize2(cu.indices, len + 1, sizeof(int));
 
 				cu.indices[len] = j;
-				/* cu.len++; */
 				len++;
 				a[i] = strdup(USERS[j]->name);
 			}
@@ -272,20 +269,17 @@ user_close(user)
 	CLOSING = false;
 
 	return 1;
-	/* server_websocket_get_connectedUsers(usercheck, usercheck->name); */
 }
 
 void
 server_websocket_send_chatrooms(user)
   User *user;
 {
-	/* if(user->chatroom.len == 0) */
 	if(user->chatroom.rooms.len == 0)
 		return;
 
 	char *tmp = NULL;
 
-	/* char *a = arrayToJSONArray(user->chatroom.room, user->chatroom.len); */
 	char *a = arrayToJSONArray(user->chatroom.rooms.items, user->chatroom.rooms.len);
 
 	if(a){
@@ -303,17 +297,11 @@ server_add_friend(user, md)
   User *user;
   MessageData md;
 {
-	/* printf("ADDING A FRINED: %s\n", md.addfriend); */
 	printf("ADDING A FRINED: %s\n", md.addfriend.items[0]);
-	/* printf("ADDING A FRINED ID: %s\n", md.friendid); */
 	printf("ADDING A FRINED ID: %s\n", md.addfriend.items[1]);
-	/* if(db_check_if_user_exists(md.addfriend)){ */
 	if(db_check_if_user_exists(md.addfriend.items[0])){
-		/* db_insert_into_chatroom_users(md.friendid, md.addfriend); */
 		db_insert_into_chatroom_users(md.addfriend.items[1], md.addfriend.items[0]);
-		/* char * chatrooms = db_select_chatroom(md.addfriend); */
 		char * chatrooms = db_select_chatroom(md.addfriend.items[0]);
-		/* db_update_users_chatrooms(chatrooms, md.addfriend, md.friendid, md.crname); */
 		db_update_users_chatrooms(chatrooms, md.addfriend.items[0], md.addfriend.items[1], md.addfriend.items[2]);
 	}else{
 		onion_websocket_printf(user->ws, "{\"error\": \"user does not exist\"}");
@@ -380,7 +368,6 @@ server_websocket_chat(data, ws, data_ready_len)
 	if(USERS[usercount] && USERS[usercount]->id == -1){
 		USERS[usercount]->id = md.id;
 
-		/* if(USERS[usercount]->chatroom.len > 0) */
 		if(USERS[usercount]->chatroom.rooms.len > 0)
 			server_websocket_send_chatrooms(USERS[usercount]);
 
@@ -394,8 +381,6 @@ server_websocket_chat(data, ws, data_ready_len)
 			return OCS_NEED_MORE_DATA;
 		}
 
-		/* else if(md.addfriend && md.friendid && md.crname){ */
-		/* else if(md.addfriend.room[0] && md.addfriend.room[1] && md.addfriend.room[2]){ */
 		else if(md.addfriend.items){
 			server_add_friend(user, md);
 		}
@@ -497,7 +482,6 @@ server_connection_login(_, req, res)
 	const char *user_name = onion_request_get_post(req, "name");
 	const char *user_password = onion_request_get_post(req, "password");
 
-	/* Darray cr; */
 	Chatrooms cr;
 
 	if(db_find_user(user_name, user_password, &cr)){

@@ -21,11 +21,8 @@ typedef struct _Clist{
 }Clist;
 
 int db_init();
-/* int db_find_user(const char *name, const char *password, Darray *cr); */
 int db_find_user(const char *name, const char *password, Chatrooms *cr);
-/* int db_init_login(Darray *cr, onion_websocket *ws); */
 int db_init_login(Chatrooms *cr, onion_websocket *ws);
-/* int db_store_message(Darray *cr, const char *name, char *msg, long int date); */
 int db_store_message(Chatrooms *cr, const char *name, char *msg, long int date);
 void db_free();
 Clist db_get_chatroom_users(char *current);
@@ -37,9 +34,5 @@ char * db_select_chatroom(char *name);
 
 int db_create_user(const char *name, const char *password);
 bool db_check_if_user_exists(char *name);
-/* bool db_check_if_user_in_chatroom(char *current, char *check); */
-  /* char *chatrooms; */
-  /* char *name; */
-  /* char *id; */
-  /* char *alias; */
+
 #endif

@@ -61,7 +61,6 @@ mcb(data, cmp, other)
 
 		data += (n+2);
 
-		/* char tmp[200]; */
 		char tmp[400];
 
 		int i = 0;
@@ -102,18 +101,8 @@ mcb(data, cmp, other)
 		}
 
 		if(!strcmp(cmp, "addfriend")){
-			
-			/* md->addfriend = strdup(tmp); */
 			parseArrayList(tmp, &md->addfriend);
 		}
-		/* if(!strcmp(cmp, "friendid")){ */
-		/* 	md->friendid = strdup(tmp); */
-		/* } */
-
-		/* if(!strcmp(cmp, "roomname")){ */
-		/* 	md->crname = strdup(tmp); */
-		/* } */
-
 	}
 
 	return data - dp;
@@ -137,9 +126,7 @@ parseMessage(data, md)
 	md->roomid = NULL;
 
 	md->lldate = 0;
-	/* md->addfriend.room = NULL; */
 	md->addfriend.items = NULL;
-	/* md->crname = NULL; */
 
 	for(;headersize < maxheadersize; headersize++){
 
@@ -150,8 +137,6 @@ parseMessage(data, md)
 		data += mcb(data, "initchatroom", md);
 		data += mcb(data, "addroom", md);
 		data += mcb(data, "addfriend", md);
-		/* data += mcb(data, "friendid", md); */
-		/* data += mcb(data, "roomname", md); */
 
 		if(*data == '\n' && *(data+1) == '\n'){
 			break;
@@ -212,7 +197,6 @@ parseArrayList(list, cr)
 	cr->items = chatroom;
 	cr->size = arraysize;
 	cr->len = cidx;
-	/* cr->chatlen = -1; */
 
 	return 1;
 }
