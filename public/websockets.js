@@ -310,69 +310,43 @@ function parseMesage(msg){
 	return msg;
 }
 
-el_msg.addEventListener('keyup', (e) => {
+function sendMessage(element){
+	let date = new Date();
+	let timestamp = Math.floor(date.getTime()/1000.0);
+	let header = initheader;
 
-	switch(e.keyCode){
-		case 13: { // enter
-			if(!shift){  
-				let date = new Date();
-				let timestamp = Math.floor(date.getTime()/1000.0);
-				let header = initheader;
-
-				if(chatroom){
-					header += "chatroom: "+chatroom+"\n";
-				}
-
-				header += "date: "+timestamp+"\n\n";
-
-				// send message in chuncks if it is too long
-				let message = parseMesage(el_msg.value);
-				let maxchars = 150;
-				let con = Math.floor(message.length/maxchars)+1;	
-
-				if(!isImage){
-					while(con--){
-						ws.send(header+message.substring(0, maxchars));
-						message = message.substring(maxchars);
-					}
-					isImage = false;
-
-				}else{
-					ws.send(header+message);
-				}
-
-				el_msg.value = "";
-				el_msg.select();
-				el_msg.focus(); 
-				el_chat.scrollTo(0, el_chat.scrollHeight);
-			}
-		}
-		break;
-
-		case 16: { // shift
-			shift = false;
-		}
-		break;
-	}
-}, false);
-
-el_msg.addEventListener('keydown', (e) => {
-
-	switch(e.keyCode){
-		case 16:{
-			shift = true;
-		}
-		break;
-
-		case 9: { // tab
-			// el_msg
-			e.preventDefault();
-			el_msg.value += "\t";
-		}
-		break;
+	if(chatroom){
+		header += "chatroom: "+chatroom+"\n";
 	}
 
-}, false);
+	header += "date: "+timestamp+"\n\n";
+	let message = parseMesage(element.value);
+	let maxchars = 150;
+	let con = Math.floor(message.length/maxchars)+1;	
+
+	if(!isImage){
+		while(con--){
+			ws.send(header+message.substring(0, maxchars));
+			message = message.substring(maxchars);
+		}
+		isImage = false;
+
+	}else{
+		ws.send(header+message);
+	}
+
+	// el_msg.value = "";
+	// el_msg.select();
+	// el_msg.focus(); 
+	// msg_element.value = "";
+	// msg_element.select();
+	// msg_element.focus(); 
+	element.value = "";
+	element.select();
+	element.focus(); 
+	element.scrollTo(0, el_chat.scrollHeight);
+
+}
 
 let popup_mobile_createMessage = document.createElement('div');
 popup_mobile_createMessage.setAttribute("class", "popupform");
@@ -404,6 +378,7 @@ popup_mobile_createMessage.getElementsByTagName('button')[1].style.fontSize = "4
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.height = "70%";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.width = "100%";
+popup_mobile_createMessage.getElementsByTagName('textarea')[0].addEventListener('keyup', messageKeyup, false);
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(){
 	document.body.removeChild(popup_mobile_createMessage);
@@ -411,6 +386,7 @@ popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(
 
 popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
 	// do send the message
+	sendMessage(popup_mobile_createMessage.getElementsByTagName('textarea')[0])
 	document.body.removeChild(popup_mobile_createMessage);
 }
 
@@ -452,3 +428,78 @@ window.addEventListener('beforeunload', (e) =>{
 	ws.close();
 });
 
+function messageKeyup(e){
+
+	switch(e.keyCode){
+		case 13: { // enter
+			if(!shift){  
+				// let date = new Date();
+				// let timestamp = Math.floor(date.getTime()/1000.0);
+				// let header = initheader;
+
+				// if(chatroom){
+				// 	header += "chatroom: "+chatroom+"\n";
+				// }
+
+				// header += "date: "+timestamp+"\n\n";
+
+				// send message in chuncks if it is too long
+				// let msg_element = el_msg;
+				// if(popup_mobile_createMessage.getElementsByTagName('textarea')[0].value != "") msg_element = popup_mobile_createMessage.getElementsByTagName('textarea')[0]; 
+				// sendMessage(el_msg.value);
+				sendMessage(el_msg);
+
+				// // let message = parseMesage(el_msg.value);
+				// let message = parseMesage(msg_element.value);
+				// let maxchars = 150;
+				// let con = Math.floor(message.length/maxchars)+1;	
+
+				// if(!isImage){
+				// 	while(con--){
+				// 		ws.send(header+message.substring(0, maxchars));
+				// 		message = message.substring(maxchars);
+				// 	}
+				// 	isImage = false;
+
+				// }else{
+				// 	ws.send(header+message);
+				// }
+
+				// // el_msg.value = "";
+				// // el_msg.select();
+				// // el_msg.focus(); 
+				// msg_element.value = "";
+				// msg_element.select();
+				// msg_element.focus(); 
+				// el_chat.scrollTo(0, el_chat.scrollHeight);
+			}
+		}
+		break;
+
+		case 16: { // shift
+			shift = false;
+		}
+		break;
+	}
+
+}
+el_msg.addEventListener('keyup', messageKeyup, false);
+
+function messageKeydown(e){
+	switch(e.keyCode){
+		case 16:{
+			shift = true;
+		}
+		break;
+
+		case 9: { // tab
+			// el_msg
+			e.preventDefault();
+			el_msg.value += "\t";
+		}
+		break;
+	}
+
+}
+
+el_msg.addEventListener('keydown', messageKeydown, false);
