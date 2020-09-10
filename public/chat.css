@@ -307,6 +307,10 @@ h1 span {
 
 #mobile-nav {
 	display: none;
+	background-color: #212427;
+	margin-top: 10%;
+	height: 100%;
+	width: 40%;
 }
 
 #mobile-navhead {

@@ -11,6 +11,8 @@ let el_roomsNav = document.getElementById('rooms-nav');
 let el_chatNav = document.getElementById('chat-nav');
 let el_msgbox = document.getElementById('msgbox');
 let el_mobile_navhead = document.getElementById('mobile-navhead');
+let el_mobile_navIcon = document.getElementById('mobile-nav-icon');
+let el_mobile_nav = document.getElementById('mobile-nav');
 // let el_msg = document.getElementById('msg');
 
 el_msg.focus();
@@ -424,6 +426,11 @@ window.addEventListener("resize", initPage);
 window.addEventListener('focusout', ()=>{
 	shift = false;
 });
+
+el_mobile_navIcon.onclick = () => {
+	el_mobile_nav.style.display = "block";
+	el_mobile_nav.style.position = "fixed";
+}
 
 window.addEventListener('beforeunload', (e) =>{
 	ws.send('id: '+wsid+'\nclosing: true\n\n');
