@@ -5,7 +5,13 @@ let el_chat = document.getElementById('chat');
 let el_html = document.getElementsByTagName("html")[0];
 let el_addroom = document.getElementById('addroom');
 let el_addfriend = document.getElementById('addfriend');
-let el_friendsNav = document.getElementById('friends');
+let el_friends = document.getElementById('friends');
+let el_friendsNav = document.getElementById('friends-nav');
+let el_roomsNav = document.getElementById('rooms-nav');
+let el_chatNav = document.getElementById('chat-nav');
+let el_msgbox = document.getElementById('msgbox');
+// let el_msg = document.getElementById('msg');
+
 el_msg.focus();
 
 let el_msg_rect = msg.getBoundingClientRect();
@@ -58,11 +64,11 @@ ws.onmessage = function(ev){
 	userdata = JSON.parse(data);
 
 	if(userdata && userdata.friends){
-		el_friendsNav.innerHTML = "";
+		el_friends.innerHTML = "";
 		userdata.friends.forEach((name, idx) =>{
 			console.log(name);
 
-			el_friendsNav.innerHTML += "<p><span class='icon-info'>"+name+"</span></p><br>";
+			el_friends.innerHTML += "<p><span class='icon-info'>"+name+"</span></p><br>";
 		});
 	}
 
@@ -368,36 +374,22 @@ el_msg.addEventListener('keydown', (e) => {
 
 }, false);
 
-enableMobile = false;
-
-function getWidth(){
-    if (self.innerWidth) {
-        return self.innerWidth;
-    }
-
-    if (
-        document.documentElement
-        && document.documentElement.clientWidth
-    ){
-        return document.documentElement.clientWidth;
-    }
-
-    if (document.body) {
-        return document.body.clientWidth;
-    }
-}
 
 function initPage(){
-	if(getWidth() < 500 ){
-        enableMobile = true;
-    }else{
-        enableMobile = false;
-    }
 
 	if((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
-	|| enableMobile
 	){
-		// console.log("mobile");
+		el_html.style.fontSize = "4vw";
+		el_friendsNav.style.display = "none";
+		el_roomsNav.style.display = "none";
+		el_chatNav.style.marginLeft = "0%";
+		el_chatNav.style.width = "100%";
+
+     	el_msgbox.style.border = "none"
+ 	    el_msgbox.style.width = "100%";
+ 	    el_msgbox.style.marginLeft = "0%";
+     	el_msg.style.width = "90%";
+		el_msg.style.marginLeft = "5%";
 	}
 } 
 
