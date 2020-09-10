@@ -396,16 +396,21 @@ popup_mobile_createMessage.innerHTML =
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "8%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "15%";
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "10%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.width = "45%";
-popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "15%";
+popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "10%";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.height = "70%";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.width = "100%";
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(){
+	document.body.removeChild(popup_mobile_createMessage);
+}
+
+popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
+	// do send the message
 	document.body.removeChild(popup_mobile_createMessage);
 }
 
