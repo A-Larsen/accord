@@ -173,7 +173,7 @@ parseMessage(data, md)
 int 
 parseChatRoomList(list, cr)
   char *list;
-  Chatroom *cr;
+  Darray *cr;
 {
 
 	char *arrayp = list;

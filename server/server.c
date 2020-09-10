@@ -88,7 +88,7 @@ server_add_dir(urls, dir)
 int 
 user_create(name, cr)
   char *name;
-  Chatroom cr;
+  Darray cr;
 {
 	ONION_INFO("creating users '%s'", name);
 
@@ -493,7 +493,7 @@ server_connection_login(_, req, res)
 	const char *user_name = onion_request_get_post(req, "name");
 	const char *user_password = onion_request_get_post(req, "password");
 
-	Chatroom cr;
+	Darray cr;
 
 	if(db_find_user(user_name, user_password, &cr)){
 		if( ( FOUNDUSER = user_create(strdup(user_name), cr) ) ){

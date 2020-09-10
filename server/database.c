@@ -76,7 +76,7 @@ int
 db_find_user(name, password, cr)
   const char *name;
   const char *password;
-  Chatroom *cr;
+  Darray *cr;
 {
 
 	if(!name || !password ){
@@ -116,7 +116,7 @@ db_find_user(name, password, cr)
 
 int 
 db_store_message(cr, name, msg, date)
-  Chatroom *cr;
+  Darray *cr;
   const char *name;
   char *msg;
   long int date;
@@ -184,7 +184,7 @@ callback_search_chatrooms(data, argc, argv, azColName)
 {
 	int i;
 	bool founduser = false, foundmessage = false, founddate = false;
-	Chatroom *cr = ((Chatroom **)data)[0];
+	Darray *cr = ((Darray **)data)[0];
 	onion_websocket *ws = ((onion_websocket **)data)[1];
 	char *user = NULL;
 	MessageData md;
@@ -234,7 +234,7 @@ callback_search_chatrooms(data, argc, argv, azColName)
 
 int 
 db_init_login(cr, ws)
-  Chatroom *cr;
+  Darray *cr;
   onion_websocket *ws;
 {
 

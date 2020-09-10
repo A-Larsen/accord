@@ -18,14 +18,24 @@
 						"\"chatroom\": \"%s\" "\
 				  	"}"
 
-typedef struct _Chatroom {
+typedef struct _Darray {
 	char **room;
 	long int arraylen;
 	int len;
 	long long int chatlen;
 	/* char current[15]; */
 	char *current;
-}Chatroom;
+}Darray;
+
+typedef struct _Chatrooms {
+	Darray rooms;
+	/* char **room; */
+	/* long int arraylen; */
+	/* int len; */
+	/* long long int chatlen; */
+	/* char current[15]; */
+	char *current;
+}Chatrooms;
 
 typedef struct _MessageData{
 	char *message;
@@ -42,13 +52,13 @@ typedef struct _MessageData{
 	char *roomalias;
 	/* char *addfriend; */
 	/* char **addfriend; */
-	Chatroom addfriend;
+	Darray addfriend;
 	/* char *friendid; */
 	/* char *crname; */
 
 } MessageData;
 
-int parseChatRoomList(char *list, Chatroom *cr);
+int parseChatRoomList(char *list, Darray *cr);
 void parseMessage(char *data, MessageData *md);
 long int parseHTML(FILE *fp, char *str);
 void nsort(void **data, int len);
