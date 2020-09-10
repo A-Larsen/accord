@@ -374,6 +374,34 @@ el_msg.addEventListener('keydown', (e) => {
 
 }, false);
 
+let popup_mobile_createMessage = document.createElement('div');
+popup_mobile_createMessage.setAttribute("id", "mobileCreateMessage");
+popup_mobile_createMessage.style.position = "absolute";
+popup_mobile_createMessage.style.border = "solid";
+popup_mobile_createMessage.style.borderRadius = "5px";
+popup_mobile_createMessage.style.padding = "5px";
+// popup_mobile_createMessage.style.bottom = "50%"
+popup_mobile_createMessage.style.top = "0px"
+// popup_mobile_createMessage.style.left = "45%"
+popup_mobile_createMessage.style.left = "0px"
+// popup_mobile_createMessage.style.boxShadow =  "5px 10px #232629";
+popup_mobile_createMessage.style.zIndex = "5";
+popup_mobile_createMessage.style.width = "100%";
+popup_mobile_createMessage.style.height = "100%";
+popup_mobile_createMessage.style.backgroundColor = "#474b53";
+// popup_mobile_createMessage.innerHTML = "<h1>CREATE MESSAGE</h1>"
+popup_mobile_createMessage.innerHTML = 
+"<h1>CREATE MESSAGE</h1><br><br>"+
+"<br><textarea cols='30' rows='5' type='text'></textarea><br>"+
+"<button>add friend</button>&nbsp;<button>cancel</button><br>";
+
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "5%";
+popup_mobile_createMessage.getElementsByTagName('button')[1].style.width = "45%";
+popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "5%";
+popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
+
+}
 
 function initPage(){
 
@@ -390,6 +418,10 @@ function initPage(){
  	    el_msgbox.style.marginLeft = "0%";
      	el_msg.style.width = "90%";
 		el_msg.style.marginLeft = "5%";
+
+		el_msg.onclick = function() {
+			document.body.appendChild(popup_mobile_createMessage);
+		}
 	}
 } 
 
