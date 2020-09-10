@@ -391,22 +391,21 @@ popup_mobile_createMessage.style.height = "100%";
 popup_mobile_createMessage.style.backgroundColor = "#474b53";
 // popup_mobile_createMessage.innerHTML = "<h1>CREATE MESSAGE</h1>"
 popup_mobile_createMessage.innerHTML = 
-"<h1>CREATE MESSAGE</h1><br><br>"+
-"<br><textarea cols='30' rows='5' type='text'></textarea><br>"+
-"<button>cancel</button>&nbsp;<button>send</button><br>";
+"<button>cancel</button>&nbsp;<button>send</button><br>" +
+"<br><textarea cols='30' rows='5' type='text'></textarea><br>";
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "8%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "5%";
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "15%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.width = "45%";
-popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "5%";
+popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "15%";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.height = "70%";
 popup_mobile_createMessage.getElementsByTagName('textarea')[0].style.width = "100%";
 
-popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
+popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(){
 	document.body.removeChild(popup_mobile_createMessage);
 }
 
@@ -428,6 +427,7 @@ function initPage(){
 
 		el_msg.onclick = function() {
 			document.body.appendChild(popup_mobile_createMessage);
+			popup_mobile_createMessage.getElementsByTagName('textarea')[0].value = "";
 			popup_mobile_createMessage.getElementsByTagName('textarea')[0].focus();
 		}
 	}
