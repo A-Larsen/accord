@@ -441,6 +441,7 @@ popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(
 	el_mobile_navhead.style.display = "block";
 	el_chatTitle.style.display = "block";
 	el_mobile_navIcon.style.display = "block";
+	el_msgbox.style.display = "block";
 	el_chatNav.style.marginBottom = defaultMarginBottom;
 	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
@@ -452,6 +453,7 @@ popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(
 	el_mobile_navhead.style.display = "block";
 	el_chatTitle.style.display = "block";
 	el_mobile_navIcon.style.display = "block";
+	el_msgbox.style.display = "block";
 	el_chatNav.style.marginBottom = defaultMarginBottom;
 	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
@@ -464,6 +466,7 @@ popup_mobile_createMessage.getElementsByTagName('input')[0].onsearch = function(
 	el_mobile_navhead.style.display = "block";
 	el_chatTitle.style.display = "block";
 	el_mobile_navIcon.style.display = "block";
+	el_msgbox.style.display = "block";
 	el_chatNav.style.marginBottom = defaultMarginBottom;
 	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
@@ -488,14 +491,14 @@ function initPage(){
 
 		el_msg.onclick = function() {
 			// el_chatNav.style.marginBottom = "5%";
-			el_chatNav.style.height = "90%";
+			// el_chatNav.style.height = "90%";
+			el_msgbox.style.display = "none";
 			el_chatTitle.style.display = "none";
 			el_mobile_navhead.style.display = "none";
 			el_mobile_navIcon.style.display = "none";
 			document.body.appendChild(popup_mobile_createMessage);
 			popup_mobile_createMessage.getElementsByTagName('input')[0].value = "";
 			popup_mobile_createMessage.getElementsByTagName('input')[0].focus();
-			el_chat.scrollTo(0, el_chat.scrollHeight+10);
 		}
 	}
 } 
