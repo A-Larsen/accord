@@ -400,8 +400,9 @@ popup_mobile_createMessage.style.top = "70%"
 popup_mobile_createMessage.style.left = "0px"
 // popup_mobile_createMessage.style.boxShadow =  "5px 10px #232629";
 popup_mobile_createMessage.style.zIndex = "5";
-popup_mobile_createMessage.style.width = "100%";
-popup_mobile_createMessage.style.height = "100%";
+popup_mobile_createMessage.style.width = "95%";
+// popup_mobile_createMessage.style.marginLeft = "2%";
+popup_mobile_createMessage.style.height = "30%";
 popup_mobile_createMessage.style.backgroundColor = "#474b53";
 // popup_mobile_createMessage.innerHTML = "<h1>CREATE MESSAGE</h1>"
 popup_mobile_createMessage.innerHTML = 
@@ -409,17 +410,18 @@ popup_mobile_createMessage.innerHTML =
 "<br><input type='search' ></input><br>";
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "8%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "10%";
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "5%";
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "20%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.width = "45%";
-popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "10%";
+popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "20%";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('input')[0].style.fontSize = "4vw";
 // popup_mobile_createMessage.getElementsByTagName('input')[0].style.MarginTop = "50%%";
 // popup_mobile_createMessage.getElementsByTagName('input')[0].style.MarginBottom = "50%";
 // popup_mobile_createMessage.getElementsByTagName('input')[0].style.height = "70%";
-// popup_mobile_createMessage.getElementsByTagName('input')[0].style.width = "100%";
+popup_mobile_createMessage.getElementsByTagName('input')[0].style.width = "80%";
+// popup_mobile_createMessage.getElementsByTagName('input')[0].style.marginLeft = "8%"
 //
 // popup_mobile_createMessage.getElementsByTagName('input')[0].inputMode = "search"
 // popup_mobile_createMessage.getElementsByTagName('input')[0].addEventListener('keyup', messageKeyup, false);
@@ -460,6 +462,8 @@ function initPage(){
 			document.body.appendChild(popup_mobile_createMessage);
 			popup_mobile_createMessage.getElementsByTagName('input')[0].value = "";
 			popup_mobile_createMessage.getElementsByTagName('input')[0].focus();
+			// el_chat.marginBotton = "50%";
+			el_chat.scrollTo(0, el_chat.scrollHeight);
 		}
 	}
 } 
