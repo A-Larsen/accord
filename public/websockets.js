@@ -1,6 +1,7 @@
 // it seems that javascript strings end with the \n character
 // but I add it for safe mesure
 let el_msg = document.getElementById('msg');
+let el_chatTitle = document.getElementById('title');
 let el_chat = document.getElementById('chat');
 // let el_chatNav = document.getElementById('chat-nav');
 let el_html = document.getElementsByTagName("html")[0];
@@ -397,13 +398,13 @@ popup_mobile_createMessage.style.borderRadius = "5px";
 popup_mobile_createMessage.style.padding = "5px";
 // popup_mobile_createMessage.style.bottom = "50%"
 // popup_mobile_createMessage.style.left = "45%"
-popup_mobile_createMessage.style.top = "70%"
+popup_mobile_createMessage.style.top = "90%"
 popup_mobile_createMessage.style.left = "0px"
 // popup_mobile_createMessage.style.boxShadow =  "5px 10px #232629";
 popup_mobile_createMessage.style.zIndex = "5";
 popup_mobile_createMessage.style.width = "95%";
 // popup_mobile_createMessage.style.marginLeft = "2%";
-popup_mobile_createMessage.style.height = "30%";
+popup_mobile_createMessage.style.height = "20%";
 popup_mobile_createMessage.style.backgroundColor = "#474b53";
 // popup_mobile_createMessage.innerHTML = "<h1>CREATE MESSAGE</h1>"
 popup_mobile_createMessage.innerHTML = 
@@ -414,13 +415,15 @@ popup_mobile_createMessage.innerHTML =
 // let defaultHeight  = "":
 let defaultMarginBottom = el_chatNav.style.marginBottom;
 let defaultHeight = el_chatNav.style.height;
+// let defaultMobileNavheadDisplay = el_mobile_navhead.style.display;
+// let defaultMobileIconDisplay = el_mobile_navIcon.style.display;
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "5%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "20%";
+popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "25%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.width = "45%";
-popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "20%";
+popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "25%";
 popup_mobile_createMessage.getElementsByTagName('button')[1].style.fontSize = "4vw";
 popup_mobile_createMessage.getElementsByTagName('input')[0].style.fontSize = "4vw";
 // popup_mobile_createMessage.getElementsByTagName('input')[0].style.MarginTop = "50%%";
@@ -433,6 +436,11 @@ popup_mobile_createMessage.getElementsByTagName('input')[0].style.width = "80%";
 // popup_mobile_createMessage.getElementsByTagName('input')[0].addEventListener('keyup', messageKeyup, false);
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(){
+	// el_mobile_navhead.style.display = defaultMobileNavheadDisplay;
+	// el_mobile_navIcon.style.display = defaultMobileIconDisplay;
+	el_mobile_navhead.style.display = "block";
+	el_chatTitle.style.display = "block";
+	el_mobile_navIcon.style.display = "block";
 	el_chatNav.style.marginBottom = defaultMarginBottom;
 	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
@@ -441,6 +449,11 @@ popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(
 popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
 	// do send the message
 	sendMessage(popup_mobile_createMessage.getElementsByTagName('input')[0])
+	el_mobile_navhead.style.display = "block";
+	el_chatTitle.style.display = "block";
+	el_mobile_navIcon.style.display = "block";
+	el_chatNav.style.marginBottom = defaultMarginBottom;
+	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
 }
 
@@ -448,11 +461,14 @@ popup_mobile_createMessage.getElementsByTagName('input')[0].onsearch = function(
 	sendMessage(popup_mobile_createMessage.getElementsByTagName('input')[0])
 	// el_chatNav.style.marginBottom = "0%";
 	// el_chatNav.style.height = "90%";
+	el_mobile_navhead.style.display = "block";
+	el_chatTitle.style.display = "block";
+	el_mobile_navIcon.style.display = "block";
 	el_chatNav.style.marginBottom = defaultMarginBottom;
 	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
 }
-
+// https://stackoverflow.com/questions/36430561/how-can-i-check-if-my-element-id-has-focus
 function initPage(){
 
 	if((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
@@ -471,18 +487,15 @@ function initPage(){
 		el_mobile_navhead.style.display = "block";
 
 		el_msg.onclick = function() {
-			// defaultMarginBottom = el_chatNav.style.marginBottom;
-			// defaultHeight = el_chatNav.style.height;
-			el_chatNav.style.marginBottom = "20%";
-			el_chatNav.style.height = "70%";
-			// el_chat.scrollTo(0, el_chat.scrollHeight);
+			// el_chatNav.style.marginBottom = "5%";
+			el_chatNav.style.height = "90%";
+			el_chatTitle.style.display = "none";
+			el_mobile_navhead.style.display = "none";
+			el_mobile_navIcon.style.display = "none";
 			document.body.appendChild(popup_mobile_createMessage);
 			popup_mobile_createMessage.getElementsByTagName('input')[0].value = "";
 			popup_mobile_createMessage.getElementsByTagName('input')[0].focus();
-			el_chat.scrollTo(0, el_chat.scrollHeight);
-			// el_chat.marginBotton = "50%";
-			// el_chat.position = "relative";
-			// el_chat.bottom = "20%";
+			el_chat.scrollTo(0, el_chat.scrollHeight+10);
 		}
 	}
 } 
