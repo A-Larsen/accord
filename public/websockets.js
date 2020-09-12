@@ -310,7 +310,7 @@ function parseMesage(msg){
 	
 	if(regex_yt.test(msg)){
 		let strid = msg.substring(msg.indexOf("=")+1, msg.length-1);
-		return "<iframe width='820' height='715' src='https://www.youtube.com/embed/"+strid+"'> </iframe>"
+		return "<iframe src='https://www.youtube.com/embed/"+strid+"'> </iframe>"
 	}
 
 	// works but just remove query string from '?' too the end
