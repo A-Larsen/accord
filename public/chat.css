@@ -21,6 +21,7 @@ h1{
 	border: solid;
 	width: 50%;
 	margin-left:25%;
+	/* position: relative; */
 }
 #chat {
 

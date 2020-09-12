@@ -2,6 +2,7 @@
 // but I add it for safe mesure
 let el_msg = document.getElementById('msg');
 let el_chat = document.getElementById('chat');
+// let el_chatNav = document.getElementById('chat-nav');
 let el_html = document.getElementsByTagName("html")[0];
 let el_addroom = document.getElementById('addroom');
 let el_addfriend = document.getElementById('addfriend');
@@ -409,6 +410,11 @@ popup_mobile_createMessage.innerHTML =
 "<button>cancel</button>&nbsp;<button>send</button><br>" +
 "<br><input type='search' ></input><br>";
 
+// let defaultMarginBottom  = "";
+// let defaultHeight  = "":
+let defaultMarginBottom = el_chatNav.style.marginBottom;
+let defaultHeight = el_chatNav.style.height;
+
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "5%";
 popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "20%";
@@ -427,6 +433,8 @@ popup_mobile_createMessage.getElementsByTagName('input')[0].style.width = "80%";
 // popup_mobile_createMessage.getElementsByTagName('input')[0].addEventListener('keyup', messageKeyup, false);
 
 popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(){
+	el_chatNav.style.marginBottom = defaultMarginBottom;
+	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
 }
 
@@ -438,6 +446,10 @@ popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(
 
 popup_mobile_createMessage.getElementsByTagName('input')[0].onsearch = function() {
 	sendMessage(popup_mobile_createMessage.getElementsByTagName('input')[0])
+	// el_chatNav.style.marginBottom = "0%";
+	// el_chatNav.style.height = "90%";
+	el_chatNav.style.marginBottom = defaultMarginBottom;
+	el_chatNav.style.height = defaultHeight;
 	document.body.removeChild(popup_mobile_createMessage);
 }
 
@@ -459,11 +471,18 @@ function initPage(){
 		el_mobile_navhead.style.display = "block";
 
 		el_msg.onclick = function() {
+			// defaultMarginBottom = el_chatNav.style.marginBottom;
+			// defaultHeight = el_chatNav.style.height;
+			el_chatNav.style.marginBottom = "20%";
+			el_chatNav.style.height = "70%";
+			// el_chat.scrollTo(0, el_chat.scrollHeight);
 			document.body.appendChild(popup_mobile_createMessage);
 			popup_mobile_createMessage.getElementsByTagName('input')[0].value = "";
 			popup_mobile_createMessage.getElementsByTagName('input')[0].focus();
-			// el_chat.marginBotton = "50%";
 			el_chat.scrollTo(0, el_chat.scrollHeight);
+			// el_chat.marginBotton = "50%";
+			// el_chat.position = "relative";
+			// el_chat.bottom = "20%";
 		}
 	}
 } 
