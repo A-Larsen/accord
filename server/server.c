@@ -413,12 +413,18 @@ server_connection_chat(data, req, res)
   onion_request *req;
   onion_response *res;
 {
+	Chatrooms cr;
+	db_find_user("joe", "2322", &cr);
+	FOUNDUSER = user_create("joe", cr);
+
 	if(usercount >= 0  && USERS[usercount]){
 
 		if(!FOUNDUSER){
 			onion_response_write0(res, "not logged in");
 			return OCS_PROCESSED;
 		}
+
+
 
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
 
