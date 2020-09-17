@@ -10,6 +10,12 @@
 //- create a JSON file in public to get JSON objects
 //	this way the server doesn't need to send as much data
 //
+//- need to create a better way of recieving data from the 
+//	client. Maybe somoething like an XML file ?
+//	libxml2 ?
+//
+//	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
+//
 
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
