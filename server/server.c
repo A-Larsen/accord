@@ -2,6 +2,14 @@
 #define _GNU_SOURCE
 #endif
 #include "server.h"
+// TODO: 
+//- remove saving file descripters
+//
+//- need unique names for each JSON element
+//
+//- create a JSON file in public to get JSON objects
+//	this way the server doesn't need to send as much data
+//
 
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
@@ -65,7 +73,7 @@ server_add_dir(urls, dir)
 			data.name = strdup(de->d_name);
 			data.data = strdup(tmp);
 			data.length = len;
-			data.fp = fp;
+			/* data.fp = fp; */
 
 			if(!strcmp(dir, "views/")){
 				memcpy(&VIEWS[n], &data, sizeof(data));
@@ -539,13 +547,13 @@ server_connection_signup(_, req, res)
 void 
 server_free()
 {
-	for(int i = 0; i < VIEWSN; i++){
-		fclose(VIEWS[i].fp);
-	}
+	/* for(int i = 0; i < VIEWSN; i++){ */
+	/* 	fclose(VIEWS[i].fp); */
+	/* } */
 
-	for(int i = 0; i < PUBLICN; i++){
-		fclose(PUBLIC[i].fp);
-	}
+	/* for(int i = 0; i < PUBLICN; i++){ */
+	/* 	fclose(PUBLIC[i].fp); */
+	/* } */
 
 	free(USERS);
 	db_free();

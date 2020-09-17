@@ -22,7 +22,7 @@ typedef struct _Data{
 	char *name;
 	char *data;
 	long int length;
-	FILE *fp;
+	/* FILE *fp; */
 }Data;
 
 

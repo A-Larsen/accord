@@ -565,3 +565,19 @@ function messageKeydown(e){
 }
 
 el_msg.addEventListener('keydown', messageKeydown, false);
+
+// better way to acccess json objects
+const xhttp = new XMLHttpRequest();
+
+xhttp.open('GET', '/test.json', true);
+
+xhttp.responseType = 'json';
+
+xhttp.onload = function(){
+	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
+		console.log(xhttp.response.name)
+	}
+}
+xhttp.send(null);
+
+

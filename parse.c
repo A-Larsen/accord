@@ -42,6 +42,7 @@ parseHTML(fp, str)
 	}
 	str += size;
 	*str++ = 0;
+	fclose(fp);
 
 	return size;
 }
