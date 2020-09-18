@@ -35,7 +35,7 @@ The chatroom users table is expressed with the id for the chatroom followed by
 ecyacndotuvundxaqmpk_users(user varchar(255));
 ```
 |       |                                           |
-| :---: |                                           |
+| :---: | ----------------------------------------- |
 | user  | name of user that belongs to the chatroom |
 
 
