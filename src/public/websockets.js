@@ -35,6 +35,7 @@ let xmlDoc=
 	document.implementation.createDocument(null, "root");
 
 xmlDoc.root = xmlDoc.getElementsByTagName("root")[0]
+xmlDoc.children = {}
 
 xmlDoc.addChild = function( name, text, attrObj){
 	let child = document.createElement(name);
@@ -42,13 +43,21 @@ xmlDoc.addChild = function( name, text, attrObj){
 	if(text !== null)
 		child.innerText = text;
 
-	this.root.appendChild(child);
-	if(attrObj != null){
+	if(this == xmlDoc)
+		this.root.appendChild(child);
+	else
+		this.appendChild(child);
+
+	if(attrObj !== null){
 		Object.entries(attrObj).forEach(([key, value]) => {
 			child.setAttribute(key, value);
 		})
 	}
 
+	child.addChild = this.addChild;
+	child.children = {}
+	xmlDoc.children[name] = child
+	return child;
 }
 
 let initheader
@@ -60,18 +69,12 @@ wsid = Math.floor(Math.random() * 100);
 
 initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
 
-xmlDoc.addChild("id", wsid, {type: "int"});
-xmlDoc.addChild("name", null, {type: "string"});
-xmlDoc.addChild("closing", "false", {type: "bool"});
-
-// addxmlChild(xmlDocRoot, "id", wsid);
-// addxmlChild(xmlDocRoot, "name");
-// addxmlChild(xmlDocRoot, "closing", "false");
+var elUser = xmlDoc.addChild("user", null, null);
+elUser.addChild("id", wsid, {type: "int"});
+elUser.addChild("name", null, {type: "string"});
+elUser.addChild("closing", "false", {type: "bool"});
 
 console.log(xmlDoc.root);
-
-// let child = document.createElement("id");
-// xmlDocRoot.
 
 let userdata = null;
 
