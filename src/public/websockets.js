@@ -31,6 +31,35 @@ function validString(str){
  //`
 }
 
+let xmlDoc= 
+	document.implementation.createDocument(null, "root");
+
+xmlDoc.root = xmlDoc.getElementsByTagName("root")[0]
+
+xmlDoc.addChild = function( name, text){
+	let child = document.createElement(name);
+
+	if(typeof text !== "undefined")
+		child.innerText = text;
+
+	// xmlDocRoot.appendChild(child);
+	this.root.appendChild(child);
+
+}
+
+// function addxmlChild(root, name, text){
+// 	let child = document.createElement(name);
+
+// 	if(typeof text !== "undefined")
+// 		child.innerText = text;
+
+// 	xmlDocRoot.appendChild(child);
+// }
+
+// let xmlDocRoot = 
+// 	document.implementation.createDocument(null, "root")
+// 	.getElementsByTagName("root")[0];
+
 let initheader
 
 let chatroom = null;
@@ -39,6 +68,19 @@ let wsid;
 wsid = Math.floor(Math.random() * 100);
 
 initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
+
+xmlDoc.addChild("id", wsid);
+xmlDoc.addChild("name");
+xmlDoc.addChild("closing", "false");
+
+// addxmlChild(xmlDocRoot, "id", wsid);
+// addxmlChild(xmlDocRoot, "name");
+// addxmlChild(xmlDocRoot, "closing", "false");
+
+console.log(xmlDoc.root);
+
+// let child = document.createElement("id");
+// xmlDocRoot.
 
 let userdata = null;
 
@@ -564,20 +606,20 @@ function messageKeydown(e){
 
 }
 
-el_msg.addEventListener('keydown', messageKeydown, false);
+// el_msg.addEventListener('keydown', messageKeydown, false);
 
-// better way to acccess json objects
-const xhttp = new XMLHttpRequest();
+// // better way to acccess json objects
+// const xhttp = new XMLHttpRequest();
 
-xhttp.open('GET', '/test.json', true);
+// xhttp.open('GET', '/test.json', true);
 
-xhttp.responseType = 'json';
+// xhttp.responseType = 'json';
 
-xhttp.onload = function(){
-	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
-		console.log(xhttp.response.name)
-	}
-}
-xhttp.send(null);
+// xhttp.onload = function(){
+// 	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
+// 		console.log(xhttp.response.name)
+// 	}
+// }
+// xhttp.send(null);
 
 
