@@ -36,29 +36,20 @@ let xmlDoc=
 
 xmlDoc.root = xmlDoc.getElementsByTagName("root")[0]
 
-xmlDoc.addChild = function( name, text){
+xmlDoc.addChild = function( name, text, attrObj){
 	let child = document.createElement(name);
 
-	if(typeof text !== "undefined")
+	if(text !== null)
 		child.innerText = text;
 
-	// xmlDocRoot.appendChild(child);
 	this.root.appendChild(child);
+	if(attrObj != null){
+		Object.entries(attrObj).forEach(([key, value]) => {
+			child.setAttribute(key, value);
+		})
+	}
 
 }
-
-// function addxmlChild(root, name, text){
-// 	let child = document.createElement(name);
-
-// 	if(typeof text !== "undefined")
-// 		child.innerText = text;
-
-// 	xmlDocRoot.appendChild(child);
-// }
-
-// let xmlDocRoot = 
-// 	document.implementation.createDocument(null, "root")
-// 	.getElementsByTagName("root")[0];
 
 let initheader
 
@@ -69,9 +60,9 @@ wsid = Math.floor(Math.random() * 100);
 
 initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
 
-xmlDoc.addChild("id", wsid);
-xmlDoc.addChild("name");
-xmlDoc.addChild("closing", "false");
+xmlDoc.addChild("id", wsid, {type: "int"});
+xmlDoc.addChild("name", null, {type: "string"});
+xmlDoc.addChild("closing", "false", {type: "bool"});
 
 // addxmlChild(xmlDocRoot, "id", wsid);
 // addxmlChild(xmlDocRoot, "name");
