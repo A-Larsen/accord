@@ -13,6 +13,9 @@
 //- need to create a better way of recieving data from the 
 //	client. Maybe somoething like an XML file ?
 //	libxml2 ?
+// 
+// it seems that onion uses libxml
+// https://github.com/davidmoreno/onion/search?q=libxml&unscoped_q=libxml
 //
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
