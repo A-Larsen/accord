@@ -32,9 +32,9 @@ function validString(str){
 }
 
 let xmlDoc= 
-	document.implementation.createDocument(null, "root");
+	document.implementation.createDocument(null, "root")
+	.getElementsByTagName("root")[0];
 
-xmlDoc.root = xmlDoc.getElementsByTagName("root")[0]
 xmlDoc.children = {}
 
 xmlDoc.addChild = function( name, text, attrObj){
@@ -50,19 +50,9 @@ xmlDoc.addChild = function( name, text, attrObj){
 		})
 	}
 
-	if(this == xmlDoc){
-		this.root.appendChild(child);
-		this.children[name] = child
-	}
-	else{
-		this.appendChild(child);
-		// child.children = {}
-	 	child.children[name] = child
-	}
-
 	child.addChild = this.addChild;
-	// this.children[name] = child
-	child.children[name] = child
+	this.children[name] = child
+	this.appendChild(child);
 	return child;
 }
 
@@ -80,7 +70,10 @@ elUser.addChild("id", wsid, {type: "int"});
 elUser.addChild("name", null, {type: "string"});
 elUser.addChild("closing", "false", {type: "bool"});
 
-console.log(xmlDoc.root);
+// console.log(xmlDoc.root);
+console.log(xmlDoc);
+console.log(xmlDoc.children);
+console.log(elUser.children);
 
 let userdata = null;
 
