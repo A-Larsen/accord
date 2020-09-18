@@ -44,7 +44,7 @@ ecyacndotuvundxaqmpk_users(user varchar(255));
 ### Users table
 This holds a collection of all the users in the server in the users table.
 
-```
+```sql
 CREATE TABLE users (name varchar(255), password varchar(255), chatrooms varchar(255));
 ```
 - encryption not yet implemented
