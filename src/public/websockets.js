@@ -43,10 +43,6 @@ xmlDoc.addChild = function( name, text, attrObj){
 	if(text !== null)
 		child.innerText = text;
 
-	if(this == xmlDoc)
-		this.root.appendChild(child);
-	else
-		this.appendChild(child);
 
 	if(attrObj !== null){
 		Object.entries(attrObj).forEach(([key, value]) => {
@@ -54,9 +50,19 @@ xmlDoc.addChild = function( name, text, attrObj){
 		})
 	}
 
+	if(this == xmlDoc){
+		this.root.appendChild(child);
+		this.children[name] = child
+	}
+	else{
+		this.appendChild(child);
+		// child.children = {}
+	 	child.children[name] = child
+	}
+
 	child.addChild = this.addChild;
-	child.children = {}
-	xmlDoc.children[name] = child
+	// this.children[name] = child
+	child.children[name] = child
 	return child;
 }
 
