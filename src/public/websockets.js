@@ -588,10 +588,13 @@ el_mobile_navIcon.onclick = () => {
 
 window.addEventListener('beforeunload', (e) =>{
 	// ws.send('id: '+wsid+'\nclosing: true\n\n');
+	// elUser.addChild("closing", "true", null);
+	// elUser.addChild("closing",null, null);
 	elUser.addChild("closing", "true", null);
 
 	// ws.send('id: '+wsid+'\nclosing: true\n\n');
 	ws.send(getxmlDocStr(xmlDoc));
+	// elUser.removeChild(elUser.children.closing);
 	ws.close();
 });
 

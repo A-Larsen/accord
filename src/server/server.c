@@ -407,6 +407,7 @@ server_websocket_chat(data, ws, data_ready_len)
 	if(user){
 		ONION_INFO("FOUND USER");
 		if(md.closing){
+			ONION_INFO("ABOUT TO CLOSE");
 			closinguser = user;
 			CLOSING = true;
 			return OCS_NEED_MORE_DATA;

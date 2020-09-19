@@ -190,10 +190,23 @@ parseMessage(data, md)
 					xmlNode *cur_user;
 
 					for(cur_user = cur_root->children; cur_user;cur_user = cur_user->next){
+						char *str = (char *)cur_user->xmlChildrenNode->content;
+
 						if(!xmlStrcmp(cur_user->name, (const xmlChar *)"id")){ 
-							char *str = (char *)cur_user->xmlChildrenNode->content;
+							/* printf("closing id: %s\n", str); */
 							printf("id: %s\n", str);
 							md->id = atoi((char *)str);
+						}
+
+						if(!xmlStrcmp(cur_user->name, (const xmlChar *)"closing")){ 
+							/* printf("closing found!"); */
+							/* printf("CLOSING\n"); */
+
+							/* char *str = (char *)cur_user->xmlChildrenNode->content; */
+							/* printf("id: %s\n", str); */
+							/* md->id = atoi((char *)str); */
+							/* md->closing = !strcmp(str, "true"); */
+							md->closing = true;
 						}
 					}
 				}
@@ -215,29 +228,6 @@ parseMessage(data, md)
 						printf("message: %s\n", str);
 						md->message = strdup(str);
 					}
-
-					/* for(cur_mi = cur_root->children; cur_mi;cur_mi = cur_mi->next){ */
-					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"chatroom")){ */ 
-					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
-					/* 		md->chatroom = strdup(str); */
-					/* 		printf("chatroom: %s\n", md->chatroom); */
-					/* 	} */
-					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"date")){ */ 
-					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
-					/* 		printf("date: %s\n", str); */
-					/* 		md->lldate = atoll(str); */
-					/* 	} */
-					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"message")){ */ 
-					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
-					/* 		printf("message: %s\n", str); */
-					/* 		md->message = strdup(str); */
-					/* 	} */
-					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"closing")){ */ 
-					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
-					/* 		md->closing = !strcmp(str, "true"); */
-					/* 		printf("closing: %d\n", md->closing); */
-					/* 	} */
-					/* } */
 				}
 			}
 		}
