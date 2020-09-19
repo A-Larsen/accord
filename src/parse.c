@@ -186,8 +186,8 @@ parseMessage(data, md)
 					for(cur_mi = cur_root->children; cur_mi;cur_mi = cur_mi->next){
 						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"chatroom")){ 
 							char *str = (char *)cur_mi->xmlChildrenNode->content;
-							printf("chatroom: %s\n", str);
 							md->chatroom = strdup(str);
+							printf("chatroom: %s\n", md->chatroom);
 						}
 						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"date")){ 
 							char *str = (char *)cur_mi->xmlChildrenNode->content;

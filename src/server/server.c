@@ -391,6 +391,7 @@ server_websocket_chat(data, ws, data_ready_len)
 
 	MessageData md;
 	parseMessage(tmp, &md);
+	ONION_INFO("FOUND CHATROOM %s\n", md.chatroom);
 
 	User *user = getUser(md.id);
 
@@ -404,6 +405,7 @@ server_websocket_chat(data, ws, data_ready_len)
 	}
 	
 	if(user){
+		ONION_INFO("FOUND USER");
 		if(md.closing){
 			closinguser = user;
 			CLOSING = true;
@@ -425,7 +427,8 @@ server_websocket_chat(data, ws, data_ready_len)
 			server_load_chatroom(user, md);
 		}
 
-		else if(md.chatroom){
+		if(md.chatroom){
+			ONION_INFO("sending message?");
 			server_send_message(user, md);
 		}
 	}

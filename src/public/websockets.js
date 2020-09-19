@@ -109,7 +109,8 @@ ws.onopen = function(){
 
 	// console.log(xmlDoc.innerHTML);
 	// ws.send(xmlDoc.innerHTML);
-	ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<status>connected</status>");
+	// ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<status>connected</status>");
+	ws.send(getxmlDocStr());
 	// ws.send(initheader);
 	// we.send("xml: ")
 	// ws.send(xmlDoc.innerText);
