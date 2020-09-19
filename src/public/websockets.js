@@ -324,7 +324,8 @@ popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 		// console.log(doc.outerHTML);
 		// console.log(getxmlDocStr(doc));
 		console.log(xmlHead+doc.outerHTML);
-		ws.send(xmlHead+doc.outerHTML);
+		// ws.send(xmlHead+doc.outerHTML);
+		ws.send(doc.outerHTML);
 		// ws.send(xmlHead+'<addfriend>'+name+";"+currentChatroomid+";"+currentChatroomname+";</addfriend>");
 	}
 
