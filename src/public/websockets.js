@@ -62,30 +62,6 @@ function createXML(name){
 
 }
 
-// let xmlDoc= 
-// 	document.implementation.createDocument(null, "root")
-// 	.getElementsByTagName("root")[0];
-
-// xmlDoc.children = {}
-
-// xmlDoc.addChild = function( name, text, attrObj){
-// 	let child = document.createElement(name);
-
-// 	if(text !== null)
-// 		child.innerText = text;
-
-
-// 	if(attrObj !== null){
-// 		Object.entries(attrObj).forEach(([key, value]) => {
-// 			child.setAttribute(key, value);
-// 		})
-// 	}
-
-// 	child.addChild = this.addChild;
-// 	this.children[name] = child
-// 	this.appendChild(child);
-// 	return child;
-// }
 let xmlDoc = createXML("root");
 
 let initheader
@@ -97,35 +73,26 @@ wsid = Math.floor(Math.random() * 100);
 
 initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
 
-var elRoot = xmlDoc.addChild("root", null, null);
-// let ns = "http://www.w3.org/1999/xhtml";
-// elRoot.removeAttributeNS(ns, "xmlns");
-// var elRoot = elRoot.removeAttribute("xmlns");
-// var elUser = xmlDoc.addChild("user", null, null);
-var elUser = elRoot.addChild("user", null, null);
+var elUser = xmlDoc.addChild("user", null, null);
 elUser.addChild("id", wsid, null);
-// elUser.addChild("name", null, {type: "string"});
-// elUser.addChild("closing", "false", {type: "bool"});
-
-// console.log(xmlDoc.root);
-// console.log(xmlDoc.innerHTML);
-// console.log(xmlDoc.children);
-// console.log(elUser.children);
-// console.log(xmlHead+xmlDoc.innerHTML.replace(/xmlms=""/));
-// xmlRootStr = xmlDoc.innerHTML.replace(/ xmlns=".*"/g, "");
 
 function getxmlDocStr(doc){
 	// return xmlHead+xmlDoc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
 	let docstr = "";
 	
-	if(doc.hasAttribute("xmlns")){
-		docstr = doc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
-	}else{
+	// if(doc.hasAttribute("xmlns")){
+	// 	docstr = doc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
+	// }else{
 
-		docstr = doc.innerHTML;
-	}
+	// 	docstr = doc.innerHTML;
+	// }
+	docstr = doc.outerHTML.replace(/ xmlns="[^"]*"/g, "");
 	// return xmlHead+doc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
-	return xmlHead+docstr;
+	// return xmlHead+docstr;
+	// return docstr;
+	
+	console.log(docstr);
+	return docstr;
 	// xmlDoc.removeAttribute("xmlns");
 	// return xmlHead+xmlDoc.innerHTML;
 
@@ -323,9 +290,10 @@ popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 		doc.setAttribute("roomname", currentChatroomname);
 		// console.log(doc.outerHTML);
 		// console.log(getxmlDocStr(doc));
-		console.log(xmlHead+doc.outerHTML);
+		// console.log(xmlHead+doc.outerHTML);
 		// ws.send(xmlHead+doc.outerHTML);
-		ws.send(doc.outerHTML);
+		// ws.send(doc.outerHTML);
+		ws.send(getxmlDocStr(doc));
 		// ws.send(xmlHead+'<addfriend>'+name+";"+currentChatroomid+";"+currentChatroomname+";</addfriend>");
 	}
 
@@ -471,7 +439,7 @@ function sendMessage(element){
 	let date = new Date();
 	let timestamp = Math.floor(date.getTime()/1000.0);
 	let header = initheader;
-	var elMessage = elRoot.addChild("MI", null, null);
+	var elMessage = xmlDoc.addChild("MI", null, null);
 
 
 	// elMessage.addChild("id", wsid, {type: "int"});

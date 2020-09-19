@@ -142,7 +142,7 @@ parseMessage(data, md)
   MessageData *md;
 {
 
-	/* printf("%s\n", data); */
+	printf("XML----\n%s\n------\n", data);
 	md->chatroom = NULL;
 	md->initchatroom = NULL;
 
