@@ -171,10 +171,6 @@ parseMessage(data, md)
 			getRandStr(md->roomid);
 			md->roomalias = strdup(str);
 		}
-		else if(!strcmp((const char *)node->name, "init_room")){
-			char *str = (char *)node->xmlChildrenNode->content;
-			md->initchatroom = str;
-		}
 		else if(!strcmp((const char *)node->name, "addfriend")){
 			xmlAttr *attr = node->properties;
 
