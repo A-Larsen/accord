@@ -75,66 +75,66 @@ parseHTML(fp, str)
 }
 
 
-static int 
-mcb(data, cmp, other)
-  char *data;
-  const char *cmp;
-  void *other;
-{
+/* static int */ 
+/* mcb(data, cmp, other) */
+/*   char *data; */
+/*   const char *cmp; */
+/*   void *other; */
+/* { */
 
-	char *dp = data;
-	int n = strlen(cmp);
+/* 	char *dp = data; */
+/* 	int n = strlen(cmp); */
 
-	if(!strncmp(data, cmp, n)){
+/* 	if(!strncmp(data, cmp, n)){ */
 
-		data += (n+2);
+/* 		data += (n+2); */
 
-		char tmp[400];
+/* 		char tmp[400]; */
 
-		int i = 0;
-		for(; *data != '\n'; i++, data++){
-			if(i > 30) break;
-			tmp[i] = *data;
-		}
+/* 		int i = 0; */
+/* 		for(; *data != '\n'; i++, data++){ */
+/* 			if(i > 30) break; */
+/* 			tmp[i] = *data; */
+/* 		} */
 
-		tmp[i] = 0;
-		MessageData *md = (MessageData *)other;
+/* 		tmp[i] = 0; */
+/* 		MessageData *md = (MessageData *)other; */
 
-		if(!strcmp(cmp, "closing")){
-			md->closing = !strcmp(tmp, "true");
-		}
+/* 		if(!strcmp(cmp, "closing")){ */
+/* 			md->closing = !strcmp(tmp, "true"); */
+/* 		} */
 
-		if(!strcmp(cmp, "id")){
-			md->id = atoi(tmp);
-		}
+/* 		if(!strcmp(cmp, "id")){ */
+/* 			md->id = atoi(tmp); */
+/* 		} */
 
-		if(!strcmp(cmp, "date")){
-			md->lldate = atoll(tmp);
-		}
+/* 		if(!strcmp(cmp, "date")){ */
+/* 			md->lldate = atoll(tmp); */
+/* 		} */
 
-		if(!strcmp(cmp, "chatroom")){
-			md->chatroom = strdup(tmp);
-		}
+/* 		if(!strcmp(cmp, "chatroom")){ */
+/* 			md->chatroom = strdup(tmp); */
+/* 		} */
 
-		if(!strcmp(cmp, "initchatroom")){
-			md->initchatroom = strdup(tmp);
-		}
+/* 		if(!strcmp(cmp, "initchatroom")){ */
+/* 			md->initchatroom = strdup(tmp); */
+/* 		} */
 
-		if(!strcmp(cmp, "addroom")){
-			printf("*ADDING A ROOM !*\n");
+/* 		if(!strcmp(cmp, "addroom")){ */
+/* 			printf("*ADDING A ROOM !*\n"); */
 
-			md->roomid = malloc(sizeof(char)*21); 
-			getRandStr(md->roomid);
-			md->roomalias = strdup(tmp);
-		}
+/* 			md->roomid = malloc(sizeof(char)*21); */ 
+/* 			getRandStr(md->roomid); */
+/* 			md->roomalias = strdup(tmp); */
+/* 		} */
 
-		if(!strcmp(cmp, "addfriend")){
-			parseArrayList(tmp, &md->addfriend);
-		}
-	}
+/* 		if(!strcmp(cmp, "addfriend")){ */
+/* 			parseArrayList(tmp, &md->addfriend); */
+/* 		} */
+/* 	} */
 
-	return data - dp;
-}
+/* 	return data - dp; */
+/* } */
 
 void 
 parseMessage(data, md)
@@ -149,8 +149,6 @@ parseMessage(data, md)
 	md->roomid = NULL;
 
 	md->lldate = 0;
-	/* md->addfriend.items = NULL; */
-	/* md->addfriend = NULL; */
 
 	xmlDocPtr doc = parseDoc(data);
 
@@ -187,33 +185,13 @@ parseMessage(data, md)
 
 			for(cur_root = node->children; cur_root; cur_root = cur_root->next){
 				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"user")){
-					xmlNode *cur_user;
-
-					for(cur_user = cur_root->children; cur_user;cur_user = cur_user->next){
-						char *str = (char *)cur_user->xmlChildrenNode->content;
-
-						if(!xmlStrcmp(cur_user->name, (const xmlChar *)"id")){ 
-							/* printf("closing id: %s\n", str); */
-							printf("id: %s\n", str);
-							md->id = atoi((char *)str);
-						}
-
-						if(!xmlStrcmp(cur_user->name, (const xmlChar *)"closing")){ 
-							/* printf("closing found!"); */
-							/* printf("CLOSING\n"); */
-
-							/* char *str = (char *)cur_user->xmlChildrenNode->content; */
-							/* printf("id: %s\n", str); */
-							/* md->id = atoi((char *)str); */
-							/* md->closing = !strcmp(str, "true"); */
-							md->closing = true;
-						}
-					}
+					xmlAttr *attr = cur_root->properties;
+					md->closing = !strcmp((char *)xmlGetProp(cur_root, attr->name), "true");
+					attr = cur_root->properties->next;
+					md->id = atoi((char *)xmlGetProp(cur_root, attr->name));
 				}
 
-				/* if(!xmlStrcmp(cur_root->name, (const xmlChar *)"mi")){ */
 				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"message")){
-					/* printf("found message!\n"); */
 
 					char *str = (char *)cur_root->xmlChildrenNode->content;
 
@@ -232,47 +210,6 @@ parseMessage(data, md)
 			}
 		}
 	}
-	/* printf("%s\n", data); */
-
-	/* int maxheadersize = 400; */
-	/* int headersize = 0; */
-
-	/* char message[1000]; */
-	/* char *mp = message; */
-	/* md->chatroom = NULL; */
-	/* md->initchatroom = NULL; */
-
-	/* md->roomid = NULL; */
-
-	/* md->lldate = 0; */
-	/* md->addfriend.items = NULL; */
-
-	/* for(;headersize < maxheadersize; headersize++){ */
-
-	/* 	data += mcb(data, "id",  md); */
-	/* 	data += mcb(data, "closing", md); */
-	/* 	data += mcb(data, "date", md); */
-	/* 	data += mcb(data, "chatroom", md); */
-	/* 	data += mcb(data, "initchatroom", md); */
-	/* 	data += mcb(data, "addroom", md); */
-	/* 	data += mcb(data, "addfriend", md); */
-
-	/* 	if(*data == '\n' && *(data+1) == '\n'){ */
-	/* 		break; */
-	/* 	} */
-
-	/* 	data++; */
-	/* } */
-
-
-	/* for(data += 2 ;*data != '\n'; data++){ */
-	/* 	*mp++ = *data; */
-	/* } */
-
-
-	/* *mp = 0; */
-
-	/* md->message = strdup(message); */
 }
 
 int 

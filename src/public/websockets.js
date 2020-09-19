@@ -74,7 +74,9 @@ wsid = Math.floor(Math.random() * 100);
 initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
 
 var elUser = xmlDoc.addChild("user", null, null);
-elUser.addChild("id", wsid, null);
+// elUser.addChild("id", wsid, null);
+elUser.setAttribute("closing", "false");
+elUser.setAttribute("id", wsid);
 
 function getxmlDocStr(doc){
 	// return xmlHead+xmlDoc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
@@ -590,7 +592,8 @@ window.addEventListener('beforeunload', (e) =>{
 	// ws.send('id: '+wsid+'\nclosing: true\n\n');
 	// elUser.addChild("closing", "true", null);
 	// elUser.addChild("closing",null, null);
-	elUser.addChild("closing", "true", null);
+	// elUser.addChild("closing", "true", null);
+	elUser.setAttribute("closing", "true");
 
 	// ws.send('id: '+wsid+'\nclosing: true\n\n');
 	ws.send(getxmlDocStr(xmlDoc));
