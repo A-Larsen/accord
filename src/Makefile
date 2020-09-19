@@ -16,4 +16,8 @@ debug: main.c server/server.c parse.c server/database.c
 clean:
 
 
+# gcc -c ../mem.c ../parse.c ../sort.c ../convert.c ../server/database.c ../server/server.c ../main.c
+# gcc -lm -lsqlite3 -lpthread -lonion -lxml2 -Wall -Wextra ../mem.c ../parse.c ../sort.c ../convert.c ../server/database.c ../server/server.c ../main.c
+# gcc -lm -lsqlite3 -lpthread -lonion -lxml2 -Wall -Wextra mem.o parse.o sort.o convert.o database.o server.o main.o 
+
 .PHONY: clean

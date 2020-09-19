@@ -20,6 +20,8 @@
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
 
+/* char OPTIONS = 0; */
+/* #define AUTOLOGIN  1 << 0 */
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
 
@@ -163,6 +165,7 @@ server_init(urls)
 	server_add_dir(urls, "xmlp/");
 	server_add_dir(urls, "popups/");
 	rc = db_init();
+	ONION_INFO("OPTIONS: %d", OPTIONS);
 
 	return rc;
 }

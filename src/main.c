@@ -3,10 +3,13 @@
 #endif
 
 #include <stdio.h>
-#include "server/server.h"
 #include <signal.h>
+#include <getopt.h>
+
+#include "server/server.h"
 
 onion *o = NULL;
+char OPTIONS;
 
 static void shutdown_server(int _) {
 	ONION_INFO("ending");
@@ -15,8 +18,24 @@ static void shutdown_server(int _) {
 }
 
 int 
-main()
+main(int argc, char **argv)
 {
+	int ch;
+
+	bool badOption = false;
+	while((ch = getopt(argc, argv, "a")) != -1){
+
+		switch(ch){
+			case 'a':
+				OPTIONS |= AUTOLOGIN;
+				break;
+
+		}
+	}
+
+	if(badOption)
+		return -1;
+
 	signal(SIGINT, shutdown_server);
 	signal(SIGTERM, shutdown_server);
 
