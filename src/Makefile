@@ -1,5 +1,5 @@
 cfiles = mem.c parse.c sort.c convert.c server/database.c server/server.c main.c
-CFLAGS = -lm -lsqlite3 -lpthread -lonion -Wall -Wextra 
+CFLAGS = -lm -lsqlite3 -lpthread -lonion -lxml2 -Wall -Wextra 
 buildpath = build
 
 build: main.c server/server.c parse.c sort.c

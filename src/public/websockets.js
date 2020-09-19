@@ -31,6 +31,7 @@ function validString(str){
  //`
 }
 
+let xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 let xmlDoc= 
 	document.implementation.createDocument(null, "root")
 	.getElementsByTagName("root")[0];
@@ -65,15 +66,30 @@ wsid = Math.floor(Math.random() * 100);
 
 initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
 
-var elUser = xmlDoc.addChild("user", null, null);
+var elRoot = xmlDoc.addChild("root", null, null);
+// let ns = "http://www.w3.org/1999/xhtml";
+// elRoot.removeAttributeNS(ns, "xmlns");
+// var elRoot = elRoot.removeAttribute("xmlns");
+// var elUser = xmlDoc.addChild("user", null, null);
+var elUser = elRoot.addChild("user", null, null);
 elUser.addChild("id", wsid, {type: "int"});
 elUser.addChild("name", null, {type: "string"});
 elUser.addChild("closing", "false", {type: "bool"});
 
 // console.log(xmlDoc.root);
-console.log(xmlDoc);
-console.log(xmlDoc.children);
-console.log(elUser.children);
+// console.log(xmlDoc.innerHTML);
+// console.log(xmlDoc.children);
+// console.log(elUser.children);
+// console.log(xmlHead+xmlDoc.innerHTML.replace(/xmlms=""/));
+// xmlRootStr = xmlDoc.innerHTML.replace(/ xmlns=".*"/g, "");
+
+function getxmlDocStr(){
+	return xmlHead+xmlDoc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
+	// xmlDoc.removeAttribute("xmlns");
+	// return xmlHead+xmlDoc.innerHTML;
+
+}
+console.log(getxmlDocStr());
 
 let userdata = null;
 
@@ -91,8 +107,12 @@ ws.onopen = function(){
 	// ws.send(header);
 
 
-	ws.send(initheader);
+	// console.log(xmlDoc.innerHTML);
+	// ws.send(xmlDoc.innerHTML);
+	ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<status>connected</status>");
+	// ws.send(initheader);
 	// we.send("xml: ")
+	// ws.send(xmlDoc.innerText);
 }
 
 
@@ -168,7 +188,9 @@ ws.onmessage = function(ev){
 						}
 					}
 
-					ws.send("initchatroom: "+chatroom+"\n");
+					// ws.send("initchatroom: "+chatroom+"\n");
+					ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
+							"<init_room>"+chatroom+"</init_room>");
 				};
 			}
 
@@ -395,26 +417,55 @@ function sendMessage(element){
 	let date = new Date();
 	let timestamp = Math.floor(date.getTime()/1000.0);
 	let header = initheader;
+	var elMessage = elRoot.addChild("MI", null, null);
+
+
+	// elMessage.addChild("id", wsid, {type: "int"});
+	// elMessage.addChild("name", null, {type: "string"});
+	// elMessage.addChild("closing", "false", {type: "bool"});
 
 	if(chatroom){
 		header += "chatroom: "+chatroom+"\n";
+		elMessage.addChild("chatroom", chatroom, {type: "string"});
 	}
 
 	header += "date: "+timestamp+"\n\n";
+		elMessage.addChild("date", timestamp, {type: "int"});
 	let message = parseMesage(element.value);
+	elMessage.addChild("message", message, {type: "string"});
+	console.log(getxmlDocStr());
+	ws.send(getxmlDocStr());
 	let maxchars = 150;
 	let con = Math.floor(message.length/maxchars)+1;	
 
-	if(!isImage){
-		while(con--){
-			ws.send(header+message.substring(0, maxchars));
-			message = message.substring(maxchars);
-		}
-		isImage = false;
+	// console.log(xmlDoc.innerHTML);
 
-	}else{
-		ws.send(header+message);
-	}
+	//if(!isImage){
+	//	// elMessage.addChild("message", message, {type: "string"});
+	//	// console.log(xmlHead+xmlDoc.innerHTML);
+	//	// console.log(xmlHead+xmlDoc.innerHTML);
+	//	// console.log(getxmlDocStr());
+	//	ws.send(getxmlDocStr());
+	//	// ws.send(xmlHead+xmlDoc.innerHTML);
+	//	// while(con--){
+	//	// 	// ws.send(header+message.substring(0, maxchars));
+	//	// 	elMessage.addChild("message", message.substring(0, maxchars), {type: "string"});
+	//	// 	var xml = elMessage.innerHTML.replace(/<([a-zA-Z0-9 ]+)(?:xml)ns=\".*\"(.*)>/g, "<$1$2>");
+
+	//	// 	// console.log(elMessage.innerHTML);
+	//	// 	// console.log(elMessage.innerText);
+	//	// 	ws.send(xmlHead+xmlDoc.innerHTML);
+	//	// 	message = message.substring(maxchars);
+	//	// }
+	//	isImage = false;
+
+	//}else{
+	//	// ws.send(header+message);
+	//	//
+	//	elMessage.addChild("message", message, {type: "string"});
+	//	console.log("message");
+	//	console.log(xmlDoc.innerHTML);
+	//}
 
 	// el_msg.value = "";
 	// el_msg.select();

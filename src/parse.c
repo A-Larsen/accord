@@ -1,4 +1,31 @@
 #include "parse.h"
+#include <libxml/parser.h>
+
+xmlDoc *
+parseDoc(char *str){
+	xmlDoc *doc;
+	doc = xmlParseDoc((const xmlChar *)str);
+
+	if(doc == NULL){
+		fprintf(stderr, "Document not parsed succesfully. \n");
+		return NULL;
+	}
+
+	return doc;
+}
+
+xmlNode *
+getNode(xmlNode *start, xmlChar *nodename){
+	xmlNode *node;
+
+	for(node = start->children; node; node = node->next){
+			if(!xmlStrcmp(node->name, nodename)){
+				return node;
+			}
+	}
+
+	return NULL;
+}
 
 char getRandchar(){
 	return (char)floor((float)rand() / RAND_MAX * 26) + 'a';
@@ -114,13 +141,8 @@ parseMessage(data, md)
   char *data;
   MessageData *md;
 {
-	printf("%s\n", data);
+	printf("xml: %s\n", data);
 
-	int maxheadersize = 400;
-	int headersize = 0;
-
-	char message[1000];
-	char *mp = message;
 	md->chatroom = NULL;
 	md->initchatroom = NULL;
 
@@ -129,32 +151,66 @@ parseMessage(data, md)
 	md->lldate = 0;
 	md->addfriend.items = NULL;
 
-	for(;headersize < maxheadersize; headersize++){
+	xmlDocPtr doc = parseDoc(data);
 
-		data += mcb(data, "id",  md);
-		data += mcb(data, "closing", md);
-		data += mcb(data, "date", md);
-		data += mcb(data, "chatroom", md);
-		data += mcb(data, "initchatroom", md);
-		data += mcb(data, "addroom", md);
-		data += mcb(data, "addfriend", md);
+	xmlNode *node = xmlDocGetRootElement(doc);
 
-		if(*data == '\n' && *(data+1) == '\n'){
-			break;
+	if(node){
+		if(!strcmp((const char *)node->name, "init_room")){
+			char *str = (char *)node->xmlChildrenNode->content;
+			md->initchatroom = str;
+		}
+		else if(!strcmp((const char *)node->name, "init_room")){
+			char *str = (char *)node->xmlChildrenNode->content;
+			md->initchatroom = str;
+		}
+		else if(!strcmp((const char *)node->name, "message_info")){
+			char *str = (char *)node->xmlChildrenNode->content;
+			md->initchatroom = str;
 		}
 
-		data++;
 	}
+	/* printf("%s\n", data); */
+
+	/* int maxheadersize = 400; */
+	/* int headersize = 0; */
+
+	/* char message[1000]; */
+	/* char *mp = message; */
+	/* md->chatroom = NULL; */
+	/* md->initchatroom = NULL; */
+
+	/* md->roomid = NULL; */
+
+	/* md->lldate = 0; */
+	/* md->addfriend.items = NULL; */
+
+	/* for(;headersize < maxheadersize; headersize++){ */
+
+	/* 	data += mcb(data, "id",  md); */
+	/* 	data += mcb(data, "closing", md); */
+	/* 	data += mcb(data, "date", md); */
+	/* 	data += mcb(data, "chatroom", md); */
+	/* 	data += mcb(data, "initchatroom", md); */
+	/* 	data += mcb(data, "addroom", md); */
+	/* 	data += mcb(data, "addfriend", md); */
+
+	/* 	if(*data == '\n' && *(data+1) == '\n'){ */
+	/* 		break; */
+	/* 	} */
+
+	/* 	data++; */
+	/* } */
 
 
-	for(data += 2 ;*data != '\n'; data++){
-		*mp++ = *data;
-	}
+	/* for(data += 2 ;*data != '\n'; data++){ */
+	/* 	*mp++ = *data; */
+	/* } */
 
 
-	*mp = 0;
+	/* *mp = 0; */
 
-	md->message = strdup(message);
+	/* md->message = strdup(message); */
 }
 
 int 

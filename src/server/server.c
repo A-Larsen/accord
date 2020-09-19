@@ -375,7 +375,8 @@ server_websocket_chat(data, ws, data_ready_len)
 		return OCS_CLOSE_CONNECTION;
 	}
 
-	char tmp[256];
+	/* char tmp[256]; */
+	char tmp[500];
 	if ((long unsigned int)data_ready_len > sizeof(tmp))
 		data_ready_len = sizeof(tmp) - 1;
 
