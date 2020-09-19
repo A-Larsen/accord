@@ -11,22 +11,20 @@
 #include <stdbool.h>
 #include <sqlite3.h>
 
-/* #include "../options.h" */
 #include "../parse.h"
 #include "../sort.h"
 #include "../mem.h"
+#include "../options.h"
 #include "database.h"
 
 #define MAX_FILESIZE 0xffff
 #define MAXUSERS 4
 
-/* char * FLAGS; */
 
 typedef struct _Data{
 	char *name;
 	char *data;
 	long int length;
-	/* FILE *fp; */
 }Data;
 
 
@@ -44,10 +42,6 @@ typedef struct _User{
 	ConnectedUsers cu;
 } User;
 
-
-// extern means declare this latter
-extern char OPTIONS;
-#define AUTOLOGIN  1 << 0
 
 void server_free();
 

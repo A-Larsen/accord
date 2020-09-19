@@ -165,7 +165,7 @@ server_init(urls)
 	server_add_dir(urls, "xmlp/");
 	server_add_dir(urls, "popups/");
 	rc = db_init();
-	ONION_INFO("OPTIONS: %d", OPTIONS);
+	/* ONION_INFO("OPTIONS: %d", OPTIONS == AUTOLOGIN); */
 
 	return rc;
 }
@@ -458,12 +458,13 @@ server_connection_chat(data, req, res)
   onion_request *req;
   onion_response *res;
 {
-// autologin
-#if 0
-	Chatrooms cr;
-	db_find_user("joe", "2322", &cr);
-	FOUNDUSER = user_create("joe", cr);
-#endif
+
+	if(OPTIONS & AUTOLOGIN){
+		Chatrooms cr;
+		db_find_user("joe", "2322", &cr);
+		FOUNDUSER = user_create("joe", cr);
+	}
+
 
 	if(usercount >= 0  && USERS[usercount]){
 
