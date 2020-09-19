@@ -34,12 +34,12 @@ function validString(str){
 let xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
 function createXML(name){
-	let xmlDoc= 
+	let doc= 
 		document.implementation.createDocument(null, name)
 		.getElementsByTagName(name)[0];
-	xmlDoc.children = {}
+	doc.children = {}
 
-	xmlDoc.addChild = function( name, text, attrObj){
+	doc.addChild = function( name, text, attrObj){
 		let child = document.createElement(name);
 
 		if(text !== null)
@@ -58,7 +58,7 @@ function createXML(name){
 		return child;
 	}
 
-	return xmlDoc;
+	return doc;
 
 }
 
@@ -114,13 +114,23 @@ elUser.addChild("id", wsid, null);
 // console.log(xmlHead+xmlDoc.innerHTML.replace(/xmlms=""/));
 // xmlRootStr = xmlDoc.innerHTML.replace(/ xmlns=".*"/g, "");
 
-function getxmlDocStr(){
-	return xmlHead+xmlDoc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
+function getxmlDocStr(doc){
+	// return xmlHead+xmlDoc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
+	let docstr = "";
+	
+	if(doc.hasAttribute("xmlns")){
+		docstr = doc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
+	}else{
+
+		docstr = doc.innerHTML;
+	}
+	// return xmlHead+doc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
+	return xmlHead+docstr;
 	// xmlDoc.removeAttribute("xmlns");
 	// return xmlHead+xmlDoc.innerHTML;
 
 }
-console.log(getxmlDocStr());
+console.log(getxmlDocStr(xmlDoc));
 
 let userdata = null;
 
@@ -141,7 +151,7 @@ ws.onopen = function(){
 	// console.log(xmlDoc.innerHTML);
 	// ws.send(xmlDoc.innerHTML);
 	// ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<status>connected</status>");
-	ws.send(getxmlDocStr());
+	ws.send(getxmlDocStr(xmlDoc));
 	// ws.send(initheader);
 	// we.send("xml: ")
 	// ws.send(xmlDoc.innerText);
@@ -301,12 +311,21 @@ el_addfriend.onclick = function(){
 
 popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 	name = popup_addfriend.getElementsByTagName('input')[0].value;
+	// console.log("hey!");
 
 	if(currentChatroomid && name != ""){
 		// console.log(currentChatroomid);
 		// ws.send('addfriend: '+name+"\n"+'friendid: '+currentChatroomid+'\nroomname: '+currentChatroomname+"\n\n");
 		// ws.send('addfriend: '+name+";"+currentChatroomid+";"+currentChatroomname+";\n\n");
-		ws.send(xmlHead+'<addfriend>'+name+";"+currentChatroomid+";"+currentChatroomname+";</addfriend>");
+		let doc = createXML("addfriend");
+		doc.setAttribute("name", name);
+		doc.setAttribute("roomid",currentChatroomid);
+		doc.setAttribute("roomname", currentChatroomname);
+		// console.log(doc.outerHTML);
+		// console.log(getxmlDocStr(doc));
+		console.log(xmlHead+doc.outerHTML);
+		ws.send(xmlHead+doc.outerHTML);
+		// ws.send(xmlHead+'<addfriend>'+name+";"+currentChatroomid+";"+currentChatroomname+";</addfriend>");
 	}
 
 	document.body.removeChild(popup_addfriend);
@@ -467,8 +486,8 @@ function sendMessage(element){
 		elMessage.addChild("date", timestamp, null);
 	let message = parseMesage(element.value);
 	elMessage.addChild("message", message, null);
-	console.log(getxmlDocStr());
-	ws.send(getxmlDocStr());
+	console.log(getxmlDocStr(xmlDoc));
+	ws.send(getxmlDocStr(xmlDoc));
 	let maxchars = 150;
 	let con = Math.floor(message.length/maxchars)+1;	
 
@@ -652,7 +671,7 @@ window.addEventListener('beforeunload', (e) =>{
 	elUser.addChild("closing", "true", null);
 
 	// ws.send('id: '+wsid+'\nclosing: true\n\n');
-	ws.send(getxmlDocStr());
+	ws.send(getxmlDocStr(xmlDoc));
 	ws.close();
 });
 

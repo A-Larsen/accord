@@ -142,6 +142,7 @@ parseMessage(data, md)
   MessageData *md;
 {
 
+	printf("%s\n", data);
 	md->chatroom = NULL;
 	md->initchatroom = NULL;
 
@@ -173,8 +174,9 @@ parseMessage(data, md)
 			md->initchatroom = str;
 		}
 		else if(!strcmp((const char *)node->name, "addfriend")){
-			char *str = (char *)node->xmlChildrenNode->content;
-			parseArrayList(str, &md->addfriend);
+			printf("found addfriend\n");
+			/* char *str = (char *)node->xmlChildrenNode->content; */
+			/* parseArrayList(str, &md->addfriend); */
 		}
 		else if(!strcmp((const char *)node->name, "root")){
 			xmlNode *cur_root;
