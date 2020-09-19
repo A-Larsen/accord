@@ -29,14 +29,17 @@ static User **USERS;
 static int VIEWSN          = 0;
 
 static int PUBLICN         = 0;
+
 static int XMLN            = 0;
 
+static int POPUPSN         = 0;
 // zero indexed count
 static int usercount       = -1;
 
 static Data VIEWS         [10];
 static Data PUBLIC        [10];
 static Data XML           [10];
+static Data POPUPS        [10];
 
 char *
 server_get_view(name)
@@ -100,6 +103,11 @@ server_add_dir(urls, dir)
 				server_add_static_file(urls, "xmlp/", XML[n].name);
 				XMLN++;
 			}
+			else if(!strcmp(dir, "popups/")){
+				memcpy(&POPUPS[n], &data, sizeof(data));
+				server_add_static_file(urls, "popups/", POPUPS[n].name);
+				POPUPSN++;
+			}
 
 			n++;
 			free(rootdir);
@@ -153,6 +161,7 @@ server_init(urls)
 	server_add_dir(NULL, "views/");
 	server_add_dir(urls, "public/");
 	server_add_dir(urls, "xmlp/");
+	server_add_dir(urls, "popups/");
 	rc = db_init();
 
 	return rc;
@@ -446,9 +455,12 @@ server_connection_chat(data, req, res)
   onion_request *req;
   onion_response *res;
 {
-	/* Chatrooms cr; */
-	/* db_find_user("joe", "2322", &cr); */
-	/* FOUNDUSER = user_create("joe", cr); */
+// autologin
+#if 1
+	Chatrooms cr;
+	db_find_user("joe", "2322", &cr);
+	FOUNDUSER = user_create("joe", cr);
+#endif
 
 	if(usercount >= 0  && USERS[usercount]){
 

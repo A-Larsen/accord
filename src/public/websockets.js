@@ -1,5 +1,7 @@
 // it seems that javascript strings end with the \n character
 // but I add it for safe mesure
+
+
 let el_msg = document.getElementById('msg');
 let el_chatTitle = document.getElementById('title');
 let el_chat = document.getElementById('chat');
@@ -15,6 +17,8 @@ let el_msgbox = document.getElementById('msgbox');
 let el_mobile_navhead = document.getElementById('mobile-navhead');
 let el_mobile_navIcon = document.getElementById('mobile-nav-icon');
 let el_mobile_nav = document.getElementById('mobile-nav');
+// let el_popup_addroom = document.getElementById("popup_addroom");
+// let el_popup_addroom_contents = document.getElementById("popup_addroom").contentWindow.document;
 // let el_msg = document.getElementById('msg');
 
 el_msg.focus();
@@ -242,6 +246,73 @@ ws.onmessage = function(ev){
 	el_chat.scrollTo(0, el_chat.scrollHeight);
 };
 
+const xhttp = new XMLHttpRequest();
+
+xhttp.open('GET', '/popups/addroom.html', true);
+
+xhttp.responseType = 'document';
+
+xhttp.onload = function(){
+	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
+		console.log(xhttp.response);
+		let doc = xhttp.response.getElementById("popupform");
+
+		let buttons = doc.getElementsByTagName("button");
+
+		buttons[0].onclick = function(){
+			let addroom_name = doc.getElementsByTagName('input')[0].value;
+			// console.log(addroom_name);
+
+			let nameExists = false;
+
+			Chatrooms.forEach((id, name) =>{
+				if(addroom_name == name){
+					nameExists = true;
+					return;
+				}
+
+			});
+
+			if(nameExists){
+				alert('chatroom already exists');
+			}
+
+			else if(chatroomlength >= 10){
+				alert('maximum amount of chatrooms');
+			}
+
+			else if(addroom_name.length > 30){
+				alert('maximum number of characters');
+			}
+
+			else if(addroom_name.length < 2){
+				alert('not enough of characters');
+			}
+
+			else if(!validString(addroom_name)){
+				alert('special characters not allowed');
+			}
+
+			else{
+				// ws.send('addroom: '+addroom_name);
+				ws.send(xmlHead+"<addroom>"+addroom_name+"</addroom>");
+				document.body.removeChild(popup_addroom);
+			}
+		}
+
+		buttons[1].onclick = function(){
+			document.body.removeChild(doc);
+		}
+
+		el_addroom.onclick = function(){
+			document.body.appendChild(doc);
+		}
+
+	}
+}
+
+xhttp.send(null);
+
 let popup_addroom = document.createElement('div');
 popup_addroom.setAttribute("class", "popupform");
 popup_addroom.innerHTML = 
@@ -266,7 +337,7 @@ popup_addfriend.innerHTML =
 "<button>add friend</button>&nbsp;<button>cancel</button><br>";
 popup_addfriend.style.position = "absolute";
 popup_addfriend.style.border = "solid";
-popup_addfriend.style.borderRadius = "5px";
+popup_addfriend.style.borderRadius = "4px";
 popup_addfriend.style.padding = "5px";
 popup_addfriend.style.bottom = "50%"
 popup_addfriend.style.left = "45%"
@@ -279,6 +350,7 @@ el_addfriend.onclick = function(){
 }
 
 popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
+// el_popup_addroom.getElementsByTagName('button')[0].onclick = function(){
 	name = popup_addfriend.getElementsByTagName('input')[0].value;
 
 	if(currentChatroomid && name != ""){
@@ -292,12 +364,17 @@ popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 	document.body.removeChild(popup_addfriend);
 }
 
+// console.log(el_popup_addroom.contentDocument.getElementsByTagName("button"));
 popup_addfriend.getElementsByTagName('button')[1].onclick = function(){
-	document.body.removeChild(popup_addfriend);
+// el_popup_addroom.contentDocument.getElementsByTagName('button')[1].onclick = function(){
+// el_popup_addroom.contentDocument.getElementsByTagName("button")[1].onclick = function(){
+// el_popup_addroom.contentWindow.document.getElementsByTagName("button")[1].onclick = function(){
+	// document.body.removeChild(popup_addfriend);
 }
 
 el_addroom.onclick = function(){
-	document.body.appendChild(popup_addroom);
+	// document.body.appendChild(popup_addroom);
+	// el_popup_addroom.style.visibility = "visable";
 }
 
 let addroom_name = null;

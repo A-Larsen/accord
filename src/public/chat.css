@@ -231,22 +231,69 @@ h1 span {
 /* #addroomform span, #addfriendform span { */
 /* 	color: #979dab; */
 /* } */
-.popupform button {
-	background-color: #232629;
-	/* float: right; */
+
+/* .popupform button { */
+/* 	background-color: #232629; */
+/* 	/1* float: right; *1/ */
+/* } */
+
+/* .popupform input { */
+/* 	background-color: #232629; */
+/* } */
+
+/* .popupform textarea { */
+/* 	background-color: #232629; */
+/* } */
+
+/* .popupform span { */
+/* 	color: #979dab; */
+/* } */
+/* #popup_addroom { */
+/* 	/1* position: absolute; *1/ */ 
+/* 	position: absolute; */ 
+/* 	top: 100px; */
+/* 	right: 100px; */
+/* 	width: 100px; */
+/* 	height: 100px; */
+/* } */
+/* iframe { */
+/* #popup_addroom { */
+/* 	position: absolute; */ 
+/* 	margin-top: 10%; */
+/* 	margin-left: 33%; */
+/* 	width: 400px; */
+/* 	height: 140px; */
+/* 	color: blue; */
+	
+/* 	box-shadow: 5px 10px #232629; */
+/* 	/1* display: none; *1/ */
+
+/* } */
+/* #popupform { */
+/* 	position: absolute; */
+/* 	/1* position: relative; *1/ */
+/* 	/1* margin-bottom: 500%; *1/ */
+/* 	/1* margin-left: 33%; *1/ */
+/* 	width: 400px; */
+/* 	height: 140px; */
+	
+/* 	box-shadow: 5px 10px #232629; */
+/* } */
+
+#popupform {
+	position: absolute;
+	/* position: relative; */
+	/* margin-bottom: 500%; */
+	/* margin-left: 33%; */
+	bottom: 50%;
+	right: 33%;
+	width: 400px;
+	height: 140px;
+	z-index: 1;
+
+	box-shadow: 5px 10px #232629;
 }
 
-.popupform input {
-	background-color: #232629;
-}
-
-.popupform textarea {
-	background-color: #232629;
-}
-
-.popupform span {
-	color: #979dab;
-}
 
 #roomicon {
 	background-color: grey;
