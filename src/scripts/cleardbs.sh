@@ -1,7 +1,7 @@
 #!/bin/sh
 
-sqlite3 ../server/users.db "DELETE FROM users;" 
+sqlite3 databases/users.db "DELETE FROM users;" 
 
-if [ -f "../server/chatrooms.db" ]; then
-	doas rm -r ../server/chatrooms.db 
+if [ -f "databases/chatrooms.db" ]; then
+	doas rm -r databases/chatrooms.db 
 fi

@@ -427,7 +427,7 @@ server_websocket_chat(data, ws, data_ready_len)
 			server_load_chatroom(user, md);
 		}
 
-		if(md.chatroom){
+		else if(md.chatroom){
 			ONION_INFO("sending message?");
 			server_send_message(user, md);
 		}
@@ -445,9 +445,9 @@ server_connection_chat(data, req, res)
   onion_request *req;
   onion_response *res;
 {
-	Chatrooms cr;
-	db_find_user("joe", "2322", &cr);
-	FOUNDUSER = user_create("joe", cr);
+	/* Chatrooms cr; */
+	/* db_find_user("joe", "2322", &cr); */
+	/* FOUNDUSER = user_create("joe", cr); */
 
 	if(usercount >= 0  && USERS[usercount]){
 

@@ -32,30 +32,61 @@ function validString(str){
 }
 
 let xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-let xmlDoc= 
-	document.implementation.createDocument(null, "root")
-	.getElementsByTagName("root")[0];
 
-xmlDoc.children = {}
+function createXML(name){
+	let xmlDoc= 
+		document.implementation.createDocument(null, name)
+		.getElementsByTagName(name)[0];
+	xmlDoc.children = {}
 
-xmlDoc.addChild = function( name, text, attrObj){
-	let child = document.createElement(name);
+	xmlDoc.addChild = function( name, text, attrObj){
+		let child = document.createElement(name);
 
-	if(text !== null)
-		child.innerText = text;
+		if(text !== null)
+			child.innerText = text;
 
 
-	if(attrObj !== null){
-		Object.entries(attrObj).forEach(([key, value]) => {
-			child.setAttribute(key, value);
-		})
+		if(attrObj !== null){
+			Object.entries(attrObj).forEach(([key, value]) => {
+				child.setAttribute(key, value);
+			})
+		}
+
+		child.addChild = this.addChild;
+		this.children[name] = child
+		this.appendChild(child);
+		return child;
 	}
 
-	child.addChild = this.addChild;
-	this.children[name] = child
-	this.appendChild(child);
-	return child;
+	return xmlDoc;
+
 }
+
+// let xmlDoc= 
+// 	document.implementation.createDocument(null, "root")
+// 	.getElementsByTagName("root")[0];
+
+// xmlDoc.children = {}
+
+// xmlDoc.addChild = function( name, text, attrObj){
+// 	let child = document.createElement(name);
+
+// 	if(text !== null)
+// 		child.innerText = text;
+
+
+// 	if(attrObj !== null){
+// 		Object.entries(attrObj).forEach(([key, value]) => {
+// 			child.setAttribute(key, value);
+// 		})
+// 	}
+
+// 	child.addChild = this.addChild;
+// 	this.children[name] = child
+// 	this.appendChild(child);
+// 	return child;
+// }
+let xmlDoc = createXML("root");
 
 let initheader
 
@@ -72,7 +103,7 @@ var elRoot = xmlDoc.addChild("root", null, null);
 // var elRoot = elRoot.removeAttribute("xmlns");
 // var elUser = xmlDoc.addChild("user", null, null);
 var elUser = elRoot.addChild("user", null, null);
-elUser.addChild("id", wsid, {type: "int"});
+elUser.addChild("id", wsid, null);
 // elUser.addChild("name", null, {type: "string"});
 // elUser.addChild("closing", "false", {type: "bool"});
 
@@ -274,7 +305,8 @@ popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 	if(currentChatroomid && name != ""){
 		// console.log(currentChatroomid);
 		// ws.send('addfriend: '+name+"\n"+'friendid: '+currentChatroomid+'\nroomname: '+currentChatroomname+"\n\n");
-		ws.send('addfriend: '+name+";"+currentChatroomid+";"+currentChatroomname+";\n\n");
+		// ws.send('addfriend: '+name+";"+currentChatroomid+";"+currentChatroomname+";\n\n");
+		ws.send(xmlHead+'<addfriend>'+name+";"+currentChatroomid+";"+currentChatroomname+";</addfriend>");
 	}
 
 	document.body.removeChild(popup_addfriend);
@@ -325,7 +357,8 @@ popup_addroom.getElementsByTagName('button')[0].onclick = function(){
 	}
 
 	else{
-		ws.send('addroom: '+addroom_name);
+		// ws.send('addroom: '+addroom_name);
+		ws.send(xmlHead+"<addroom>"+addroom_name+"</addroom>");
 		document.body.removeChild(popup_addroom);
 	}
 }
@@ -427,13 +460,13 @@ function sendMessage(element){
 
 	if(chatroom){
 		header += "chatroom: "+chatroom+"\n";
-		elMessage.addChild("chatroom", chatroom, {type: "string"});
+		elMessage.addChild("chatroom", chatroom, null);
 	}
 
 	header += "date: "+timestamp+"\n\n";
-		elMessage.addChild("date", timestamp, {type: "int"});
+		elMessage.addChild("date", timestamp, null);
 	let message = parseMesage(element.value);
-	elMessage.addChild("message", message, {type: "string"});
+	elMessage.addChild("message", message, null);
 	console.log(getxmlDocStr());
 	ws.send(getxmlDocStr());
 	let maxchars = 150;
@@ -615,7 +648,11 @@ el_mobile_navIcon.onclick = () => {
 }
 
 window.addEventListener('beforeunload', (e) =>{
-	ws.send('id: '+wsid+'\nclosing: true\n\n');
+	// ws.send('id: '+wsid+'\nclosing: true\n\n');
+	elUser.addChild("closing", "true", null);
+
+	// ws.send('id: '+wsid+'\nclosing: true\n\n');
+	ws.send(getxmlDocStr());
 	ws.close();
 });
 

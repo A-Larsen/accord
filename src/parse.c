@@ -141,7 +141,6 @@ parseMessage(data, md)
   char *data;
   MessageData *md;
 {
-	/* printf("xml: %s\n", data); */
 
 	md->chatroom = NULL;
 	md->initchatroom = NULL;
@@ -154,15 +153,28 @@ parseMessage(data, md)
 	xmlDocPtr doc = parseDoc(data);
 
 	xmlNode *node = xmlDocGetRootElement(doc);
+	md->closing = false;
 
 	if(node){
 		if(!strcmp((const char *)node->name, "init_room")){
 			char *str = (char *)node->xmlChildrenNode->content;
 			md->initchatroom = str;
 		}
+		else if(!strcmp((const char *)node->name, "addroom")){
+			char *str = (char *)node->xmlChildrenNode->content;
+			md->initchatroom = str;
+
+			md->roomid = malloc(sizeof(char)*21); 
+			getRandStr(md->roomid);
+			md->roomalias = strdup(str);
+		}
 		else if(!strcmp((const char *)node->name, "init_room")){
 			char *str = (char *)node->xmlChildrenNode->content;
 			md->initchatroom = str;
+		}
+		else if(!strcmp((const char *)node->name, "addfriend")){
+			char *str = (char *)node->xmlChildrenNode->content;
+			parseArrayList(str, &md->addfriend);
 		}
 		else if(!strcmp((const char *)node->name, "root")){
 			xmlNode *cur_root;
@@ -198,6 +210,11 @@ parseMessage(data, md)
 							char *str = (char *)cur_mi->xmlChildrenNode->content;
 							printf("message: %s\n", str);
 							md->message = strdup(str);
+						}
+						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"closing")){ 
+							char *str = (char *)cur_mi->xmlChildrenNode->content;
+							md->closing = !strcmp(str, "true");
+							printf("closing: %d\n", md->closing);
 						}
 					}
 				}
