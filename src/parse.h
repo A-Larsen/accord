@@ -46,7 +46,6 @@ typedef struct _MessageData{
 	char *initchatroom;
 	char *roomid;
 	char *roomalias;
-	/* Darray addfriend; */
 	Addfriend addfriend;
 
 } MessageData;
