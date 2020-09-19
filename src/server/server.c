@@ -95,9 +95,9 @@ server_add_dir(urls, dir)
 				server_add_static_file(urls, "public/", PUBLIC[n].name);
 				PUBLICN++;
 			}
-			else if(!strcmp(dir, "xml/")){
+			else if(!strcmp(dir, "xmlp/")){
 				memcpy(&XML[n], &data, sizeof(data));
-				server_add_static_file(urls, "xml/", XML[n].name);
+				server_add_static_file(urls, "xmlp/", XML[n].name);
 				XMLN++;
 			}
 
@@ -152,7 +152,7 @@ server_init(urls)
 	int rc;
 	server_add_dir(NULL, "views/");
 	server_add_dir(urls, "public/");
-	server_add_dir(urls, "xml/");
+	server_add_dir(urls, "xmlp/");
 	rc = db_init();
 
 	return rc;

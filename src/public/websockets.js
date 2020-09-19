@@ -606,19 +606,19 @@ function messageKeydown(e){
 el_msg.addEventListener('keydown', messageKeydown, false);
 
 
-const xhttp = new XMLHttpRequest();
+// const xhttp = new XMLHttpRequest();
 
-xhttp.open('GET', '/xml/test.xml', true);
+// xhttp.open('GET', '/xmlp/test.xml', true);
 
-xhttp.responseType = 'text';
+// xhttp.responseType = 'text';
 
-xhttp.onload = function(){
-	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
-		let parser = new DOMParser();
-		let xmlDoc = parser.parseFromString(xhttp.response, "text/xml");
-		console.log(xmlDoc);
-	}
-}
-xhttp.send(null);
+// xhttp.onload = function(){
+// 	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
+// 		let parser = new DOMParser();
+// 		let xmlDoc = parser.parseFromString(xhttp.response, "text/xml");
+// 		console.log(xmlDoc);
+// 	}
+// }
+// xhttp.send(null);
 
 
