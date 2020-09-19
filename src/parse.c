@@ -202,31 +202,46 @@ parseMessage(data, md)
 					}
 				}
 
-				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"mi")){
-					xmlNode *cur_mi;
+				/* if(!xmlStrcmp(cur_root->name, (const xmlChar *)"mi")){ */
+				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"message")){
+					/* printf("found message!\n"); */
 
-					for(cur_mi = cur_root->children; cur_mi;cur_mi = cur_mi->next){
-						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"chatroom")){ 
-							char *str = (char *)cur_mi->xmlChildrenNode->content;
-							md->chatroom = strdup(str);
-							printf("chatroom: %s\n", md->chatroom);
-						}
-						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"date")){ 
-							char *str = (char *)cur_mi->xmlChildrenNode->content;
-							printf("date: %s\n", str);
-							md->lldate = atoll(str);
-						}
-						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"message")){ 
-							char *str = (char *)cur_mi->xmlChildrenNode->content;
-							printf("message: %s\n", str);
-							md->message = strdup(str);
-						}
-						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"closing")){ 
-							char *str = (char *)cur_mi->xmlChildrenNode->content;
-							md->closing = !strcmp(str, "true");
-							printf("closing: %d\n", md->closing);
-						}
+					char *str = (char *)cur_root->xmlChildrenNode->content;
+
+					if(str){
+						xmlAttr *attr = cur_root->properties;
+						md->chatroom = strdup((char *)xmlGetProp(cur_root, attr->name));
+
+						attr = cur_root->properties->next;
+
+						md->lldate = atoll((char *)xmlGetProp(cur_root, attr->name));
+
+						printf("message: %s\n", str);
+						md->message = strdup(str);
 					}
+
+					/* for(cur_mi = cur_root->children; cur_mi;cur_mi = cur_mi->next){ */
+					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"chatroom")){ */ 
+					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
+					/* 		md->chatroom = strdup(str); */
+					/* 		printf("chatroom: %s\n", md->chatroom); */
+					/* 	} */
+					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"date")){ */ 
+					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
+					/* 		printf("date: %s\n", str); */
+					/* 		md->lldate = atoll(str); */
+					/* 	} */
+					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"message")){ */ 
+					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
+					/* 		printf("message: %s\n", str); */
+					/* 		md->message = strdup(str); */
+					/* 	} */
+					/* 	if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"closing")){ */ 
+					/* 		char *str = (char *)cur_mi->xmlChildrenNode->content; */
+					/* 		md->closing = !strcmp(str, "true"); */
+					/* 		printf("closing: %d\n", md->closing); */
+					/* 	} */
+					/* } */
 				}
 			}
 		}

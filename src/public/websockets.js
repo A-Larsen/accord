@@ -278,23 +278,13 @@ el_addfriend.onclick = function(){
 
 popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 	name = popup_addfriend.getElementsByTagName('input')[0].value;
-	// console.log("hey!");
 
 	if(currentChatroomid && name != ""){
-		// console.log(currentChatroomid);
-		// ws.send('addfriend: '+name+"\n"+'friendid: '+currentChatroomid+'\nroomname: '+currentChatroomname+"\n\n");
-		// ws.send('addfriend: '+name+";"+currentChatroomid+";"+currentChatroomname+";\n\n");
 		let doc = createXML("addfriend");
 		doc.setAttribute("name", name);
 		doc.setAttribute("roomid",currentChatroomid);
 		doc.setAttribute("roomname", currentChatroomname);
-		// console.log(doc.outerHTML);
-		// console.log(getxmlDocStr(doc));
-		// console.log(xmlHead+doc.outerHTML);
-		// ws.send(xmlHead+doc.outerHTML);
-		// ws.send(doc.outerHTML);
 		ws.send(getxmlDocStr(doc));
-		// ws.send(xmlHead+'<addfriend>'+name+";"+currentChatroomid+";"+currentChatroomname+";</addfriend>");
 	}
 
 	document.body.removeChild(popup_addfriend);
@@ -439,62 +429,23 @@ function sendMessage(element){
 	let date = new Date();
 	let timestamp = Math.floor(date.getTime()/1000.0);
 	let header = initheader;
-	var elMessage = xmlDoc.addChild("MI", null, null);
 
-
-	// elMessage.addChild("id", wsid, {type: "int"});
-	// elMessage.addChild("name", null, {type: "string"});
-	// elMessage.addChild("closing", "false", {type: "bool"});
+	// var elMessage = xmlDoc.addChild("mi", null, null);
+	var elMessage = xmlDoc.addChild("message", null, null);
 
 	if(chatroom){
-		header += "chatroom: "+chatroom+"\n";
-		elMessage.addChild("chatroom", chatroom, null);
+		// elMessage.addChild("chatroom", chatroom, null);
+		elMessage.setAttribute("chatroom", chatroom);
 	}
 
-	header += "date: "+timestamp+"\n\n";
-		elMessage.addChild("date", timestamp, null);
+	elMessage.setAttribute("date", timestamp);
 	let message = parseMesage(element.value);
-	elMessage.addChild("message", message, null);
+	// elMessage.addChild("message", message, null);
+	// elMessage.innerHTML = message;
+	elMessage.innerText = message;
 	console.log(getxmlDocStr(xmlDoc));
 	ws.send(getxmlDocStr(xmlDoc));
-	let maxchars = 150;
-	let con = Math.floor(message.length/maxchars)+1;	
 
-	// console.log(xmlDoc.innerHTML);
-
-	//if(!isImage){
-	//	// elMessage.addChild("message", message, {type: "string"});
-	//	// console.log(xmlHead+xmlDoc.innerHTML);
-	//	// console.log(xmlHead+xmlDoc.innerHTML);
-	//	// console.log(getxmlDocStr());
-	//	ws.send(getxmlDocStr());
-	//	// ws.send(xmlHead+xmlDoc.innerHTML);
-	//	// while(con--){
-	//	// 	// ws.send(header+message.substring(0, maxchars));
-	//	// 	elMessage.addChild("message", message.substring(0, maxchars), {type: "string"});
-	//	// 	var xml = elMessage.innerHTML.replace(/<([a-zA-Z0-9 ]+)(?:xml)ns=\".*\"(.*)>/g, "<$1$2>");
-
-	//	// 	// console.log(elMessage.innerHTML);
-	//	// 	// console.log(elMessage.innerText);
-	//	// 	ws.send(xmlHead+xmlDoc.innerHTML);
-	//	// 	message = message.substring(maxchars);
-	//	// }
-	//	isImage = false;
-
-	//}else{
-	//	// ws.send(header+message);
-	//	//
-	//	elMessage.addChild("message", message, {type: "string"});
-	//	console.log("message");
-	//	console.log(xmlDoc.innerHTML);
-	//}
-
-	// el_msg.value = "";
-	// el_msg.select();
-	// el_msg.focus(); 
-	// msg_element.value = "";
-	// msg_element.select();
-	// msg_element.focus(); 
 	element.value = "";
 	element.select();
 	element.focus(); 
