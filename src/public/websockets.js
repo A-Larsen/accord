@@ -73,8 +73,8 @@ var elRoot = xmlDoc.addChild("root", null, null);
 // var elUser = xmlDoc.addChild("user", null, null);
 var elUser = elRoot.addChild("user", null, null);
 elUser.addChild("id", wsid, {type: "int"});
-elUser.addChild("name", null, {type: "string"});
-elUser.addChild("closing", "false", {type: "bool"});
+// elUser.addChild("name", null, {type: "string"});
+// elUser.addChild("closing", "false", {type: "bool"});
 
 // console.log(xmlDoc.root);
 // console.log(xmlDoc.innerHTML);

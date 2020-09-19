@@ -141,7 +141,7 @@ parseMessage(data, md)
   char *data;
   MessageData *md;
 {
-	printf("xml: %s\n", data);
+	/* printf("xml: %s\n", data); */
 
 	md->chatroom = NULL;
 	md->initchatroom = NULL;
@@ -164,11 +164,45 @@ parseMessage(data, md)
 			char *str = (char *)node->xmlChildrenNode->content;
 			md->initchatroom = str;
 		}
-		else if(!strcmp((const char *)node->name, "message_info")){
-			char *str = (char *)node->xmlChildrenNode->content;
-			md->initchatroom = str;
-		}
+		else if(!strcmp((const char *)node->name, "root")){
+			xmlNode *cur_root;
 
+			for(cur_root = node->children; cur_root; cur_root = cur_root->next){
+				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"user")){
+					xmlNode *cur_user;
+
+					for(cur_user = cur_root->children; cur_user;cur_user = cur_user->next){
+						if(!xmlStrcmp(cur_user->name, (const xmlChar *)"id")){ 
+							char *str = (char *)cur_user->xmlChildrenNode->content;
+							printf("id: %s\n", str);
+							md->id = atoi((char *)str);
+						}
+					}
+				}
+
+				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"mi")){
+					xmlNode *cur_mi;
+
+					for(cur_mi = cur_root->children; cur_mi;cur_mi = cur_mi->next){
+						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"chatroom")){ 
+							char *str = (char *)cur_mi->xmlChildrenNode->content;
+							printf("chatroom: %s\n", str);
+							md->chatroom = strdup(str);
+						}
+						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"date")){ 
+							char *str = (char *)cur_mi->xmlChildrenNode->content;
+							printf("date: %s\n", str);
+							md->lldate = atoll(str);
+						}
+						if(!xmlStrcmp(cur_mi->name, (const xmlChar *)"message")){ 
+							char *str = (char *)cur_mi->xmlChildrenNode->content;
+							printf("message: %s\n", str);
+							md->message = strdup(str);
+						}
+					}
+				}
+			}
+		}
 	}
 	/* printf("%s\n", data); */
 
