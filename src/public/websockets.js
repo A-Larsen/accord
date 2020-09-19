@@ -1,11 +1,9 @@
 // it seems that javascript strings end with the \n character
 // but I add it for safe mesure
 
-
 let el_msg = document.getElementById('msg');
 let el_chatTitle = document.getElementById('title');
 let el_chat = document.getElementById('chat');
-// let el_chatNav = document.getElementById('chat-nav');
 let el_html = document.getElementsByTagName("html")[0];
 let el_addroom = document.getElementById('addroom');
 let el_addfriend = document.getElementById('addfriend');
@@ -17,9 +15,6 @@ let el_msgbox = document.getElementById('msgbox');
 let el_mobile_navhead = document.getElementById('mobile-navhead');
 let el_mobile_navIcon = document.getElementById('mobile-nav-icon');
 let el_mobile_nav = document.getElementById('mobile-nav');
-// let el_popup_addroom = document.getElementById("popup_addroom");
-// let el_popup_addroom_contents = document.getElementById("popup_addroom").contentWindow.document;
-// let el_msg = document.getElementById('msg');
 
 el_msg.focus();
 
@@ -78,29 +73,16 @@ wsid = Math.floor(Math.random() * 100);
 initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
 
 var elUser = xmlDoc.addChild("user", null, null);
-// elUser.addChild("id", wsid, null);
 elUser.setAttribute("closing", "false");
 elUser.setAttribute("id", wsid);
 
 function getxmlDocStr(doc){
-	// return xmlHead+xmlDoc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
 	let docstr = "";
 	
-	// if(doc.hasAttribute("xmlns")){
-	// 	docstr = doc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
-	// }else{
-
-	// 	docstr = doc.innerHTML;
-	// }
 	docstr = doc.outerHTML.replace(/ xmlns="[^"]*"/g, "");
-	// return xmlHead+doc.innerHTML.replace(/ xmlns="[^"]*"/g, "");
-	// return xmlHead+docstr;
-	// return docstr;
 	
 	console.log(docstr);
 	return docstr;
-	// xmlDoc.removeAttribute("xmlns");
-	// return xmlHead+xmlDoc.innerHTML;
 
 }
 console.log(getxmlDocStr(xmlDoc));
@@ -108,26 +90,7 @@ console.log(getxmlDocStr(xmlDoc));
 let userdata = null;
 
 ws.onopen = function(){
-	// let date = new Date();
-	// let timestamp = Math.floor(date.getTime()/1000.0);
-	// let header = initheader;
-
-	// if(chatroom){
-	// 	header += "chatroom: "+chatroom+"\n";
-	// }
-
-	// header += "date: "+timestamp+"\n\n";
-
-	// ws.send(header);
-
-
-	// console.log(xmlDoc.innerHTML);
-	// ws.send(xmlDoc.innerHTML);
-	// ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<status>connected</status>");
 	ws.send(getxmlDocStr(xmlDoc));
-	// ws.send(initheader);
-	// we.send("xml: ")
-	// ws.send(xmlDoc.innerText);
 }
 
 
@@ -169,10 +132,8 @@ ws.onmessage = function(ev){
 
 				let rooms = document.getElementsByClassName('rooms');
 				for(let i = 0; i < rooms.length; i++){
-					// rooms.innerHTML += ""
 					rooms[i].innerHTML += "<p><span class='roomicon'>"+room+"</span></p>"
 				}
-				// document.getElementById('rooms').innerHTML += "<p><span class='roomicon'>"+room+"</span></p>"
 
 			}
 		});
@@ -193,49 +154,19 @@ ws.onmessage = function(ev){
 
 					el_rooms[i].style.backgroundColor = "#525959";
 					el_mobile_nav.style.display = "none";
-					// el_rooms[i].style.color = "#ffffff";
 
 					for(let j = 0; j < el_rooms.length; j++){
 						if(el_rooms[j] != el_rooms[i]){
 							el_rooms[j].style.backgroundColor = "#363a3f";
-							// el_rooms[j].style.color = "#000000";
-
 						}
 					}
 
-					// ws.send("initchatroom: "+chatroom+"\n");
 					ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
 							"<init_room>"+chatroom+"</init_room>");
 				};
 			}
 
 		}
-		// let el_rooms = document.getElementById('rooms').getElementsByTagName('p');
-
-		// for(let i = 0; i < el_rooms.length; i++){
-		// 	el_rooms[i].onclick = () => {
-		// 		document.getElementById('chat').innerHTML = "";
-		// 		currentChatroomname = el_rooms[i].getElementsByTagName('span')[0].innerText;
-
-		// 		chatroom = Chatrooms.get(el_rooms[i].getElementsByTagName('span')[0].innerText);
-
-		// 		currentChatroomid = chatroom;
-
-		// 		el_rooms[i].style.backgroundColor = "#525959";
-		// 		el_mobile_nav.style.display = "none";
-		// 		// el_rooms[i].style.color = "#ffffff";
-
-		// 		for(let j = 0; j < el_rooms.length; j++){
-		// 			if(el_rooms[j] != el_rooms[i]){
-		// 				el_rooms[j].style.backgroundColor = "#363a3f";
-		// 				// el_rooms[j].style.color = "#000000";
-
-		// 			}
-		// 		}
-
-		// 		ws.send("initchatroom: "+chatroom+"\n");
-		// 	};
-		// }
 	}
 
 	let color = "red";
@@ -269,7 +200,6 @@ xhttp1.onload = function(){
 					nameExists = true;
 					return;
 				}
-
 			});
 
 			if(nameExists){
@@ -293,7 +223,7 @@ xhttp1.onload = function(){
 			}
 
 			else{
-				ws.send(xmlHead+"<addroom>"+addroom_name+"</addroom>");
+				ws.send("<addroom>"+addroom_name+"</addroom>");
 				document.body.removeChild(doc);
 			}
 		}
@@ -351,118 +281,6 @@ xhttp2.onload = function(){
 }
 
 xhttp2.send(null);
-
-let popup_addroom = document.createElement('div');
-popup_addroom.setAttribute("class", "popupform");
-popup_addroom.innerHTML = 
-"<h1>add a room</h1><br><br>"+
-"create a name <br><input name='addroom_name'/><br><span>(cannot excced 9 chatacters)<span><br>requires login<br>"+
-"<button>add room</button>&nbsp;<button>cancel</button><br>";
-popup_addroom.style.position = "absolute";
-popup_addroom.style.border = "solid";
-popup_addroom.style.borderRadius = "5px";
-popup_addroom.style.padding = "5px";
-popup_addroom.style.bottom = "50%"
-popup_addroom.style.left = "45%"
-popup_addroom.style.boxShadow =  "5px 10px #232629";
-popup_addroom.style.zIndex = "5";
-popup_addroom.style.backgroundColor = "#474b53";
-
-let popup_addfriend = document.createElement('div');
-popup_addfriend.setAttribute("class", "popupform");
-popup_addfriend.innerHTML = 
-"<h1>add a friend</h1><br><br>"+
-"name <br><input name='friend_name'/><br><span>(cannot excced 9 chatacters)<span><br>"+
-"<button>add friend</button>&nbsp;<button>cancel</button><br>";
-popup_addfriend.style.position = "absolute";
-popup_addfriend.style.border = "solid";
-popup_addfriend.style.borderRadius = "4px";
-popup_addfriend.style.padding = "5px";
-popup_addfriend.style.bottom = "50%"
-popup_addfriend.style.left = "45%"
-popup_addfriend.style.boxShadow =  "5px 10px #232629";
-popup_addfriend.style.zIndex = "5";
-popup_addfriend.style.backgroundColor = "#474b53";
-
-// el_addfriend.onclick = function(){
-// 	document.body.appendChild(popup_addfriend);
-// }
-
-popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
-// el_popup_addroom.getElementsByTagName('button')[0].onclick = function(){
-	name = popup_addfriend.getElementsByTagName('input')[0].value;
-
-	if(currentChatroomid && name != ""){
-		let doc = createXML("addfriend");
-		doc.setAttribute("name", name);
-		doc.setAttribute("roomid",currentChatroomid);
-		doc.setAttribute("roomname", currentChatroomname);
-		ws.send(getxmlDocStr(doc));
-	}
-
-	document.body.removeChild(popup_addfriend);
-}
-
-// console.log(el_popup_addroom.contentDocument.getElementsByTagName("button"));
-popup_addfriend.getElementsByTagName('button')[1].onclick = function(){
-// el_popup_addroom.contentDocument.getElementsByTagName('button')[1].onclick = function(){
-// el_popup_addroom.contentDocument.getElementsByTagName("button")[1].onclick = function(){
-// el_popup_addroom.contentWindow.document.getElementsByTagName("button")[1].onclick = function(){
-	// document.body.removeChild(popup_addfriend);
-}
-
-el_addroom.onclick = function(){
-	// document.body.appendChild(popup_addroom);
-	// el_popup_addroom.style.visibility = "visable";
-}
-
-let addroom_name = null;
-
-popup_addroom.getElementsByTagName('button')[0].onclick = function(){
-	addroom_name = popup_addroom.getElementsByTagName('input')[0].value;
-	// console.log(addroom_name);
-
-	let nameExists = false;
-
-	Chatrooms.forEach((id, name) =>{
-		if(addroom_name == name){
-			nameExists = true;
-			return;
-		}
-
-	});
-
-	if(nameExists){
-		alert('chatroom already exists');
-	}
-
-	else if(chatroomlength >= 10){
-		alert('maximum amount of chatrooms');
-	}
-
-	else if(addroom_name.length > 30){
-		alert('maximum number of characters');
-	}
-
-	else if(addroom_name.length < 2){
-		alert('not enough of characters');
-	}
-
-	else if(!validString(addroom_name)){
-		alert('special characters not allowed');
-	}
-
-	else{
-		// ws.send('addroom: '+addroom_name);
-		ws.send(xmlHead+"<addroom>"+addroom_name+"</addroom>");
-		document.body.removeChild(popup_addroom);
-	}
-}
-
-popup_addroom.getElementsByTagName('button')[1].onclick = function(){
-	document.body.removeChild(popup_addroom);
-}
-
 
 
 let shift = false;
@@ -705,15 +523,9 @@ el_mobile_navIcon.onclick = () => {
 }
 
 window.addEventListener('beforeunload', (e) =>{
-	// ws.send('id: '+wsid+'\nclosing: true\n\n');
-	// elUser.addChild("closing", "true", null);
-	// elUser.addChild("closing",null, null);
-	// elUser.addChild("closing", "true", null);
 	elUser.setAttribute("closing", "true");
 
-	// ws.send('id: '+wsid+'\nclosing: true\n\n');
 	ws.send(getxmlDocStr(xmlDoc));
-	// elUser.removeChild(elUser.children.closing);
 	ws.close();
 });
 
