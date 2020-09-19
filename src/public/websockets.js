@@ -78,17 +78,21 @@ console.log(elUser.children);
 let userdata = null;
 
 ws.onopen = function(){
-	let date = new Date();
-	let timestamp = Math.floor(date.getTime()/1000.0);
-	let header = initheader;
+	// let date = new Date();
+	// let timestamp = Math.floor(date.getTime()/1000.0);
+	// let header = initheader;
 
-	if(chatroom){
-		header += "chatroom: "+chatroom+"\n";
-	}
+	// if(chatroom){
+	// 	header += "chatroom: "+chatroom+"\n";
+	// }
 
-	header += "date: "+timestamp+"\n\n";
+	// header += "date: "+timestamp+"\n\n";
 
-	ws.send(header);
+	// ws.send(header);
+
+
+	ws.send(initheader);
+	// we.send("xml: ")
 }
 
 
@@ -599,20 +603,22 @@ function messageKeydown(e){
 
 }
 
-// el_msg.addEventListener('keydown', messageKeydown, false);
+el_msg.addEventListener('keydown', messageKeydown, false);
 
-// // better way to acccess json objects
-// const xhttp = new XMLHttpRequest();
 
-// xhttp.open('GET', '/test.json', true);
+// better way to acccess json objects
+const xhttp = new XMLHttpRequest();
 
-// xhttp.responseType = 'json';
+// xhttp.open('GET', '/rel.xml', true);
+xhttp.open('GET', '/xml/test.xml', true);
 
-// xhttp.onload = function(){
-// 	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
-// 		console.log(xhttp.response.name)
-// 	}
-// }
-// xhttp.send(null);
+xhttp.responseType = 'document';
+
+xhttp.onload = function(){
+	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
+		console.log(xhttp.response.body)
+	}
+}
+xhttp.send(null);
 
 

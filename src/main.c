@@ -28,23 +28,30 @@ main()
 
 	onion_url_add(urls, "", server_connection_home);
 	onion_url_add(urls, "chat", server_connection_chat);
-	/* onion_url_add(urls, "signup", server_connection_chat); */
 
 	onion_url_add(urls, "login/data", server_connection_login);
 	onion_url_add(urls, "signup/data", server_connection_signup);
+	onion_url_add(urls, "sitemap.xml", server_connection_sitemap);
 
 	
 	char * loginview = strdup(server_get_view("login.html"));
 
-	if(loginview){
-		onion_url_add_static(urls, "login", loginview, HTTP_OK);
+	if(!loginview){
+		fprintf(stderr, "could not read login.html");
 	}
+
+	onion_url_add_static(urls, "login", loginview, HTTP_OK);
 
 	char * signupview = strdup(server_get_view("signup.html"));
 
-	if(signupview){
-		onion_url_add_static(urls, "signup", signupview, HTTP_OK);
+	if(!signupview){
+		fprintf(stderr, "cound not read signup.html");
 	}
+
+	onion_url_add_static(urls, "signup", signupview, HTTP_OK);
+
+	free(loginview);
+	free(signupview);
 
 	onion_listen(o);
 

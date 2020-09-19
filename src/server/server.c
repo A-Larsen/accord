@@ -29,12 +29,14 @@ static User **USERS;
 static int VIEWSN          = 0;
 
 static int PUBLICN         = 0;
+static int XMLN            = 0;
 
 // zero indexed count
 static int usercount       = -1;
 
 static Data VIEWS         [10];
 static Data PUBLIC        [10];
+static Data XML           [10];
 
 char *
 server_get_view(name)
@@ -90,8 +92,13 @@ server_add_dir(urls, dir)
 			}
 			else if(!strcmp(dir, "public/")){
 				memcpy(&PUBLIC[n], &data, sizeof(data));
-				server_add_static_file(urls, PUBLIC[n].name);
+				server_add_static_file(urls, "public/", PUBLIC[n].name);
 				PUBLICN++;
+			}
+			else if(!strcmp(dir, "xml/")){
+				memcpy(&XML[n], &data, sizeof(data));
+				server_add_static_file(urls, "xml/", XML[n].name);
+				XMLN++;
 			}
 
 			n++;
@@ -145,25 +152,29 @@ server_init(urls)
 	int rc;
 	server_add_dir(NULL, "views/");
 	server_add_dir(urls, "public/");
+	server_add_dir(urls, "xml/");
 	rc = db_init();
 
 	return rc;
 }
 
 void 
-server_add_static_file(urls, name)
+server_add_static_file(urls, route, name)
   onion_url *urls;
+  char *route;
   char *name;
 {
 	size_t len = strlen(name) + 8;
 	char file[len];
-	snprintf(file, len, "public/%s", name);
+	/* snprintf(file, len, "public/%s", name); */
+	snprintf(file, len, "%s%s", route, name);
 	FILE *fp = fopen(file, "r");
 
 	char filestr[MAX_FILESIZE];
 	parseHTML(fp, filestr);
 
-	onion_url_add_static(urls, name, filestr, HTTP_OK);
+	/* onion_url_add_static(urls, name, filestr, HTTP_OK); */
+	onion_url_add_static(urls, file, filestr, HTTP_OK);
 }
 
 
@@ -548,22 +559,33 @@ server_connection_signup(_, req, res)
 
 	}
 
+	return OCS_PROCESSED;
+}
+
+onion_connection_status 
+server_connection_sitemap(_, req, res) 
+  void *_;
+  onion_request *req;
+  onion_response *res;
+{
+
+	if (onion_request_get_flags(req) & OR_HEAD) {
+		onion_response_write_headers(res);
+		return OCS_PROCESSED;
+	}
+
+	onion_response_set_header(res, "Content-Type", "text/xml");
+
+	onion_response_write0(res, 
+		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+		"<story><test>heyy</test><one><thing type=\"string\" len=\"4\">nice</thing></one></story>");
 
 	return OCS_PROCESSED;
-
 }
 
 void 
 server_free()
 {
-	/* for(int i = 0; i < VIEWSN; i++){ */
-	/* 	fclose(VIEWS[i].fp); */
-	/* } */
-
-	/* for(int i = 0; i < PUBLICN; i++){ */
-	/* 	fclose(PUBLIC[i].fp); */
-	/* } */
-
 	free(USERS);
 	db_free();
 }

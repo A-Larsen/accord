@@ -47,7 +47,7 @@ char *server_get_view(char *name);
 
 int server_init();
 
-void server_add_static_file(onion_url *urls, char *path);
+void server_add_static_file(onion_url *urls, char *routes, char *path);
 
 onion_connection_status server_connection_chat(void *data, onion_request * req,
                                           onion_response * res);
@@ -62,4 +62,6 @@ server_connection_login(void *_, onion_request * req, onion_response * res);
 onion_connection_status 
 server_connection_signup(void *_, onion_request *req, onion_response *res);
 
+onion_connection_status 
+server_connection_sitemap(void *_, onion_request *req, onion_response *res);
 #endif
