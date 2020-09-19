@@ -149,12 +149,14 @@ parseMessage(data, md)
 	md->roomid = NULL;
 
 	md->lldate = 0;
-	md->addfriend.items = NULL;
+	/* md->addfriend.items = NULL; */
+	/* md->addfriend = NULL; */
 
 	xmlDocPtr doc = parseDoc(data);
 
 	xmlNode *node = xmlDocGetRootElement(doc);
 	md->closing = false;
+	md->addfriend.roomname = NULL;
 
 	if(node){
 		if(!strcmp((const char *)node->name, "init_room")){
@@ -176,24 +178,27 @@ parseMessage(data, md)
 		else if(!strcmp((const char *)node->name, "addfriend")){
 			xmlAttr *attr = node->properties;
 
-			md->addfriend.items = (char **)malloc(100);
+			/* md->addfriend.items = (char **)malloc(100); */
 
-			char *str0 = (char *)xmlGetProp(node, attr->name);
-			md->addfriend.items[0] = malloc(strlen(str0));
-			md->addfriend.items[0] = (char *)xmlGetProp(node, attr->name);
-
-			attr = node->properties->next;
-			char *str1 = (char *)xmlGetProp(node, attr->name);
-			md->addfriend.items[1] = malloc(strlen(str1));
-			md->addfriend.items[1] = (char *)xmlGetProp(node, attr->name);
+			/* char *str0 = (char *)xmlGetProp(node, attr->name); */
+			/* md->addfriend.items[0] = malloc(strlen(str0)); */
+			/* md->addfriend.items[0] = (char *)xmlGetProp(node, attr->name); */
+			md->addfriend.name = strdup((char *)xmlGetProp(node, attr->name));
 
 			attr = node->properties->next;
-			char *str2 = (char *)xmlGetProp(node, attr->name);
-			md->addfriend.items[2] = malloc(strlen(str2));
-			md->addfriend.items[2] = (char *)xmlGetProp(node, attr->name);
+			/* char *str1 = (char *)xmlGetProp(node, attr->name); */
+			/* md->addfriend.items[1] = malloc(strlen(str1)); */
+			/* md->addfriend.items[1] = (char *)xmlGetProp(node, attr->name); */
+			md->addfriend.roomid = strdup((char *)xmlGetProp(node, attr->name));
+
+			attr = node->properties->next;
+			/* char *str2 = (char *)xmlGetProp(node, attr->name); */
+			/* md->addfriend.items[2] = malloc(strlen(str2)); */
+			/* md->addfriend.items[2] = (char *)xmlGetProp(node, attr->name); */
 			/* printf("found addfriend\n"); */
 			/* char *str = (char *)node->xmlChildrenNode->content; */
 			/* parseArrayList(str, &md->addfriend); */
+			md->addfriend.roomname = strdup((char *)xmlGetProp(node, attr->name));
 		}
 		else if(!strcmp((const char *)node->name, "root")){
 			xmlNode *cur_root;

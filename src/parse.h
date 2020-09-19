@@ -30,6 +30,12 @@ typedef struct _Chatrooms {
 	long long int chatlen;
 }Chatrooms;
 
+typedef struct _Addfriend{
+	char *name;
+	char *roomid;
+	char *roomname;
+}Addfriend;
+
 typedef struct _MessageData{
 	char *message;
 	long long int lldate;
@@ -40,9 +46,11 @@ typedef struct _MessageData{
 	char *initchatroom;
 	char *roomid;
 	char *roomalias;
-	Darray addfriend;
+	/* Darray addfriend; */
+	Addfriend addfriend;
 
 } MessageData;
+
 
 int parseArrayList(char *list, Darray *cr);
 void parseMessage(char *data, MessageData *md);
