@@ -246,22 +246,21 @@ ws.onmessage = function(ev){
 	el_chat.scrollTo(0, el_chat.scrollHeight);
 };
 
-const xhttp = new XMLHttpRequest();
+const xhttp1 = new XMLHttpRequest();
 
-xhttp.open('GET', '/popups/addroom.html', true);
+xhttp1.open('GET', '/popups/addroom.html', true);
 
-xhttp.responseType = 'document';
+xhttp1.responseType = 'document';
 
-xhttp.onload = function(){
-	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
-		console.log(xhttp.response);
-		let doc = xhttp.response.getElementById("popupform");
+xhttp1.onload = function(){
+	if(xhttp1.readyState = xhttp1.DONE && xhttp1.status == 200){
+		// console.log(xhttp1.response);
+		let doc = xhttp1.response.getElementById("popupform");
 
 		let buttons = doc.getElementsByTagName("button");
 
 		buttons[0].onclick = function(){
 			let addroom_name = doc.getElementsByTagName('input')[0].value;
-			// console.log(addroom_name);
 
 			let nameExists = false;
 
@@ -294,9 +293,8 @@ xhttp.onload = function(){
 			}
 
 			else{
-				// ws.send('addroom: '+addroom_name);
 				ws.send(xmlHead+"<addroom>"+addroom_name+"</addroom>");
-				document.body.removeChild(popup_addroom);
+				document.body.removeChild(doc);
 			}
 		}
 
@@ -311,7 +309,48 @@ xhttp.onload = function(){
 	}
 }
 
-xhttp.send(null);
+xhttp1.send(null);
+
+
+const xhttp2 = new XMLHttpRequest();
+
+xhttp2.open('GET', '/popups/addfriend.html', true);
+
+xhttp2.responseType = 'document';
+
+xhttp2.onload = function(){
+	if(xhttp2.readyState = xhttp2.DONE && xhttp2.status == 200){
+		let doc = xhttp2.response.getElementById("popupform");
+		// console.log(doc);
+		let buttons = doc.getElementsByTagName("button");
+
+		buttons[0].onclick = function(){
+			
+			let name = doc.getElementsByTagName('input')[0].value;
+
+			if(currentChatroomid && name != ""){
+				let doc = createXML("addfriend");
+				doc.setAttribute("name", name);
+				doc.setAttribute("roomid",currentChatroomid);
+				doc.setAttribute("roomname", currentChatroomname);
+				ws.send(getxmlDocStr(doc));
+			}
+
+			document.body.removeChild(doc);
+		}
+
+		buttons[1].onclick = function(){
+			document.body.removeChild(doc);
+		}
+
+		el_addfriend.onclick = function(){
+			document.body.appendChild(doc);
+		}
+
+	}
+}
+
+xhttp2.send(null);
 
 let popup_addroom = document.createElement('div');
 popup_addroom.setAttribute("class", "popupform");
@@ -345,9 +384,9 @@ popup_addfriend.style.boxShadow =  "5px 10px #232629";
 popup_addfriend.style.zIndex = "5";
 popup_addfriend.style.backgroundColor = "#474b53";
 
-el_addfriend.onclick = function(){
-	document.body.appendChild(popup_addfriend);
-}
+// el_addfriend.onclick = function(){
+// 	document.body.appendChild(popup_addfriend);
+// }
 
 popup_addfriend.getElementsByTagName('button')[0].onclick = function(){
 // el_popup_addroom.getElementsByTagName('button')[0].onclick = function(){

@@ -456,7 +456,7 @@ server_connection_chat(data, req, res)
   onion_response *res;
 {
 // autologin
-#if 1
+#if 0
 	Chatrooms cr;
 	db_find_user("joe", "2322", &cr);
 	FOUNDUSER = user_create("joe", cr);
