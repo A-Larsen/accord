@@ -157,3 +157,5 @@ CREATE TABLE zygzpiifxwbrrqrcvssr_users(user varchar(255));
 # NOTE
 	need to close all open pages before closing server with control c
 	
+TODO:
+- use iframe or something for popup window
