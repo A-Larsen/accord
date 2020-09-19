@@ -606,17 +606,17 @@ function messageKeydown(e){
 el_msg.addEventListener('keydown', messageKeydown, false);
 
 
-// better way to acccess json objects
 const xhttp = new XMLHttpRequest();
 
-// xhttp.open('GET', '/rel.xml', true);
 xhttp.open('GET', '/xml/test.xml', true);
 
-xhttp.responseType = 'document';
+xhttp.responseType = 'text';
 
 xhttp.onload = function(){
 	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
-		console.log(xhttp.response.body)
+		let parser = new DOMParser();
+		let xmlDoc = parser.parseFromString(xhttp.response, "text/xml");
+		console.log(xmlDoc);
 	}
 }
 xhttp.send(null);
