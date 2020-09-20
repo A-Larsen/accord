@@ -1,10 +1,10 @@
 #!/bin/sh
 
-while getopts "c:l:" arg; do
+while getopts "c:l:" opt; do
 	
-	case $arg in 
+	case $opt in 
 		c)
-			case $OPTARG in 
+			case "$OPTARG" in 
 				all)
 					sqlite3 databases/users.db 'UPDATE users SET chatrooms = ""'
 					sqlite3 databases/users.db 'DELETE FROM users WHERE name != "#ONE" AND name != "#TWO"'
@@ -12,14 +12,14 @@ while getopts "c:l:" arg; do
 					if [ -f "databases/chatrooms.db" ]; then
 						doas rm -r databases/chatrooms.db 
 					fi
-					echo "clear all data"
+					echo "cleared all data"
 				;;
 
 			esac
 		;;
 
 		l)
-			case $OPTARG in 
+			case "$OPTARG" in 
 				admins)
 					sqlite3 databases/users.db "SELECT name FROM users WHERE name LIKE '#%'"
 				;;
