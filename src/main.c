@@ -37,7 +37,6 @@ main(int argc, char **argv)
 				fprintf(stderr, "usage: %s [-a admin]\n", argv[0]);
 				exit(EXIT_FAILURE);
 				break;
-
 		}
 	}
 

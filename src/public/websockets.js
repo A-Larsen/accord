@@ -12,9 +12,6 @@ let el_friendsNav = document.getElementById('friends-nav');
 let el_roomsNav = document.getElementById('rooms-nav');
 let el_chatNav = document.getElementById('chat-nav');
 let el_msgbox = document.getElementById('msgbox');
-let el_mobile_navhead = document.getElementById('mobile-navhead');
-let el_mobile_navIcon = document.getElementById('mobile-nav-icon');
-let el_mobile_nav = document.getElementById('mobile-nav');
 
 el_msg.focus();
 
@@ -153,7 +150,6 @@ ws.onmessage = function(ev){
 					currentChatroomid = chatroom;
 
 					el_rooms[i].style.backgroundColor = "#525959";
-					el_mobile_nav.style.display = "none";
 
 					for(let j = 0; j < el_rooms.length; j++){
 						if(el_rooms[j] != el_rooms[i]){
@@ -285,20 +281,6 @@ xhttp2.send(null);
 
 let shift = false;
 
-// == M A R K   D O W N ==
-// TODO: make regex for 
-// x bold 
-// x italic
-// - underlined
-// - table
-// x quote
-// - replace \t with "<span sty.."
-// etc
-//
-// == K E Y   C O M M A N S ==
-// TODO: 
-// - tab key makes a tab
-// -
 
 const regex_http = RegExp('^http[s]?');
 const regex_img = RegExp('.png$|.bmp$|.jpg$');
@@ -389,116 +371,10 @@ function sendMessage(element){
 
 }
 
-let popup_mobile_createMessage = document.createElement('div');
-popup_mobile_createMessage.setAttribute("class", "popupform");
-popup_mobile_createMessage.style.position = "absolute";
-popup_mobile_createMessage.style.border = "solid";
-popup_mobile_createMessage.style.borderRadius = "5px";
-popup_mobile_createMessage.style.padding = "5px";
-popup_mobile_createMessage.style.top = "90%"
-popup_mobile_createMessage.style.left = "0px"
-popup_mobile_createMessage.style.zIndex = "5";
-popup_mobile_createMessage.style.width = "95%";
-popup_mobile_createMessage.style.height = "20%";
-popup_mobile_createMessage.style.backgroundColor = "#474b53";
-popup_mobile_createMessage.innerHTML = 
-"<button>cancel</button>&nbsp;<button>send</button><br>" +
-"<br><input type='search' ></input><br>";
-
-let defaultMarginBottom = el_chatNav.style.marginBottom;
-let defaultHeight = el_chatNav.style.height;
-
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.width = "45%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.marginRight = "5%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.height = "25%";
-popup_mobile_createMessage.getElementsByTagName('button')[0].style.fontSize = "4vw";
-popup_mobile_createMessage.getElementsByTagName('button')[1].style.width = "45%";
-popup_mobile_createMessage.getElementsByTagName('button')[1].style.height = "25%";
-popup_mobile_createMessage.getElementsByTagName('button')[1].style.fontSize = "4vw";
-popup_mobile_createMessage.getElementsByTagName('input')[0].style.fontSize = "4vw";
-popup_mobile_createMessage.getElementsByTagName('input')[0].style.width = "80%";
-
-popup_mobile_createMessage.getElementsByTagName('button')[0].onclick = function(){
-	el_mobile_navhead.style.display = "block";
-	el_chatTitle.style.display = "block";
-	el_mobile_navIcon.style.display = "block";
-	el_msgbox.style.display = "block";
-	el_chatNav.style.marginBottom = defaultMarginBottom;
-	el_chatNav.style.height = defaultHeight;
-	document.body.removeChild(popup_mobile_createMessage);
-}
-
-popup_mobile_createMessage.getElementsByTagName('button')[1].onclick = function(){
-	// do send the message
-	sendMessage(popup_mobile_createMessage.getElementsByTagName('input')[0])
-	el_mobile_navhead.style.display = "block";
-	el_chatTitle.style.display = "block";
-	el_mobile_navIcon.style.display = "block";
-	el_msgbox.style.display = "block";
-	el_chatNav.style.marginBottom = defaultMarginBottom;
-	el_chatNav.style.height = defaultHeight;
-	document.body.removeChild(popup_mobile_createMessage);
-}
-
-popup_mobile_createMessage.getElementsByTagName('input')[0].onsearch = function() {
-	sendMessage(popup_mobile_createMessage.getElementsByTagName('input')[0])
-	el_mobile_navhead.style.display = "block";
-	el_chatTitle.style.display = "block";
-	el_mobile_navIcon.style.display = "block";
-	el_msgbox.style.display = "block";
-	el_chatNav.style.marginBottom = defaultMarginBottom;
-	el_chatNav.style.height = defaultHeight;
-	document.body.removeChild(popup_mobile_createMessage);
-}
-// https://stackoverflow.com/questions/36430561/how-can-i-check-if-my-element-id-has-focus
-function initPage(){
-
-	if((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
-	){
-		el_html.style.fontSize = "4vw";
-		el_friendsNav.style.display = "none";
-		el_roomsNav.style.display = "none";
-		el_chatNav.style.marginLeft = "0%";
-		el_chatNav.style.width = "100%";
-
-     	el_msgbox.style.border = "none"
- 	    el_msgbox.style.width = "100%";
- 	    el_msgbox.style.marginLeft = "0%";
-     	el_msg.style.width = "90%";
-		el_msg.style.marginLeft = "5%";
-		el_mobile_navhead.style.display = "block";
-
-		el_msg.onclick = function() {
-			el_msgbox.style.display = "none";
-			el_chatTitle.style.display = "none";
-			el_mobile_navhead.style.display = "none";
-			el_mobile_navIcon.style.display = "none";
-			document.body.appendChild(popup_mobile_createMessage);
-			popup_mobile_createMessage.getElementsByTagName('input')[0].value = "";
-			popup_mobile_createMessage.getElementsByTagName('input')[0].focus();
-		}
-	}
-} 
-
-initPage();
-
-let mobile_nav_active = false;
-
-window.addEventListener("resize", initPage);
-
 window.addEventListener('focusout', ()=>{
 	shift = false;
 });
 
-el_mobile_navIcon.onclick = () => {
-	if(!mobile_nav_active){
-		el_mobile_nav.style.display = "block";
-	}else{
-		el_mobile_nav.style.display = "none";
-	}
-
-	mobile_nav_active = !mobile_nav_active;
-}
 
 window.addEventListener('beforeunload', (e) =>{
 	elUser.setAttribute("closing", "true");
@@ -544,21 +420,4 @@ function messageKeydown(e){
 }
 
 el_msg.addEventListener('keydown', messageKeydown, false);
-
-
-// const xhttp = new XMLHttpRequest();
-
-// xhttp.open('GET', '/xmlp/test.xml', true);
-
-// xhttp.responseType = 'text';
-
-// xhttp.onload = function(){
-// 	if(xhttp.readyState = xhttp.DONE && xhttp.status == 200){
-// 		let parser = new DOMParser();
-// 		let xmlDoc = parser.parseFromString(xhttp.response, "text/xml");
-// 		console.log(xmlDoc);
-// 	}
-// }
-// xhttp.send(null);
-
 
