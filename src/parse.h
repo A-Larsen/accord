@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+/* #include <ctype.h> */
 
 #include "convert.h"
 
@@ -51,6 +52,7 @@ typedef struct _MessageData{
 } MessageData;
 
 
+char * ADMIN_SEARCH(const char * admin);
 int parseArrayList(char *list, Darray *cr);
 void parseMessage(char *data, MessageData *md);
 long int parseHTML(FILE *fp, char *str);

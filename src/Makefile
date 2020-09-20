@@ -3,7 +3,7 @@ CFLAGS = -lm -lsqlite3 -lpthread -lonion -lxml2 -Wall -Wextra
 buildpath = build
 
 build: main.c server/server.c parse.c sort.c
-	${CC} ${CFLAGS} -o a $(buildpath)/a.out $(cfiles) 
+	${CC} ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 
 
 run: main.c server/server.c parse.c sort.c
 	${CC} ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 

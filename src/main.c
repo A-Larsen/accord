@@ -9,7 +9,7 @@
 #include "server/server.h"
 
 onion *o = NULL;
-char OPTIONS;
+char OPTIONS = 0;
 
 static void shutdown_server(int _) {
 	ONION_INFO("ending");

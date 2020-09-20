@@ -460,9 +460,18 @@ server_connection_chat(data, req, res)
 {
 
 	if(OPTIONS & AUTOLOGIN){
+		/* FILE *ROOTPWFP = fopen("../PWADMINS", "r"); */
+		/* char * pass = ADMIN_SEARCH("#TWO"); */
+		char * pass = ADMIN_SEARCH("#TWO");
+		if(!pass)
+			fprintf(stderr, "could not find password for admin");
+
+		/* printf("PASSWORD: %s\n", pass); */
+
 		Chatrooms cr;
-		db_find_user("joe", "2322", &cr);
-		FOUNDUSER = user_create("joe", cr);
+		/* db_find_user("#TWO", "aesaili8tux9hai3li9aeNg5hieGha", &cr); */
+		db_find_user("#TWO", pass, &cr);
+		FOUNDUSER = user_create("#TWO", cr);
 	}
 
 

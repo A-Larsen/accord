@@ -330,3 +330,60 @@ char * arrayToJSONArray(a, len)
 
 	return strdup(js);
 }
+
+char * 
+ADMIN_SEARCH(admin)
+  const char *admin;
+{
+	FILE *fp = fopen("PWADMINS", "r");
+
+	if(!fp){
+		fprintf(stderr, "could not find file: PWADMINS");
+	}
+
+	int ch = 0;
+
+	while(1){
+
+		ch = fgetc(fp);
+
+		while(ch == '\t' || ch == ' ') ch = fgetc(fp);
+
+		if(ch == EOF){
+			break;
+		}
+
+		char name[10];
+		char *np = name;
+
+		char password[31] = {};
+		char *pp = password;
+
+		if(ch == '['){
+			ch = fgetc(fp);
+			while(ch != ']'){
+				 *np++ = ch;
+				 ch = fgetc(fp);
+			}
+
+			*np++ = 0;
+
+			ch = fgetc(fp);
+
+			if(!strcmp(name, admin)){
+				while(ch == '\n') ch = fgetc(fp);
+
+				while(ch != '\n'){
+					 *pp++ = ch;
+					 ch = fgetc(fp);
+				}
+
+				*pp++ = 0;
+
+				return strdup(password);
+			}
+		}
+	}
+
+	return NULL;
+}
