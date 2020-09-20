@@ -10,6 +10,7 @@
 
 onion *o = NULL;
 char OPTIONS = 0;
+char *OPTION_VALUE = NULL;
 
 static void shutdown_server(int _) {
 	ONION_INFO("ending");
@@ -23,11 +24,15 @@ main(int argc, char **argv)
 	int ch;
 
 	bool badOption = false;
-	while((ch = getopt(argc, argv, "a")) != -1){
+	while((ch = getopt(argc, argv, "a:")) != -1){
 
 		switch(ch){
 			case 'a':
 				OPTIONS |= AUTOLOGIN;
+				/* printf("OPTION: %s", argv[optind -1]); */
+				char * val = strdup(argv[optind - 1]);
+				OPTION_VALUE = val;
+				OPTION_VALUE[strlen(val)] = 0;
 				break;
 
 		}
