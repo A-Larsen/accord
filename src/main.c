@@ -23,23 +23,24 @@ main(int argc, char **argv)
 {
 	int ch;
 
-	bool badOption = false;
 	while((ch = getopt(argc, argv, "a:")) != -1){
 
 		switch(ch){
 			case 'a':
 				OPTIONS |= AUTOLOGIN;
-				/* char * val = strdup(argv[optind - 1]); */
 				char * val = strdup(optarg);
 				OPTION_VALUE = val;
 				OPTION_VALUE[strlen(val)] = 0;
 				break;
 
+			case '?':
+				fprintf(stderr, "usage: %s [-a admin]\n", argv[0]);
+				exit(EXIT_FAILURE);
+				break;
+
 		}
 	}
 
-	if(badOption)
-		return -1;
 
 	signal(SIGINT, shutdown_server);
 	signal(SIGTERM, shutdown_server);
