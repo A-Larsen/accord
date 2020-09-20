@@ -38,33 +38,34 @@ typedef struct _Addfriend{
 }Addfriend;
 
 typedef struct _AddRoom{
-	/* char *name; */
 	char *id;
 	char *alias;
 }AddRoom;
 
-typedef struct _MessageData{
-	char *message;
+typedef struct _Message{
+	char *content;
+	char *chatroom;
 	long long int lldate;
 	char *sdate;
+}Message;
+
+typedef struct _ClientData{
 	int id;
 	bool closing;
-	char *chatroom;
 	char *initchatroom;
-	/* char *roomid; */
-	/* char *roomalias; */
+	Message message;
 	AddRoom addroom;
 	Addfriend addfriend;
 
-} MessageData;
+} ClientData;
 
 
 char * admin_search(const char * admin);
 int parseArrayList(char *list, Darray *cr);
-void parseXML(char *data, MessageData *md);
+void parseXML(char *data, ClientData *md);
 long int fileToStr(FILE *fp, char *str);
 void nsort(void **data, int len);
-char * parseToJSONforClient(const char *name, MessageData md);
+char * parseToJSONforClient(const char *name, ClientData md);
 char * arrayToJSONArray(char **a, int len);
 
 #endif

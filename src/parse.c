@@ -50,7 +50,7 @@ fileToStr(fp, str)
 void 
 parseXML(data, md)
   char *data;
-  MessageData *md;
+  ClientData *md;
 
   // not really any bound checking. we can do some bounds checking on the 
   // client side maybe. As long as there is a correct number of properties
@@ -58,13 +58,14 @@ parseXML(data, md)
 {
 
 	printf("XML----\n%s\n------\n", data);
-	md->chatroom = NULL;
+	/* md->chatroom = NULL; */
+	md->message.chatroom = NULL;
 	md->initchatroom = NULL;
 
-	/* md->roomid = NULL; */
 	md->addroom.id = NULL;
 
-	md->lldate = 0;
+	/* md->lldate = 0; */
+	md->message.lldate = 0;
 
 	xmlDoc *doc;
 	doc = xmlParseDoc((const xmlChar *)data);
@@ -80,25 +81,16 @@ parseXML(data, md)
 
 	if(node){
 		if(!strcmp((const char *)node->name, "init_room")){
-			/* char *str = (char *)node->xmlChildrenNode->content; */
 			md->initchatroom = (char *)node->xmlChildrenNode->content;
 		}
 		else if(!strcmp((const char *)node->name, "addroom")){
-			/* char *str = (char *)node->xmlChildrenNode->content; */
-			/* md->initchatroom = str; */
 
-			/* md->roomid = malloc(sizeof(char)*21); */ 
 			md->addroom.id = malloc(sizeof(char)*21); 
-			/* getRandStr(md->roomid); */
 			getRandStr(md->addroom.id);
-			/* md->roomalias = strdup(str); */
-			/* md->roomalias = strdup( */
-			/* 		(char *)node->xmlChildrenNode->content); */
 			md->addroom.alias = strdup(
 					(char *)node->xmlChildrenNode->content);
 		}
 		else if(!strcmp((const char *)node->name, "addfriend")){
-			/* char *str = (char *)node->xmlChildrenNode->content; */
 			xmlAttr *attr = node->properties;
 
 			md->addfriend.roomid = strdup(
@@ -107,8 +99,6 @@ parseXML(data, md)
 			attr = node->properties->next;
 			md->addfriend.roomname = strdup((char *)xmlGetProp(node, attr->name));
 
-			/* if(str) */
-				/* md->addfriend.name = strdup(str); */
 				md->addfriend.name = strdup(
 						(char *)node->xmlChildrenNode->content);
 		}
@@ -116,7 +106,6 @@ parseXML(data, md)
 			xmlNode *cur_root;
 
 			for(cur_root = node->children; cur_root; cur_root = cur_root->next){
-				/* if(!xmlStrcmp(cur_root->name, (const xmlChar *)"user")){ */
 				if(!strcmp((char *)cur_root->name, "user")){
 					xmlAttr *attr = cur_root->properties;
 
@@ -129,22 +118,22 @@ parseXML(data, md)
 							(char *)xmlGetProp(cur_root, attr->name));
 				}
 
-				/* if(!xmlStrcmp(cur_root->name, (const xmlChar *)"message")){ */
 				if(!strcmp((char *)cur_root->name, "message")){
 
-
+					if((char *)cur_root->xmlChildrenNode->content){
 						xmlAttr *attr = cur_root->properties;
-						md->chatroom = strdup((char *)xmlGetProp(cur_root, attr->name));
+						md->message.chatroom = strdup((char *)xmlGetProp(cur_root, attr->name));
 
 						attr = cur_root->properties->next;
 
-						md->lldate = atoll(
+						md->message.lldate = atoll(
 								(char *)xmlGetProp(cur_root, attr->name));
 
-						/* printf("message: %s\n", str); */
-						/* md->message = strdup(str); */
-						md->message = strdup(
+						md->message.content = strdup(
 								(char *)cur_root->xmlChildrenNode->content);
+						
+					}
+
 				}
 			}
 		}
@@ -201,23 +190,28 @@ parseArrayList(list, cr)
 char * 
 parseToJSONforClient(name, md)
   const char *name;
-  MessageData md;
+  ClientData md;
 {
 		char messagewrap[9999];
-		if(md.lldate){
+		/* if(md.lldate){ */
+		if(md.message.lldate){
 			sprintf(messagewrap, 
 					CLIENTJSON, 
 					name, 
-					md.message, 
-					ts_to_readable(md.lldate),
-					md.chatroom);
+					/* md.message, */ 
+					md.message.content, 
+					/* ts_to_readable(md.lldate), */
+					ts_to_readable(md.message.lldate),
+					/* md.chatroom); */
+					md.message.chatroom);
 		}else{
 			sprintf(messagewrap, 
 					CLIENTJSON, 
 					name, 
-					md.message, 
-					md.sdate,
-					md.chatroom);
+					md.message.content, 
+					/* md.sdate, */
+					md.message.sdate,
+					md.message.chatroom);
 		}
 
 		return strdup(messagewrap);

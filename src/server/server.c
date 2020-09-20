@@ -337,7 +337,7 @@ server_websocket_send_chatrooms(user)
 void 
 server_add_friend(user, md)
   User *user;
-  MessageData md;
+  ClientData md;
 {
 	printf("ADDING A FRINED: %s\n", md.addfriend.name);
 	printf("ADDING A FRINED ID: %s\n", md.addfriend.roomid);
@@ -354,7 +354,7 @@ server_add_friend(user, md)
 void
 server_load_chatroom(user, md)
   User *user;
-  MessageData md;
+  ClientData md;
 {
 	ONION_INFO("INIT CHATROOM: %s", md.initchatroom);
 	user->chatroom.current = strdup(md.initchatroom);
@@ -365,16 +365,19 @@ server_load_chatroom(user, md)
 void 
 server_send_message(user, md)
   User *user;
-  MessageData md;
+  ClientData md;
 {
-	user->chatroom.current = strdup(md.chatroom);
+	/* user->chatroom.current = strdup(md.chatroom); */
+	user->chatroom.current = strdup(md.message.chatroom);
 	char *message = parseToJSONforClient(user->name, md);
 
 	server_websocket_printf_connected(user, message);
 	db_store_message(&user->chatroom,
 				user->name, 
-				md.message, 
-				md.lldate);
+				/* md.message, */ 
+				md.message.content, 
+				/* md.lldate); */
+				md.message.lldate);
 }
 
 onion_connection_status 
@@ -402,9 +405,10 @@ server_websocket_chat(data, ws, data_ready_len)
 	}
 	tmp[len] = 0;
 
-	MessageData md;
+	ClientData md;
 	parseXML(tmp, &md);
-	ONION_INFO("FOUND CHATROOM %s\n", md.chatroom);
+	/* ONION_INFO("FOUND CHATROOM %s\n", md.chatroom); */
+	ONION_INFO("FOUND CHATROOM %s\n", md.message.chatroom);
 
 	User *user = getUser(md.id);
 
@@ -430,13 +434,9 @@ server_websocket_chat(data, ws, data_ready_len)
 			server_add_friend(user, md);
 		}
 
-		/* else if(md.roomid){ */
 		else if(md.addroom.id){
-			/* printf("ROOMID: %s\n", md.roomid); */
 			printf("ROOMID: %s\n", md.addroom.id);
-			/* printf("ROOM ALIAS: %s\n", md.roomalias); */
 			printf("ROOM ALIAS: %s\n", md.addroom.alias);
-			/* db_add_chatroom(md.roomid, md.roomalias, user->name); */
 			db_add_chatroom(md.addroom.id, md.addroom.alias, user->name);
 			onion_websocket_printf(user->ws, "{\"reload\": \"/login\"}");
 		}
@@ -445,7 +445,8 @@ server_websocket_chat(data, ws, data_ready_len)
 			server_load_chatroom(user, md);
 		}
 
-		else if(md.chatroom){
+		/* else if(md.chatroom){ */
+		else if(md.message.chatroom){
 			ONION_INFO("sending message?");
 			server_send_message(user, md);
 		}

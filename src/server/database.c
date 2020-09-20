@@ -187,7 +187,7 @@ callback_search_chatrooms(data, argc, argv, azColName)
 	Chatrooms *cr = ((Chatrooms **)data)[0];
 	onion_websocket *ws = ((onion_websocket **)data)[1];
 	char *user = NULL;
-	MessageData md;
+	ClientData md;
 
 	for(i = 0; i < argc; i++){
 
@@ -201,20 +201,24 @@ callback_search_chatrooms(data, argc, argv, azColName)
 			}
 
 			if(!strcmp(azColName[i], "message")){
-				md.message = strdup(argv[i]);
+				/* md.message = strdup(argv[i]); */
+				md.message.content = strdup(argv[i]);
 				foundmessage = true;
 			}
 
 			if(!strcmp(azColName[i], "date")){
-				md.sdate = ts_to_readable(atoll(argv[i]));
-				md.lldate = 0;
+				/* md.sdate = ts_to_readable(atoll(argv[i])); */
+				md.message.sdate = ts_to_readable(atoll(argv[i]));
+				/* md.lldate = 0; */
+				md.message.lldate = 0;
 				founddate = true;
 			}
 
 		}
 		if(founduser && foundmessage && founddate){
 
-			md.chatroom = strdup(cr->current);
+			/* md.chatroom = strdup(cr->current); */
+			md.message.chatroom = strdup(cr->current);
 			char *message = parseToJSONforClient(user, md);
 
 			onion_websocket_printf(ws, message);
