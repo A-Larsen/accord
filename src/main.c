@@ -29,7 +29,8 @@ main(int argc, char **argv)
 		switch(ch){
 			case 'a':
 				OPTIONS |= AUTOLOGIN;
-				char * val = strdup(argv[optind - 1]);
+				/* char * val = strdup(argv[optind - 1]); */
+				char * val = strdup(optarg);
 				OPTION_VALUE = val;
 				OPTION_VALUE[strlen(val)] = 0;
 				break;
