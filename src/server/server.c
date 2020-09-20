@@ -430,10 +430,14 @@ server_websocket_chat(data, ws, data_ready_len)
 			server_add_friend(user, md);
 		}
 
-		else if(md.roomid){
-			printf("ROOMID: %s\n", md.roomid);
-			printf("ROOM ALIAS: %s\n", md.roomalias);
-			db_add_chatroom(md.roomid, md.roomalias, user->name);
+		/* else if(md.roomid){ */
+		else if(md.addroom.id){
+			/* printf("ROOMID: %s\n", md.roomid); */
+			printf("ROOMID: %s\n", md.addroom.id);
+			/* printf("ROOM ALIAS: %s\n", md.roomalias); */
+			printf("ROOM ALIAS: %s\n", md.addroom.alias);
+			/* db_add_chatroom(md.roomid, md.roomalias, user->name); */
+			db_add_chatroom(md.addroom.id, md.addroom.alias, user->name);
 			onion_websocket_printf(user->ws, "{\"reload\": \"/login\"}");
 		}
 

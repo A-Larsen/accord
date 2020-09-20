@@ -33,6 +33,7 @@ function createXML(name){
 	let doc= 
 		document.implementation.createDocument(null, name)
 		.getElementsByTagName(name)[0];
+
 	doc.children = {}
 
 	doc.addChild = function( name, text, attrObj){
@@ -87,6 +88,12 @@ console.log(getxmlDocStr(xmlDoc));
 let userdata = null;
 
 ws.onopen = function(){
+
+	// if(xmlDoc.getElementsByTagName("message")){
+	// 	console.log("message found");
+	// 	xmlDoc.removeChild("message");
+	// }
+
 	ws.send(getxmlDocStr(xmlDoc));
 }
 
@@ -219,6 +226,11 @@ xhttp1.onload = function(){
 			}
 
 			else{
+				let elMessage = xmlDoc.getElementsByTagName("message")[0];
+
+				if(elMessage){
+					xmlDoc.removeChild(elMessage);
+				}
 				ws.send("<addroom>"+addroom_name+"</addroom>");
 				document.body.removeChild(doc);
 			}

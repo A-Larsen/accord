@@ -51,13 +51,18 @@ void
 parseXML(data, md)
   char *data;
   MessageData *md;
+
+  // not really any bound checking. we can do some bounds checking on the 
+  // client side maybe. As long as there is a correct number of properties
+  // and nodes there shouldn't be too much of a problem
 {
 
 	printf("XML----\n%s\n------\n", data);
 	md->chatroom = NULL;
 	md->initchatroom = NULL;
 
-	md->roomid = NULL;
+	/* md->roomid = NULL; */
+	md->addroom.id = NULL;
 
 	md->lldate = 0;
 
@@ -75,55 +80,71 @@ parseXML(data, md)
 
 	if(node){
 		if(!strcmp((const char *)node->name, "init_room")){
-			char *str = (char *)node->xmlChildrenNode->content;
-			md->initchatroom = str;
+			/* char *str = (char *)node->xmlChildrenNode->content; */
+			md->initchatroom = (char *)node->xmlChildrenNode->content;
 		}
 		else if(!strcmp((const char *)node->name, "addroom")){
-			char *str = (char *)node->xmlChildrenNode->content;
-			md->initchatroom = str;
+			/* char *str = (char *)node->xmlChildrenNode->content; */
+			/* md->initchatroom = str; */
 
-			md->roomid = malloc(sizeof(char)*21); 
-			getRandStr(md->roomid);
-			md->roomalias = strdup(str);
+			/* md->roomid = malloc(sizeof(char)*21); */ 
+			md->addroom.id = malloc(sizeof(char)*21); 
+			/* getRandStr(md->roomid); */
+			getRandStr(md->addroom.id);
+			/* md->roomalias = strdup(str); */
+			/* md->roomalias = strdup( */
+			/* 		(char *)node->xmlChildrenNode->content); */
+			md->addroom.alias = strdup(
+					(char *)node->xmlChildrenNode->content);
 		}
 		else if(!strcmp((const char *)node->name, "addfriend")){
-			char *str = (char *)node->xmlChildrenNode->content;
+			/* char *str = (char *)node->xmlChildrenNode->content; */
 			xmlAttr *attr = node->properties;
 
-			md->addfriend.roomid = strdup((char *)xmlGetProp(node, attr->name));
+			md->addfriend.roomid = strdup(
+					(char *)xmlGetProp(node, attr->name));
 
 			attr = node->properties->next;
 			md->addfriend.roomname = strdup((char *)xmlGetProp(node, attr->name));
 
-			if(str)
-				md->addfriend.name = strdup(str);
+			/* if(str) */
+				/* md->addfriend.name = strdup(str); */
+				md->addfriend.name = strdup(
+						(char *)node->xmlChildrenNode->content);
 		}
 		else if(!strcmp((const char *)node->name, "root")){
 			xmlNode *cur_root;
 
 			for(cur_root = node->children; cur_root; cur_root = cur_root->next){
-				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"user")){
+				/* if(!xmlStrcmp(cur_root->name, (const xmlChar *)"user")){ */
+				if(!strcmp((char *)cur_root->name, "user")){
 					xmlAttr *attr = cur_root->properties;
-					md->closing = !strcmp((char *)xmlGetProp(cur_root, attr->name), "true");
+
+					md->closing = !strcmp(
+							(char *)xmlGetProp(cur_root, attr->name), "true");
+
 					attr = cur_root->properties->next;
-					md->id = atoi((char *)xmlGetProp(cur_root, attr->name));
+
+					md->id = atoi(
+							(char *)xmlGetProp(cur_root, attr->name));
 				}
 
-				if(!xmlStrcmp(cur_root->name, (const xmlChar *)"message")){
+				/* if(!xmlStrcmp(cur_root->name, (const xmlChar *)"message")){ */
+				if(!strcmp((char *)cur_root->name, "message")){
 
-					char *str = (char *)cur_root->xmlChildrenNode->content;
 
-					if(str){
 						xmlAttr *attr = cur_root->properties;
 						md->chatroom = strdup((char *)xmlGetProp(cur_root, attr->name));
 
 						attr = cur_root->properties->next;
 
-						md->lldate = atoll((char *)xmlGetProp(cur_root, attr->name));
+						md->lldate = atoll(
+								(char *)xmlGetProp(cur_root, attr->name));
 
-						printf("message: %s\n", str);
-						md->message = strdup(str);
-					}
+						/* printf("message: %s\n", str); */
+						/* md->message = strdup(str); */
+						md->message = strdup(
+								(char *)cur_root->xmlChildrenNode->content);
 				}
 			}
 		}

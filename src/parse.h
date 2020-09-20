@@ -37,6 +37,12 @@ typedef struct _Addfriend{
 	char *roomname;
 }Addfriend;
 
+typedef struct _AddRoom{
+	/* char *name; */
+	char *id;
+	char *alias;
+}AddRoom;
+
 typedef struct _MessageData{
 	char *message;
 	long long int lldate;
@@ -45,8 +51,9 @@ typedef struct _MessageData{
 	bool closing;
 	char *chatroom;
 	char *initchatroom;
-	char *roomid;
-	char *roomalias;
+	/* char *roomid; */
+	/* char *roomalias; */
+	AddRoom addroom;
 	Addfriend addfriend;
 
 } MessageData;
