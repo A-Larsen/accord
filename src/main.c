@@ -29,7 +29,6 @@ main(int argc, char **argv)
 		switch(ch){
 			case 'a':
 				OPTIONS |= AUTOLOGIN;
-				/* printf("OPTION: %s", argv[optind -1]); */
 				char * val = strdup(argv[optind - 1]);
 				OPTION_VALUE = val;
 				OPTION_VALUE[strlen(val)] = 0;
