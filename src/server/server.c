@@ -38,10 +38,10 @@ static int POPUPSN         = 0;
 // zero indexed count
 static int usercount       = -1;
 
-static Data VIEWS         [10];
-static Data PUBLIC        [10];
-static Data XML           [10];
-static Data POPUPS        [10];
+static FileData VIEWS         [10];
+static FileData PUBLIC        [10];
+static FileData XML           [10];
+static FileData POPUPS        [10];
 
 char *
 server_get_view(name)
@@ -67,6 +67,7 @@ server_add_dir(urls, dir)
 
 	if(!dr){
 		fprintf(stderr, "Could not open views directory");
+		return;
 	}
 	
 	int n = 0;
@@ -78,18 +79,22 @@ server_add_dir(urls, dir)
 
 		if(strcmp(de->d_name, ".") && strcmp(de->d_name, "..")){
 			
-			char *rootdir = strdup(dir);
+			size_t rootdir_len = strlen(dir);
+			size_t size = rootdir_len + strlen(de->d_name) + 1;
 
-			fp = fopen(strcat(rootdir, de->d_name), "r");
+			char new[size];
+			strlcpy(new, (const char *)dir, rootdir_len+1);
+			strlcat(new, de->d_name, size);
+
+			fp = fopen(new, "r");
 			ONION_INFO("fileno: %d", fileno(fp));
 			long int len;
-			len = parseHTML(fp, tmp);
+			len = fileToStr(fp, tmp);
 
-			Data data;
+			FileData data;
 			data.name = strdup(de->d_name);
 			data.data = strdup(tmp);
 			data.length = len;
-			/* data.fp = fp; */
 
 			if(!strcmp(dir, "views/")){
 				memcpy(&VIEWS[n], &data, sizeof(data));
@@ -112,7 +117,6 @@ server_add_dir(urls, dir)
 			}
 
 			n++;
-			free(rootdir);
 		}
 	}
 
@@ -165,7 +169,6 @@ server_init(urls)
 	server_add_dir(urls, "xmlp/");
 	server_add_dir(urls, "popups/");
 	rc = db_init();
-	/* ONION_INFO("OPTIONS: %d", OPTIONS == AUTOLOGIN); */
 
 	return rc;
 }
@@ -178,14 +181,12 @@ server_add_static_file(urls, route, name)
 {
 	size_t len = strlen(name) + 8;
 	char file[len];
-	/* snprintf(file, len, "public/%s", name); */
 	snprintf(file, len, "%s%s", route, name);
 	FILE *fp = fopen(file, "r");
 
 	char filestr[MAX_FILESIZE];
-	parseHTML(fp, filestr);
+	fileToStr(fp, filestr);
 
-	/* onion_url_add_static(urls, name, filestr, HTTP_OK); */
 	onion_url_add_static(urls, file, filestr, HTTP_OK);
 }
 
@@ -387,7 +388,6 @@ server_websocket_chat(data, ws, data_ready_len)
 		return OCS_CLOSE_CONNECTION;
 	}
 
-	/* char tmp[256]; */
 	char tmp[500];
 	if ((long unsigned int)data_ready_len > sizeof(tmp))
 		data_ready_len = sizeof(tmp) - 1;
@@ -402,7 +402,7 @@ server_websocket_chat(data, ws, data_ready_len)
 	tmp[len] = 0;
 
 	MessageData md;
-	parseMessage(tmp, &md);
+	parseXML(tmp, &md);
 	ONION_INFO("FOUND CHATROOM %s\n", md.chatroom);
 
 	User *user = getUser(md.id);
@@ -460,22 +460,15 @@ server_connection_chat(data, req, res)
 {
 
 	if(OPTIONS & AUTOLOGIN){
-		/* FILE *ROOTPWFP = fopen("../PWADMINS", "r"); */
-		/* char * pass = ADMIN_SEARCH("#TWO"); */
-		/* char * pass = ADMIN_SEARCH("#TWO"); */
 		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);
-		char * pass = ADMIN_SEARCH(OPTION_VALUE);
+		char * pass = admin_search(OPTION_VALUE);
 
 		if(!pass)
 			fprintf(stderr, "could not find password for admin");
 
-		/* printf("PASSWORD: %s\n", pass); */
 
 		Chatrooms cr;
-		/* db_find_user("#TWO", "aesaili8tux9hai3li9aeNg5hieGha", &cr); */
-		/* db_find_user("#TWO", pass, &cr); */
 		db_find_user(OPTION_VALUE, pass, &cr);
-		/* FOUNDUSER = user_create("#TWO", cr); */
 		FOUNDUSER = user_create(OPTION_VALUE, cr);
 	}
 
@@ -486,7 +479,6 @@ server_connection_chat(data, req, res)
 			onion_response_write0(res, "not logged in");
 			return OCS_PROCESSED;
 		}
-
 
 
 		USERS[usercount]->ws = onion_websocket_new(req, res); 

@@ -1,32 +1,6 @@
 #include "parse.h"
 #include <libxml/parser.h>
 
-xmlDoc *
-parseDoc(char *str){
-	xmlDoc *doc;
-	doc = xmlParseDoc((const xmlChar *)str);
-
-	if(doc == NULL){
-		fprintf(stderr, "Document not parsed succesfully. \n");
-		return NULL;
-	}
-
-	return doc;
-}
-
-xmlNode *
-getNode(xmlNode *start, xmlChar *nodename){
-	xmlNode *node;
-
-	for(node = start->children; node; node = node->next){
-			if(!xmlStrcmp(node->name, nodename)){
-				return node;
-			}
-	}
-
-	return NULL;
-}
-
 char getRandchar(){
 	return (char)floor((float)rand() / RAND_MAX * 26) + 'a';
 }
@@ -40,11 +14,10 @@ void getRandStr(char a[20]){
 	}
 
 	a[i] = 0;
-
 }
 
 long int 
-parseHTML(fp, str)
+fileToStr(fp, str)
   FILE *fp;
   char *str;
 {
@@ -74,70 +47,8 @@ parseHTML(fp, str)
 	return size;
 }
 
-
-/* static int */ 
-/* mcb(data, cmp, other) */
-/*   char *data; */
-/*   const char *cmp; */
-/*   void *other; */
-/* { */
-
-/* 	char *dp = data; */
-/* 	int n = strlen(cmp); */
-
-/* 	if(!strncmp(data, cmp, n)){ */
-
-/* 		data += (n+2); */
-
-/* 		char tmp[400]; */
-
-/* 		int i = 0; */
-/* 		for(; *data != '\n'; i++, data++){ */
-/* 			if(i > 30) break; */
-/* 			tmp[i] = *data; */
-/* 		} */
-
-/* 		tmp[i] = 0; */
-/* 		MessageData *md = (MessageData *)other; */
-
-/* 		if(!strcmp(cmp, "closing")){ */
-/* 			md->closing = !strcmp(tmp, "true"); */
-/* 		} */
-
-/* 		if(!strcmp(cmp, "id")){ */
-/* 			md->id = atoi(tmp); */
-/* 		} */
-
-/* 		if(!strcmp(cmp, "date")){ */
-/* 			md->lldate = atoll(tmp); */
-/* 		} */
-
-/* 		if(!strcmp(cmp, "chatroom")){ */
-/* 			md->chatroom = strdup(tmp); */
-/* 		} */
-
-/* 		if(!strcmp(cmp, "initchatroom")){ */
-/* 			md->initchatroom = strdup(tmp); */
-/* 		} */
-
-/* 		if(!strcmp(cmp, "addroom")){ */
-/* 			printf("*ADDING A ROOM !*\n"); */
-
-/* 			md->roomid = malloc(sizeof(char)*21); */ 
-/* 			getRandStr(md->roomid); */
-/* 			md->roomalias = strdup(tmp); */
-/* 		} */
-
-/* 		if(!strcmp(cmp, "addfriend")){ */
-/* 			parseArrayList(tmp, &md->addfriend); */
-/* 		} */
-/* 	} */
-
-/* 	return data - dp; */
-/* } */
-
 void 
-parseMessage(data, md)
+parseXML(data, md)
   char *data;
   MessageData *md;
 {
@@ -150,7 +61,13 @@ parseMessage(data, md)
 
 	md->lldate = 0;
 
-	xmlDocPtr doc = parseDoc(data);
+	xmlDoc *doc;
+	doc = xmlParseDoc((const xmlChar *)data);
+
+	if(!doc){
+		fprintf(stderr, "Document not parsed succesfully. \n");
+		return;
+	}
 
 	xmlNode *node = xmlDocGetRootElement(doc);
 	md->closing = false;
@@ -332,7 +249,7 @@ char * arrayToJSONArray(a, len)
 }
 
 char * 
-ADMIN_SEARCH(admin)
+admin_search(admin)
   const char *admin;
 {
 	FILE *fp = fopen("PWADMINS", "r");
