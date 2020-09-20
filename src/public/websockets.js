@@ -231,6 +231,9 @@ xhttp1.onload = function(){
 				if(elMessage){
 					xmlDoc.removeChild(elMessage);
 				}
+				// if(xmlDoc.getElementsByTagName("message")[0]){
+				// 	xmlDoc.removeChild(xmlDoc.getElementsByTagName("message")[0]);
+				// }
 				ws.send("<addroom>"+addroom_name+"</addroom>");
 				document.body.removeChild(doc);
 			}

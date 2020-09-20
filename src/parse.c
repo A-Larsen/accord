@@ -58,13 +58,11 @@ parseXML(data, md)
 {
 
 	printf("XML----\n%s\n------\n", data);
-	/* md->chatroom = NULL; */
 	md->message.chatroom = NULL;
 	md->initchatroom = NULL;
 
 	md->addroom.id = NULL;
 
-	/* md->lldate = 0; */
 	md->message.lldate = 0;
 
 	xmlDoc *doc;
@@ -76,7 +74,8 @@ parseXML(data, md)
 	}
 
 	xmlNode *node = xmlDocGetRootElement(doc);
-	md->closing = false;
+
+	md->user.closing = false;
 	md->addfriend.roomname = NULL;
 
 	if(node){
@@ -109,12 +108,12 @@ parseXML(data, md)
 				if(!strcmp((char *)cur_root->name, "user")){
 					xmlAttr *attr = cur_root->properties;
 
-					md->closing = !strcmp(
+					md->user.closing = !strcmp(
 							(char *)xmlGetProp(cur_root, attr->name), "true");
 
 					attr = cur_root->properties->next;
 
-					md->id = atoi(
+					md->user.id = atoi(
 							(char *)xmlGetProp(cur_root, attr->name));
 				}
 
@@ -132,6 +131,8 @@ parseXML(data, md)
 						md->message.content = strdup(
 								(char *)cur_root->xmlChildrenNode->content);
 						
+					}else{
+						printf("message not found\n");
 					}
 
 				}
@@ -193,23 +194,18 @@ parseToJSONforClient(name, md)
   ClientData md;
 {
 		char messagewrap[9999];
-		/* if(md.lldate){ */
 		if(md.message.lldate){
 			sprintf(messagewrap, 
 					CLIENTJSON, 
 					name, 
-					/* md.message, */ 
 					md.message.content, 
-					/* ts_to_readable(md.lldate), */
 					ts_to_readable(md.message.lldate),
-					/* md.chatroom); */
 					md.message.chatroom);
 		}else{
 			sprintf(messagewrap, 
 					CLIENTJSON, 
 					name, 
 					md.message.content, 
-					/* md.sdate, */
 					md.message.sdate,
 					md.message.chatroom);
 		}

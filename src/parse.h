@@ -3,7 +3,6 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
-/* #include <string.h> */
 #include <bsd/string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,9 +48,13 @@ typedef struct _Message{
 	char *sdate;
 }Message;
 
-typedef struct _ClientData{
+typedef struct _MUser{
 	int id;
 	bool closing;
+}MUser;
+
+typedef struct _ClientData{
+	MUser user;
 	char *initchatroom;
 	Message message;
 	AddRoom addroom;

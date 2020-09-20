@@ -201,15 +201,12 @@ callback_search_chatrooms(data, argc, argv, azColName)
 			}
 
 			if(!strcmp(azColName[i], "message")){
-				/* md.message = strdup(argv[i]); */
 				md.message.content = strdup(argv[i]);
 				foundmessage = true;
 			}
 
 			if(!strcmp(azColName[i], "date")){
-				/* md.sdate = ts_to_readable(atoll(argv[i])); */
 				md.message.sdate = ts_to_readable(atoll(argv[i]));
-				/* md.lldate = 0; */
 				md.message.lldate = 0;
 				founddate = true;
 			}
@@ -217,7 +214,6 @@ callback_search_chatrooms(data, argc, argv, azColName)
 		}
 		if(founduser && foundmessage && founddate){
 
-			/* md.chatroom = strdup(cr->current); */
 			md.message.chatroom = strdup(cr->current);
 			char *message = parseToJSONforClient(user, md);
 

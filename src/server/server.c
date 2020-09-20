@@ -367,16 +367,13 @@ server_send_message(user, md)
   User *user;
   ClientData md;
 {
-	/* user->chatroom.current = strdup(md.chatroom); */
 	user->chatroom.current = strdup(md.message.chatroom);
 	char *message = parseToJSONforClient(user->name, md);
 
 	server_websocket_printf_connected(user, message);
 	db_store_message(&user->chatroom,
 				user->name, 
-				/* md.message, */ 
 				md.message.content, 
-				/* md.lldate); */
 				md.message.lldate);
 }
 
@@ -407,13 +404,12 @@ server_websocket_chat(data, ws, data_ready_len)
 
 	ClientData md;
 	parseXML(tmp, &md);
-	/* ONION_INFO("FOUND CHATROOM %s\n", md.chatroom); */
 	ONION_INFO("FOUND CHATROOM %s\n", md.message.chatroom);
 
-	User *user = getUser(md.id);
+	User *user = getUser(md.user.id);
 
 	if(USERS[usercount] && USERS[usercount]->id == -1){
-		USERS[usercount]->id = md.id;
+		USERS[usercount]->id = md.user.id;
 
 		if(USERS[usercount]->chatroom.rooms.len > 0)
 			server_websocket_send_chatrooms(USERS[usercount]);
@@ -423,7 +419,7 @@ server_websocket_chat(data, ws, data_ready_len)
 	
 	if(user){
 		ONION_INFO("FOUND USER");
-		if(md.closing){
+		if(md.user.closing){
 			ONION_INFO("ABOUT TO CLOSE");
 			closinguser = user;
 			CLOSING = true;
@@ -445,7 +441,6 @@ server_websocket_chat(data, ws, data_ready_len)
 			server_load_chatroom(user, md);
 		}
 
-		/* else if(md.chatroom){ */
 		else if(md.message.chatroom){
 			ONION_INFO("sending message?");
 			server_send_message(user, md);
