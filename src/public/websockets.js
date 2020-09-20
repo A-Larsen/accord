@@ -256,9 +256,9 @@ xhttp2.onload = function(){
 
 			if(currentChatroomid && name != ""){
 				let doc = createXML("addfriend");
-				doc.setAttribute("name", name);
-				doc.setAttribute("roomid",currentChatroomid);
-				doc.setAttribute("roomname", currentChatroomname);
+				doc.textContent = name;
+				doc.setAttribute("room_id",currentChatroomid);
+				doc.setAttribute("room_name", currentChatroomname);
 				ws.send(getxmlDocStr(doc));
 			}
 

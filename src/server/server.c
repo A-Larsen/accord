@@ -83,7 +83,7 @@ server_add_dir(urls, dir)
 			size_t size = rootdir_len + strlen(de->d_name) + 1;
 
 			char new[size];
-			strlcpy(new, (const char *)dir, rootdir_len+1);
+			strlcpy(new, dir, rootdir_len+1);
 			strlcat(new, de->d_name, size);
 
 			fp = fopen(new, "r");
@@ -147,7 +147,8 @@ user_create(name, cr)
 	USERS[usercount]->ws = NULL;
 
 	size_t len = strlen(name);
-	strncpy(USERS[usercount]->name, name, len);
+	/* strncpy(USERS[usercount]->name, name, len); */
+	strlcpy(USERS[usercount]->name, name, len+1);
 	USERS[usercount]->name[len] = 0;
 
 	cr.chatlen = 0;

@@ -11,7 +11,6 @@
 #include <stdbool.h>
 #include <sqlite3.h>
 #include <errno.h>
-#include <bsd/string.h>
 
 #include "../parse.h"
 #include "../sort.h"

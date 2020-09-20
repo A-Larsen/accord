@@ -87,15 +87,16 @@ parseXML(data, md)
 			md->roomalias = strdup(str);
 		}
 		else if(!strcmp((const char *)node->name, "addfriend")){
+			char *str = (char *)node->xmlChildrenNode->content;
 			xmlAttr *attr = node->properties;
 
-			md->addfriend.name = strdup((char *)xmlGetProp(node, attr->name));
-
-			attr = node->properties->next;
 			md->addfriend.roomid = strdup((char *)xmlGetProp(node, attr->name));
 
 			attr = node->properties->next;
 			md->addfriend.roomname = strdup((char *)xmlGetProp(node, attr->name));
+
+			if(str)
+				md->addfriend.name = strdup(str);
 		}
 		else if(!strcmp((const char *)node->name, "root")){
 			xmlNode *cur_root;
@@ -158,7 +159,8 @@ parseArrayList(list, cr)
 						realloc(chatroom, sizeof(char) * arraysize);
 
 				chatroom[cidx] = malloc(sizeof(char) * move);
-				strncpy(chatroom[cidx], arrayp, move);
+				/* strncpy(chatroom[cidx], arrayp, move); */
+				strlcpy(chatroom[cidx], arrayp, move+1);
 				chatroom[cidx][move] = 0;
 				cidx++;
 
@@ -232,7 +234,8 @@ char * arrayToJSONArray(a, len)
 
 		int len = strlen(a[i]);
 
-		strncpy(jsp, a[i], len);
+		/* strncpy(jsp, a[i], len); */
+		strlcpy(jsp, a[i], len + 1);
 		jsp += len;
 		*jsp++ = '\"';
 

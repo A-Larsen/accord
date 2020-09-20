@@ -557,6 +557,8 @@ db_update_users_chatrooms(chatrooms, name, id, alias)
 
 	char *sql2 = NULL;
 
+	printf("sql cat: %s\n", cat);
+	printf("sql alias: %s\n", alias);
 	asprintf(&sql2, "UPDATE users SET chatrooms='%s' WHERE name='%s'", cat, name);
 	printf("sql2: %s\n", sql2);
 	rc = sqlite3_prepare_v2(usersdb, sql2, -1, &res1, 0);
