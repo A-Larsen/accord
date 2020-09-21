@@ -48,7 +48,7 @@ fileToStr(fp, str)
 }
 
 void
-xmlPropToClientData(node, names, vars, len)
+xmlPropToData(node, names, vars, len)
 	xmlNode *node;
 	char **names;
 	char ***vars;
@@ -110,7 +110,7 @@ parseXML(data, md)
 
 			char **vars[2] = {&md->addfriend.roomid, &md->addfriend.roomname};
 
-			xmlPropToClientData(node, names, vars, 2);
+			xmlPropToData(node, names, vars, 2);
 
 			md->addfriend.name = strdup(
 					(char *)node->xmlChildrenNode->content);
@@ -125,7 +125,7 @@ parseXML(data, md)
 					char *id_tmp = NULL;
 					char **vars[2] =  {&closing_tmp, &id_tmp};
 
-					xmlPropToClientData(cur_root, names, vars, 2);
+					xmlPropToData(cur_root, names, vars, 2);
 					if(closing_tmp) md->user.closing = !strcmp(closing_tmp, "true");
 
 					if(id_tmp) md->user.id = atoi(id_tmp);
@@ -142,7 +142,7 @@ parseXML(data, md)
 						char *date_tmp = NULL;
 						char **vars[2] = {&md->message.chatroom, &date_tmp};
 
-						xmlPropToClientData(cur_root, names, vars, 2);
+						xmlPropToData(cur_root, names, vars, 2);
 
 						if(date_tmp) md->message.lldate = atoll(date_tmp);
 
