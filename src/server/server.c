@@ -43,6 +43,9 @@ static FileData PUBLIC        [10];
 static FileData XML           [10];
 static FileData POPUPS        [10];
 
+static bool RELOGIN = false;
+static User *RELOGIN_USER = NULL;
+
 char *
 server_get_view(name)
   char *name;
@@ -124,8 +127,9 @@ server_add_dir(urls, dir)
 }
 
 int 
-user_create(name, cr)
+user_create(name, password, cr)
   char *name;
+  char *password;
   Chatrooms cr;
 {
 	ONION_INFO("creating users '%s'", name);
@@ -150,6 +154,7 @@ user_create(name, cr)
 	/* strncpy(USERS[usercount]->name, name, len); */
 	strlcpy(USERS[usercount]->name, name, len+1);
 	USERS[usercount]->name[len] = 0;
+	USERS[usercount]->password = strdup(password);
 
 	cr.chatlen = 0;
 	USERS[usercount]->chatroom = cr;
@@ -434,7 +439,10 @@ server_websocket_chat(data, ws, data_ready_len)
 			printf("ROOMID: %s\n", md.addroom.id);
 			printf("ROOM ALIAS: %s\n", md.addroom.alias);
 			db_add_chatroom(md.addroom.id, md.addroom.alias, user->name);
-			onion_websocket_printf(user->ws, "{\"reload\": \"/login\"}");
+			RELOGIN = true;
+			RELOGIN_USER = user;
+
+			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}");
 		}
 
 		else if(md.initchatroom){
@@ -467,10 +475,16 @@ server_connection_chat(data, req, res)
 		if(!pass)
 			fprintf(stderr, "could not find password for admin");
 
-
 		Chatrooms cr;
 		db_find_user(OPTION_VALUE, pass, &cr);
-		FOUNDUSER = user_create(OPTION_VALUE, cr);
+		FOUNDUSER = user_create(OPTION_VALUE, pass, cr);
+	}
+
+	if(RELOGIN && RELOGIN_USER){
+		Chatrooms cr;
+		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
+		FOUNDUSER = user_create(RELOGIN_USER->name, RELOGIN_USER->password, cr);
+		RELOGIN = false;
 	}
 
 
@@ -547,7 +561,7 @@ server_connection_login(_, req, res)
 	Chatrooms cr;
 
 	if(db_find_user(user_name, user_password, &cr)){
-		if( ( FOUNDUSER = user_create(strdup(user_name), cr) ) ){
+		if( ( FOUNDUSER = user_create(strdup(user_name), strdup(user_password), cr) ) ){
 			ONION_INFO("user found");
 			onion_response_write0(res, 
 					"<script>window.location.replace('/chat');</script>");
