@@ -164,8 +164,9 @@ ws.onmessage = function(ev){
 						}
 					}
 
-					ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
-							"<init_room>"+chatroom+"</init_room>");
+					// ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
+					// 		"<init_room>"+chatroom+"</init_room>");
+					ws.send("<init_room>"+chatroom+"</init_room>");
 				};
 			}
 
@@ -272,8 +273,10 @@ xhttp2.onload = function(){
 			if(currentChatroomid && name != ""){
 				let doc = createXML("addfriend");
 				doc.textContent = name;
-				doc.setAttribute("room_id",currentChatroomid);
-				doc.setAttribute("room_name", currentChatroomname);
+				// doc.setAttribute("room_id",currentChatroomid);
+				doc.setAttribute("id",currentChatroomid);
+				// doc.setAttribute("room_name", currentChatroomname);
+				doc.setAttribute("name", currentChatroomname);
 				ws.send(getxmlDocStr(doc));
 			}
 

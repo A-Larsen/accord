@@ -47,6 +47,22 @@ fileToStr(fp, str)
 	return size;
 }
 
+void
+xmlPropToClientData(node, names, vars, len)
+	xmlNode *node;
+	char **names;
+	char ***vars;
+	int len;
+{
+	xmlAttr *attr = node->properties;
+	for(int i = 0; i < len; attr = node->properties->next, i++){
+		if(!strcmp(names[i], (char *)attr->name)){
+			*vars[i] = strdup(
+					(char *)xmlGetProp(node, attr->name));
+		}
+	}
+}
+
 void 
 parseXML(data, md)
   char *data;
@@ -90,47 +106,50 @@ parseXML(data, md)
 					(char *)node->xmlChildrenNode->content);
 		}
 		else if(!strcmp((const char *)node->name, "addfriend")){
-			xmlAttr *attr = node->properties;
+			char *names[2] = {"id", "name"};
 
-			md->addfriend.roomid = strdup(
-					(char *)xmlGetProp(node, attr->name));
+			char **vars[2] = {&md->addfriend.roomid, &md->addfriend.roomname};
 
-			attr = node->properties->next;
-			md->addfriend.roomname = strdup((char *)xmlGetProp(node, attr->name));
+			xmlPropToClientData(node, names, vars, 2);
 
-				md->addfriend.name = strdup(
-						(char *)node->xmlChildrenNode->content);
+			md->addfriend.name = strdup(
+					(char *)node->xmlChildrenNode->content);
 		}
 		else if(!strcmp((const char *)node->name, "root")){
 			xmlNode *cur_root;
 
 			for(cur_root = node->children; cur_root; cur_root = cur_root->next){
 				if(!strcmp((char *)cur_root->name, "user")){
-					xmlAttr *attr = cur_root->properties;
+					char *names[2] = {"closing", "id"};
+					char *closing_tmp = NULL;
+					char *id_tmp = NULL;
+					char **vars[2] =  {&closing_tmp, &id_tmp};
 
-					md->user.closing = !strcmp(
-							(char *)xmlGetProp(cur_root, attr->name), "true");
+					xmlPropToClientData(cur_root, names, vars, 2);
+					if(closing_tmp) md->user.closing = !strcmp(closing_tmp, "true");
 
-					attr = cur_root->properties->next;
+					if(id_tmp) md->user.id = atoi(id_tmp);
 
-					md->user.id = atoi(
-							(char *)xmlGetProp(cur_root, attr->name));
+					free(closing_tmp);
+					free(id_tmp);
 				}
 
 				if(!strcmp((char *)cur_root->name, "message")){
 
 					if((char *)cur_root->xmlChildrenNode->content){
-						xmlAttr *attr = cur_root->properties;
-						md->message.chatroom = strdup((char *)xmlGetProp(cur_root, attr->name));
 
-						attr = cur_root->properties->next;
+						char *names[2] = {"chatroom", "date"};
+						char *date_tmp = NULL;
+						char **vars[2] = {&md->message.chatroom, &date_tmp};
 
-						md->message.lldate = atoll(
-								(char *)xmlGetProp(cur_root, attr->name));
+						xmlPropToClientData(cur_root, names, vars, 2);
+
+						if(date_tmp) md->message.lldate = atoll(date_tmp);
 
 						md->message.content = strdup(
 								(char *)cur_root->xmlChildrenNode->content);
 						
+						free(date_tmp);
 					}else{
 						printf("message not found\n");
 					}
