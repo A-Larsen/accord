@@ -362,25 +362,29 @@ function parseMesage(msg){
 }
 
 function sendMessage(element){
+	console.log(element.value);
+	if(element.value === "" || element.value === "\n" || !chatroom){
+		element.value = "";
+		return;
+	}
+
 	let date = new Date();
 	let timestamp = Math.floor(date.getTime()/1000.0);
 	let header = initheader;
 
-	// var elMessage = xmlDoc.addChild("mi", null, null);
+	let message = parseMesage(element.value);
+
 	var elMessage = xmlDoc.addChild("message", null, null);
 
-	if(chatroom){
-		// elMessage.addChild("chatroom", chatroom, null);
-		elMessage.setAttribute("chatroom", chatroom);
-	}
+	elMessage.setAttribute("chatroom", chatroom);
 
 	elMessage.setAttribute("date", timestamp);
-	let message = parseMesage(element.value);
-	// elMessage.addChild("message", message, null);
-	// elMessage.innerHTML = message;
-	elMessage.innerText = message;
+
+	elMessage.textContent = message;
 	console.log(getxmlDocStr(xmlDoc));
 	ws.send(getxmlDocStr(xmlDoc));
+
+	xmlDoc.removeChild(elMessage);
 
 	element.value = "";
 	element.select();

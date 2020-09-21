@@ -456,7 +456,6 @@ server_websocket_chat(data, ws, data_ready_len)
 	}
 
 	return OCS_NEED_MORE_DATA;
-
 }
 
 
