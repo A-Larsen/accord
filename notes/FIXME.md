@@ -36,6 +36,9 @@ in parseXML on server side
 
 I'm going to set js to null on the last line so that the websocket is not 
 accessable
+
 ```javascript
 ws = null
 ```
+.. this doesn't work because the socket needs to stay open for messages and 
+adding rooms and friends

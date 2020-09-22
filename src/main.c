@@ -38,8 +38,7 @@ main(int argc, char **argv)
 
 			case 'p':
 				port = strdup(optarg);
-
-			break;
+				break;
 
 			case '?':
 				fprintf(stderr, "usage: %s [-a admin] [-p port]\n", argv[0]);

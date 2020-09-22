@@ -44,7 +44,6 @@ server_get_view(name)
   char *name;
 {
 
-	/* for(int i = 0; i < VIEWSN; i++){ */
 	for(int i = 0; i < VIEWS.size; i++){
 		if(!strcmp(VIEWS.list[i].name, name)){
 			return VIEWS.list[i].data;
@@ -135,8 +134,8 @@ server_add_dir(urls, dir)
 
 int 
 user_create(name, password, cr)
-  char *name;
-  char *password;
+  const char *name;
+  const char *password;
   Chatrooms cr;
 {
 	ONION_INFO("creating users '%s'", name);
@@ -158,7 +157,7 @@ user_create(name, password, cr)
 	USERS[usercount]->ws = NULL;
 
 	size_t len = strlen(name);
-	/* strncpy(USERS[usercount]->name, name, len); */
+
 	strlcpy(USERS[usercount]->name, name, len+1);
 	USERS[usercount]->name[len] = 0;
 	USERS[usercount]->password = strdup(password);
@@ -240,7 +239,7 @@ server_websocket_printf_all(message)
 	if(usercount+1 > 0){
 		for(int i = 0; i <= usercount; i++){
 			if(USERS[i] && strcmp(message, "")){
-				onion_websocket_printf(USERS[i]->ws, message);
+				onion_websocket_printf(USERS[i]->ws, "%s", message);
 			}
 		}
 	}
@@ -254,7 +253,7 @@ server_websocket_printf_connected(user,  message)
 	if(usercount+1 > 0){
 		for(int i = 0; i < user->cu.len; i++){
 			if(USERS[user->cu.indices[i]] && !strcmp(USERS[user->cu.indices[i]]->chatroom.current, user->chatroom.current))
-				onion_websocket_printf(USERS[user->cu.indices[i]]->ws, message);
+				onion_websocket_printf(USERS[user->cu.indices[i]]->ws, "%s", message);
 		}
 	}
 
@@ -299,7 +298,7 @@ void server_websocket_get_connectedUsers(user, exclude)
 			if(USERS[j] && !strcmp(USERS[j]->name, c.list[i]) && strcmp(USERS[j]->name, exclude)){
 				USERS[j]->cu = cu;
 				if(tmp){
-					onion_websocket_printf(USERS[j]->ws, tmp);
+					onion_websocket_printf(USERS[j]->ws, "%s", tmp);
 				}
 			}
 		}
@@ -356,7 +355,7 @@ server_websocket_send_chatrooms(user)
 	if(a){
 		asprintf(&tmp, "{\"initchatrooms\":%s}", a);
 		printf("JSON ROOMS: %s\n", tmp);
-		onion_websocket_printf(user->ws, tmp);
+		onion_websocket_printf(user->ws, "%s", tmp);
 		free(tmp);
 		free(a);
 	}
@@ -532,6 +531,8 @@ server_connection_chat(data, req, res)
 				onion_response_write0(res, "file not found");
 			}
 
+			free(view);
+
 			return OCS_PROCESSED;
 		}
 	}
@@ -560,9 +561,11 @@ server_connection_home(data, req, res)
 		onion_response_write0(res, view);
 	}
 	else{
-
 		onion_response_write0(res, "file not found");
 	}
+
+	free(view);
+
 	return OCS_PROCESSED;
 }
 
@@ -581,10 +584,15 @@ server_connection_login(_, req, res)
 	const char *user_name = onion_request_get_post(req, "name");
 	const char *user_password = onion_request_get_post(req, "password");
 
+	if(!user_password || !user_password){
+		onion_response_write0(res, "invalid form");
+		return OCS_PROCESSED;
+	}
+
 	Chatrooms cr;
 
 	if(db_find_user(user_name, user_password, &cr)){
-		if( ( FOUNDUSER = user_create(strdup(user_name), strdup(user_password), cr) ) ){
+		if( ( FOUNDUSER = user_create(user_name, user_password, cr) ) ){
 			ONION_INFO("user found");
 			onion_response_write0(res, 
 					"<script>window.location.replace('/chat');</script>");
