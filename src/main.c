@@ -21,11 +21,14 @@ static void shutdown_server(int _) {
 int 
 main(int argc, char **argv)
 {
+	char *port = NULL;
+
 	int ch;
 
-	while((ch = getopt(argc, argv, "a:")) != -1){
+	while((ch = getopt(argc, argv, "a:p:")) != -1){
 
 		switch(ch){
+
 			case 'a':
 				OPTIONS |= AUTOLOGIN;
 				char * val = strdup(optarg);
@@ -33,20 +36,28 @@ main(int argc, char **argv)
 				OPTION_VALUE[strlen(val)] = 0;
 				break;
 
+			case 'p':
+				port = strdup(optarg);
+
+			break;
+
 			case '?':
-				fprintf(stderr, "usage: %s [-a admin]\n", argv[0]);
+				fprintf(stderr, "usage: %s [-a admin] [-p port]\n", argv[0]);
 				exit(EXIT_FAILURE);
 				break;
 		}
 	}
-
 
 	signal(SIGINT, shutdown_server);
 	signal(SIGTERM, shutdown_server);
 
 	o = onion_new(O_THREADED);
 
-	/* onion_set_port(o, "80"); */
+	if(port)
+		onion_set_port(o, port);
+
+	free(port);
+
 	onion_url *urls = onion_root_url(o);
 	server_init(urls);
 
