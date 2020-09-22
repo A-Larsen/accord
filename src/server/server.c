@@ -268,6 +268,7 @@ void server_websocket_get_connectedUsers(user, exclude)
 	Clist c = db_get_chatroom_users(user->chatroom.current);
 	char *a[usercount+1];
 	int len = 0;
+	cu.indices = NULL;
 
 
 	for(int i = 0; i < c.len; i++){
@@ -278,7 +279,7 @@ void server_websocket_get_connectedUsers(user, exclude)
 
 				cu.indices[len] = j;
 				len++;
-				a[i] = strdup(USERS[j]->name);
+				a[i] = USERS[j]->name;
 			}
 		}
 	}
