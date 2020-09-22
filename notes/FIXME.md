@@ -33,3 +33,9 @@ you are logged into
 
 a blank message could cause a crash on the server side. I need bounds checking
 in parseXML on server side
+
+I'm going to set js to null on the last line so that the websocket is not 
+accessable
+```javascript
+ws = null
+```
