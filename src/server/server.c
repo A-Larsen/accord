@@ -172,7 +172,7 @@ user_create(name, password, cr)
 }
 
 FileData VIEWSLISTP[4];
-FileData PUBLICLISTP[4];
+FileData PUBLICLISTP[3];
 FileData XMLLISTP[1];
 FileData POPUPSLISTP[3];
 
@@ -613,6 +613,12 @@ server_connection_signup(_, req, res)
 
 	const char *user_name = onion_request_get_post(req, "name");
 	const char *user_password = onion_request_get_post(req, "password");
+
+	if(!user_name || !user_password){
+		onion_response_write0(res, "invalid form");
+		return OCS_PROCESSED;
+	}
+
 	printf("%s %s\n", user_name, user_password);
 
 	if(db_create_user(user_name, user_password)){

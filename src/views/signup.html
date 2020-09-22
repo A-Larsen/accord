@@ -1,10 +1,15 @@
 <html>
 	SIGNUP
-	<form method="POST" action="signup/data">
+	<form name="form-singup" method="POST" action="signup/data">
 		<input type="text" name="name" />
 		<input type="password" name="password" />
 		<input type="submit" />
 	</form>
 
-	<script src="public/validate.js"></script>
+	<script>
+		let form = document.froms["form-singup"];
+
+		if(!(form["name"] || form["password"]))
+			alert("invalidfrom")
+	</script>
 </html>
