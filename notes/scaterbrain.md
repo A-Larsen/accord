@@ -156,11 +156,6 @@ CREATE TABLE zygzpiifxwbrrqrcvssr_users(user varchar(255));
 
 # NOTE
 	need to close all open pages before closing server with control c
-	
-TODO:
-- use iframe or something for popup window
-
-
 
 
 # lambdas
@@ -212,3 +207,37 @@ Granted, you don’t have to have lambdas with C. Even if you want them, they
 aren’t very portable. But it is still interesting to see how some gcc-specific
 compiler features work and it is also an interesting intellectual exercise to 
 try to match it.
+
+
+# Comparisons
+
+## `XMLHttpRequest` vs `fetch`
+
+
+fetch has to use `DOMParser` for xml
+```javascript
+function getCurrentCity(location) {
+    const lat = location.coords.latitude;
+    const lon = location.coords.longitude;
+    return fetch(apis.currentWeather.url(lat, lon))
+        .then(response => response.text())
+        .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+        .then(data => console.log(data))
+}
+```
+
+while XMLHttpRequest can set respose type to document (xml)
+
+```javascript
+const xhttp2 = new XMLHttpRequest();
+
+xhttp2.open('GET', '/popups/addfriend.html', true);
+
+xhttp2.responseType = 'document';
+
+xhttp2.onload = function(){
+	if(xhttp2.readyState = xhttp2.DONE && xhttp2.status == 200){
+
+	}
+}
+```
