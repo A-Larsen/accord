@@ -563,6 +563,7 @@ db_add_chatroom(id, alias, name)
 
 	db_update_users_chatrooms(chatrooms, name, id, alias);
 
+	free(chatrooms);
 	return 1;
 }
 
@@ -574,38 +575,18 @@ db_create_user(name, password)
 	if(db_check_if_user_exists((char *)name))
 		return 0;
 
-	int rc = 0;
 	char *sql = NULL;
 
 	asprintf(&sql, 
 			"INSERT INTO users (name, password, chatrooms) VALUES ('%s', '%s', '')", 
 			name, password);
 
-	sqlite3_stmt *stmt = NULL;
+	sqlite_prep_stmt(usersdb, sql, 
+			db_step_callback, NULL);
 
-	rc = sqlite3_prepare_v2(usersdb, 
-							sql, 
-							strlen(sql), 
-							&stmt, 
-							NULL);
-
-	printf("SQL: %s\n", sql);
-
-	rc = sqlite3_step(stmt);
-
-	if(rc != SQLITE_DONE){
-		fprintf(stderr, "prepare failed: %s\n", 
-				sqlite3_errmsg(chatroomsdb));
-
-		free(sql);
-		return 0;
-	}
-
-	sqlite3_finalize(stmt);
 	free(sql);
 
 	return 1;
-
 }
 
 void
