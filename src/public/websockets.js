@@ -2,106 +2,39 @@
 // but I add it for safe mesure
 
 let el_msg = document.getElementById('msg');
-let el_chatTitle = document.getElementById('title');
 let el_chat = document.getElementById('chat');
-let el_html = document.getElementsByTagName("html")[0];
 let el_addroom = document.getElementById('addroom');
 let el_addfriend = document.getElementById('addfriend');
 let el_friends = document.getElementById('friends');
-let el_friendsNav = document.getElementById('friends-nav');
-let el_roomsNav = document.getElementById('rooms-nav');
-let el_chatNav = document.getElementById('chat-nav');
-let el_msgbox = document.getElementById('msgbox');
-
-el_msg.focus();
-
-let el_msg_rect = msg.getBoundingClientRect();
-let el_chat_rect = chat.getBoundingClientRect();
-
-let el_msg_height = el_msg_rect.bottom - el_msg_rect.top;
-let el_chat_height = el_chat_rect.bottom - el_chat_rect.top;
-let ws = new WebSocket('ws://'+window.location.host+window.location.pathname);
-
-function validString(str){
- return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
- //`
-}
-
-let xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-
-function createXML(name){
-	let doc= 
-		document.implementation.createDocument(null, name)
-		.getElementsByTagName(name)[0];
-
-	doc.children = {}
-
-	doc.addChild = function( name, text, attrObj){
-		let child = document.createElement(name);
-
-		if(text !== null)
-			child.innerText = text;
-
-
-		if(attrObj !== null){
-			Object.entries(attrObj).forEach(([key, value]) => {
-				child.setAttribute(key, value);
-			})
-		}
-
-		child.addChild = this.addChild;
-		this.children[name] = child
-		this.appendChild(child);
-		return child;
-	}
-
-	return doc;
-
-}
-
-let xmlDoc = createXML("root");
-
-let initheader
-
-let chatroom = null;
-
-let wsid;
-wsid = Math.floor(Math.random() * 100);
-
-initheader = "id: "+wsid+"\n"+"name: NULL\n"+"closing: false\n";
-
-var elUser = xmlDoc.addChild("user", null, null);
-elUser.setAttribute("closing", "false");
-elUser.setAttribute("id", wsid);
-
-function getxmlDocStr(doc){
-	let docstr = "";
-	
-	docstr = doc.outerHTML.replace(/ xmlns="[^"]*"/g, "");
-	
-	console.log(docstr);
-	return docstr;
-
-}
-console.log(getxmlDocStr(xmlDoc));
-
-let userdata = null;
-
-ws.onopen = function(){
-
-	// if(xmlDoc.getElementsByTagName("message")){
-	// 	console.log("message found");
-	// 	xmlDoc.removeChild("message");
-	// }
-
-	ws.send(getxmlDocStr(xmlDoc));
-}
-
 
 let Chatrooms = new Map();
 let currentChatroomid = null;
 let currentChatroomname = null;
 let chatroomlength = 0;
+let xmlDoc = createXML("root");
+let chatroom = null;
+let wsid = Math.floor(Math.random() * 100);
+var elUser = xmlDoc.addChild("user", null, null);
+
+elUser.setAttribute("closing", "false");
+elUser.setAttribute("id", wsid);
+
+el_msg.focus();
+
+let ws = new WebSocket('ws://'+window.location.host+window.location.pathname);
+
+function validString(str){
+	return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
+	//`
+}
+
+console.log(getxmlDocStr(xmlDoc));
+
+let userdata = null;
+
+ws.onopen = function(){
+	ws.send(getxmlDocStr(xmlDoc));
+}
 
 ws.onmessage = function(ev){ 
 
@@ -114,7 +47,8 @@ ws.onmessage = function(ev){
 		userdata.friends.forEach((name, idx) =>{
 			console.log(name);
 
-			el_friends.innerHTML += "<p><span class='icon-info'>"+name+"</span></p><br>";
+			el_friends.innerHTML += 
+				"<p><span class='icon-info'>"+name+"</span></p><br>";
 		});
 	}
 
@@ -136,9 +70,9 @@ ws.onmessage = function(ev){
 
 				let rooms = document.getElementsByClassName('rooms');
 				for(let i = 0; i < rooms.length; i++){
-					rooms[i].innerHTML += "<p><span class='roomicon'>"+room+"</span></p>"
+					rooms[i].innerHTML += 
+						"<p><span class='roomicon'>"+room+"</span></p>"
 				}
-
 			}
 		});
 
@@ -150,9 +84,12 @@ ws.onmessage = function(ev){
 			for(let i = 0; i < el_rooms.length; i++){
 				el_rooms[i].onclick = () => {
 					document.getElementById('chat').innerHTML = "";
-					currentChatroomname = el_rooms[i].getElementsByTagName('span')[0].innerText;
+					currentChatroomname = 
+						el_rooms[i].getElementsByTagName('span')[0].innerText;
 
-					chatroom = Chatrooms.get(el_rooms[i].getElementsByTagName('span')[0].innerText);
+					chatroom = 
+						Chatrooms.get(el_rooms[i]
+							.getElementsByTagName('span')[0].innerText);
 
 					currentChatroomid = chatroom;
 
@@ -164,8 +101,6 @@ ws.onmessage = function(ev){
 						}
 					}
 
-					// ws.send("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
-					// 		"<init_room>"+chatroom+"</init_room>");
 					ws.send("<init_room>"+chatroom+"</init_room>");
 				};
 			}
@@ -175,7 +110,11 @@ ws.onmessage = function(ev){
 
 	let color = "red";
 	if(userdata && userdata.message && userdata.message != ""){
-		document.getElementById('chat').innerHTML+='<div class="username" style="color:'+color+'">'+userdata.name+'<span class="date">'+userdata.date+'</span></div><div class="messageBorder"><p>'+userdata.message+'</p></div>';
+		document.getElementById('chat').innerHTML+=
+			'<div class="username" style="color:'+color+'">'+
+				userdata.name+
+				'<span class="date">'+userdata.date+'</span></div>'+
+			'<div class="messageBorder"><p>'+userdata.message+'</p></div>';
 	}
 
 	el_chat.scrollTo(0, el_chat.scrollHeight);
@@ -189,7 +128,6 @@ xhttp1.responseType = 'document';
 
 xhttp1.onload = function(){
 	if(xhttp1.readyState = xhttp1.DONE && xhttp1.status == 200){
-		// console.log(xhttp1.response);
 		let doc = xhttp1.response.getElementById("popupform");
 
 		let buttons = doc.getElementsByTagName("button");
@@ -232,9 +170,6 @@ xhttp1.onload = function(){
 				if(elMessage){
 					xmlDoc.removeChild(elMessage);
 				}
-				// if(xmlDoc.getElementsByTagName("message")[0]){
-				// 	xmlDoc.removeChild(xmlDoc.getElementsByTagName("message")[0]);
-				// }
 				ws.send("<addroom>"+addroom_name+"</addroom>");
 				document.body.removeChild(doc);
 			}
@@ -263,7 +198,7 @@ xhttp2.responseType = 'document';
 xhttp2.onload = function(){
 	if(xhttp2.readyState = xhttp2.DONE && xhttp2.status == 200){
 		let doc = xhttp2.response.getElementById("popupform");
-		// console.log(doc);
+
 		let buttons = doc.getElementsByTagName("button");
 
 		buttons[0].onclick = function(){
@@ -273,9 +208,7 @@ xhttp2.onload = function(){
 			if(currentChatroomid && name != ""){
 				let doc = createXML("addfriend");
 				doc.textContent = name;
-				// doc.setAttribute("room_id",currentChatroomid);
 				doc.setAttribute("id",currentChatroomid);
-				// doc.setAttribute("room_name", currentChatroomname);
 				doc.setAttribute("name", currentChatroomname);
 				ws.send(getxmlDocStr(doc));
 			}
@@ -302,7 +235,6 @@ let shift = false;
 
 const regex_http = RegExp('^http[s]?');
 const regex_img = RegExp('.png$|.bmp$|.jpg$');
-// const regex_yt = RegExp('https://www.youtube.com/watch?v=');
 const regex_yt = RegExp(/www.youtube.com\/watch/);
 
 let isImage = false;
@@ -321,7 +253,9 @@ function parseMesage(msg){
 	
 	if(regex_yt.test(msg)){
 		let strid = msg.substring(msg.indexOf("=")+1, msg.length-1);
-		return "<iframe src='https://www.youtube.com/embed/"+strid+"'> </iframe>"
+		return 
+		// "<iframe src='https://www.youtube.com/embed/"+strid+"'> </iframe>"
+		"<iframe src='https://www.youtube.com/embed/"+strid+"' /> "
 	}
 
 	// works but just remove query string from '?' too the end
@@ -340,7 +274,8 @@ function parseMesage(msg){
 	if(boldmatch){
 		boldmatch.forEach((str, idx) =>{
 			let tmp = str.replace(/\*\*/g, "");
-			msg = msg.replace(str, "<span style='font-weight:900;'>"+tmp+"</span>");
+			msg = msg.replace(str, 
+				"<span style='font-weight:900;'>"+tmp+"</span>");
 		});
 
 	}
@@ -355,7 +290,8 @@ function parseMesage(msg){
 	}
 
 	if(msg[0] === ">" && msg[1] === " "){
-		msg = "<span style='background-color:#464c53;'>&nbsp;>&nbsp;</span>"+msg.substring(1);
+		msg = "<span style='background-color:#464c53;'>&nbsp;>&nbsp;</span>"+
+														msg.substring(1);
 	}
 
 	return msg;
@@ -370,7 +306,6 @@ function sendMessage(element){
 
 	let date = new Date();
 	let timestamp = Math.floor(date.getTime()/1000.0);
-	let header = initheader;
 
 	let message = parseMesage(element.value);
 
@@ -432,7 +367,6 @@ function messageKeydown(e){
 		break;
 
 		case 9: { // tab
-			// el_msg
 			e.preventDefault();
 			el_msg.value += "\t";
 		}
