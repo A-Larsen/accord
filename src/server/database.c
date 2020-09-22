@@ -295,6 +295,7 @@ db_get_chatroom_users(current)
 	c.len = 0;
 	int rc = 0;
 	sqlite3_stmt *res;
+	c.list = NULL;
 
 	char *sql = NULL;
 	asprintf(&sql, "SELECT * FROM %s_users", current);
@@ -344,6 +345,11 @@ db_create_table_chatroom(id)
 							&stmt, 
 							NULL);
 
+	if(rc != SQLITE_OK){
+		fprintf(stderr, "Failed to create chatroom table: %s\n", 
+				sqlite3_errmsg(chatroomsdb));
+	}
+
 	printf("SQL: %s\n", sql);
 
 	rc = sqlite3_step(stmt);
@@ -380,6 +386,10 @@ db_create_table_chatroom_users(id)
 							strlen(sql), 
 							&stmt, 
 							NULL);
+	if(rc != SQLITE_OK){
+		fprintf(stderr, "Failed to create chatroom users table: %s\n", 
+				sqlite3_errmsg(chatroomsdb));
+	}
 
 	printf("SQL: %s\n", sql);
 
@@ -415,7 +425,8 @@ db_check_if_user_in_chatroom(current, check)
 	rc = sqlite3_prepare_v2(chatroomsdb, sql, -1, &res, 0);
 
 	if(rc != SQLITE_OK){
-		fprintf(stderr, "Failed to fetch data (424): %s\n", sqlite3_errmsg(chatroomsdb));
+		fprintf(stderr, "Failed to check if user is in chatroom: %s\n", 
+				sqlite3_errmsg(chatroomsdb));
 	}
 
 	while((rc = sqlite3_step(res)) == SQLITE_ROW){
@@ -446,7 +457,8 @@ db_check_if_user_exists(name)
 	rc = sqlite3_prepare_v2(usersdb, "SELECT name FROM users", -1, &stmt, 0);
 
 	if(rc != SQLITE_OK){
-		fprintf(stderr, "Failed to fetch data (455): %s\n", sqlite3_errmsg(usersdb));
+		fprintf(stderr, "Failed to check if user exits: %s\n", 
+				sqlite3_errmsg(usersdb));
 	}
 
 	while((rc = sqlite3_step(stmt)) == SQLITE_ROW){
@@ -485,8 +497,13 @@ db_insert_into_chatroom_users(id, name)
 							strlen(sql), 
 							&stmt, 
 							NULL);
-
 	printf("SQL: %s\n", sql);
+
+	if(rc != SQLITE_OK){
+		fprintf(stderr, "failed to insert into chatroom users: %s\n", 
+				sqlite3_errmsg(chatroomsdb));
+	}
+
 
 	rc = sqlite3_step(stmt);
 
@@ -516,7 +533,14 @@ db_select_chatroom(name)
 	rc = sqlite3_prepare_v2(usersdb, sql, -1, &res, 0);
 
 	if(rc != SQLITE_OK){
-		fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(chatroomsdb));
+		fprintf(stderr, "Failed querry: %s\n %s\n", 
+				sqlite3_errmsg(chatroomsdb),
+				sql
+			);
+
+		free(sql);
+
+		return NULL;
 	}
 
 	rc = sqlite3_step(res);

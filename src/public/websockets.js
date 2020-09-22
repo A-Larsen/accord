@@ -38,7 +38,8 @@ ws.onopen = function(){
 
 ws.onmessage = function(ev){ 
 
-	data = ev.data.substring(0, ev.data.length-1)+"}";
+	// data = ev.data.substring(0, ev.data.length-1)+"}";
+	data = ev.data
 
 	userdata = JSON.parse(data);
 
