@@ -2,7 +2,7 @@
 #include <libxml/parser.h>
 
 char getRandchar(){
-	return (char)floor((float)rand() / RAND_MAX * 26) + 'a';
+	return (char)floor((float)rand() / (float)RAND_MAX * 26) + 'a';
 }
 
 void getRandStr(char a[20]){
@@ -212,24 +212,49 @@ parseToJSONforClient(name, md)
   const char *name;
   ClientData md;
 {
-		char messagewrap[9999];
 		if(md.message.lldate){
-			sprintf(messagewrap, 
+			int len = strlen(CLIENTJSON) +
+				strlen(name) + 
+				strlen(md.message.content) +
+				strlen(md.message.chatroom);
+
+			char *date = ts_to_readable(md.message.lldate);
+
+			len += strlen(date) + 1;
+
+			char messagewrap[len];
+
+			snprintf(messagewrap, 
+					len,
 					CLIENTJSON, 
 					name, 
 					md.message.content, 
 					ts_to_readable(md.message.lldate),
 					md.message.chatroom);
+
+			return strdup(messagewrap);
+
 		}else{
-			sprintf(messagewrap, 
+			int len = strlen(CLIENTJSON) +
+				strlen(name) + 
+				strlen(md.message.content) +
+				strlen(md.message.chatroom) +
+				strlen(md.message.sdate) + 1;
+
+			char messagewrap[len];
+
+			snprintf(messagewrap, 
+					len,
 					CLIENTJSON, 
 					name, 
 					md.message.content, 
 					md.message.sdate,
 					md.message.chatroom);
+
+			return strdup(messagewrap);
 		}
 
-		return strdup(messagewrap);
+		return NULL;
 }
 
 char * arrayToJSONArray(a, len)
