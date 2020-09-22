@@ -5,3 +5,11 @@ segfault
 
 if you click send on a popup this problem doesn't seem to occur
 
+# ISSUE 2
+going to
+
+```
+0.0.0.0:8080/login/data
+```
+
+causes a crash
