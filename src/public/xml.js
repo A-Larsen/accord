@@ -37,3 +37,20 @@ function getxmlDocStr(doc){
 	console.log(docstr);
 	return docstr;
 }
+
+function handleRequestPath(path, callback){
+	const client = new XMLHttpRequest();
+
+	client.open('GET', path , true);
+
+	client.responseType = 'document';
+
+	client.onload = function(){
+		if(client.readyState = client.DONE && client.status == 200){
+			callback(client.response);
+		}
+	}
+
+	client.send(null);
+
+}

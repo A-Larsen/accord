@@ -120,115 +120,94 @@ ws.onmessage = function(ev){
 	el_chat.scrollTo(0, el_chat.scrollHeight);
 };
 
-const xhttp1 = new XMLHttpRequest();
+handleRequestPath('/popups/addroom.html', html => {
 
-xhttp1.open('GET', '/popups/addroom.html', true);
+	let doc = html.getElementById("popupform");
 
-xhttp1.responseType = 'document';
+	let buttons = doc.getElementsByTagName("button");
 
-xhttp1.onload = function(){
-	if(xhttp1.readyState = xhttp1.DONE && xhttp1.status == 200){
-		let doc = xhttp1.response.getElementById("popupform");
+	buttons[0].onclick = function(){
+		let addroom_name = doc.getElementsByTagName('input')[0].value;
 
-		let buttons = doc.getElementsByTagName("button");
+		let nameExists = false;
 
-		buttons[0].onclick = function(){
-			let addroom_name = doc.getElementsByTagName('input')[0].value;
-
-			let nameExists = false;
-
-			Chatrooms.forEach((id, name) =>{
-				if(addroom_name == name){
-					nameExists = true;
-					return;
-				}
-			});
-
-			if(nameExists){
-				alert('chatroom already exists');
+		Chatrooms.forEach((id, name) =>{
+			if(addroom_name == name){
+				nameExists = true;
+				return;
 			}
+		});
 
-			else if(chatroomlength >= 10){
-				alert('maximum amount of chatrooms');
-			}
-
-			else if(addroom_name.length > 30){
-				alert('maximum number of characters');
-			}
-
-			else if(addroom_name.length < 2){
-				alert('not enough of characters');
-			}
-
-			else if(!validString(addroom_name)){
-				alert('special characters not allowed');
-			}
-
-			else{
-				let elMessage = xmlDoc.getElementsByTagName("message")[0];
-
-				if(elMessage){
-					xmlDoc.removeChild(elMessage);
-				}
-				ws.send("<addroom>"+addroom_name+"</addroom>");
-				document.body.removeChild(doc);
-			}
+		if(nameExists){
+			alert('chatroom already exists');
 		}
 
-		buttons[1].onclick = function(){
+		else if(chatroomlength >= 10){
+			alert('maximum amount of chatrooms');
+		}
+
+		else if(addroom_name.length > 30){
+			alert('maximum number of characters');
+		}
+
+		else if(addroom_name.length < 2){
+			alert('not enough of characters');
+		}
+
+		else if(!validString(addroom_name)){
+			alert('special characters not allowed');
+		}
+
+		else{
+			let elMessage = xmlDoc.getElementsByTagName("message")[0];
+
+			if(elMessage){
+				xmlDoc.removeChild(elMessage);
+			}
+			ws.send("<addroom>"+addroom_name+"</addroom>");
 			document.body.removeChild(doc);
 		}
-
-		el_addroom.onclick = function(){
-			document.body.appendChild(doc);
-		}
-
 	}
-}
 
-xhttp1.send(null);
-
-
-const xhttp2 = new XMLHttpRequest();
-
-xhttp2.open('GET', '/popups/addfriend.html', true);
-
-xhttp2.responseType = 'document';
-
-xhttp2.onload = function(){
-	if(xhttp2.readyState = xhttp2.DONE && xhttp2.status == 200){
-		let doc = xhttp2.response.getElementById("popupform");
-
-		let buttons = doc.getElementsByTagName("button");
-
-		buttons[0].onclick = function(){
-			
-			let name = doc.getElementsByTagName('input')[0].value;
-
-			if(currentChatroomid && name != ""){
-				let doc = createXML("addfriend");
-				doc.textContent = name;
-				doc.setAttribute("id",currentChatroomid);
-				doc.setAttribute("name", currentChatroomname);
-				ws.send(getxmlDocStr(doc));
-			}
-
-			document.body.removeChild(doc);
-		}
-
-		buttons[1].onclick = function(){
-			document.body.removeChild(doc);
-		}
-
-		el_addfriend.onclick = function(){
-			document.body.appendChild(doc);
-		}
-
+	buttons[1].onclick = function(){
+		document.body.removeChild(doc);
 	}
-}
 
-xhttp2.send(null);
+	el_addroom.onclick = function(){
+		document.body.appendChild(doc);
+	}
 
+});
+
+handleRequestPath('/popups/addfriend.html', html => {
+	let doc = html.getElementById("popupform");
+
+	let buttons = doc.getElementsByTagName("button");
+
+	buttons[0].onclick = function(){
+		
+		let name = doc.getElementsByTagName('input')[0].value;
+
+		if(currentChatroomid && name != ""){
+			let doc = createXML("addfriend");
+			doc.textContent = name;
+			doc.setAttribute("id",currentChatroomid);
+			doc.setAttribute("name", currentChatroomname);
+			ws.send(getxmlDocStr(doc));
+		}
+
+		document.body.removeChild(doc);
+	}
+
+	buttons[1].onclick = function(){
+		document.body.removeChild(doc);
+	}
+
+	el_addfriend.onclick = function(){
+		document.body.appendChild(doc);
+	}
+
+});
 
 let shift = false;
 
