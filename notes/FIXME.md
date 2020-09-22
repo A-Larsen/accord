@@ -27,3 +27,9 @@ I don't want users to be able to send messages throught the console.
 this also means that you could send a message as a different user than the one 
 you are logged into
 
+```javascript
+> ws.send('<root><user closing="false" id="24"></user><message chatroom="lnohzaevmzswqfsqucbj" date="1600796468"></message></root>')
+```
+
+a blank message could cause a crash on the server side. I need bounds checking
+in parseXML on server side
