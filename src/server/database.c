@@ -3,6 +3,34 @@
 static sqlite3 *usersdb;
 static sqlite3 *chatroomsdb;
 
+void
+sqlite_prep_stmt(db, sql, callback, data)
+  sqlite3 *db;
+  char *sql;
+  int (*callback) (sqlite3_stmt *, void *);
+	void *data;
+{
+	sqlite3_stmt *stmt;
+
+	if(sqlite3_prepare_v2(db, sql, -1, &stmt, 0) != SQLITE_OK){
+		fprintf(stderr, "Failed sql: %s\n %s\n", 
+					sqlite3_errmsg(db),
+					sql);
+
+		free(sql);
+		return;
+	}
+
+	if(callback(stmt, data) != SQLITE_DONE){
+		fprintf(stderr, "prepare failed: %s\n", 
+				sqlite3_errmsg(chatroomsdb));
+
+	}
+
+	sqlite3_finalize(stmt);
+	free(sql);
+}
+
 static int callback_search_user(data, argc, argv, azColName)
   void *data;
   int argc;
@@ -114,6 +142,14 @@ db_find_user(name, password, cr)
 	return rc;
 }
 
+int /* callback */ 
+db_store_message_callback(stmt, data)
+	sqlite3_stmt *stmt;
+	void *data;
+{
+	return sqlite3_step(stmt);
+}
+
 int 
 db_store_message(cr, name, msg, date)
   Chatrooms *cr;
@@ -121,8 +157,6 @@ db_store_message(cr, name, msg, date)
   char *msg;
   long int date;
 {
-
-	int rc = 0;
 
 	char parse[512];
 
@@ -152,28 +186,11 @@ db_store_message(cr, name, msg, date)
 			parse, 
 			date);
 
-	sqlite3_stmt *stmt = NULL;
-	rc = sqlite3_prepare_v2(chatroomsdb, 
-							sql, 
-							strlen(sql), 
-							&stmt, 
-							NULL);
-
-	printf("SQL: %s\n", sql);
-
-	rc = sqlite3_step(stmt);
-
-	if(rc != SQLITE_DONE){
-		fprintf(stderr, "prepare failed: %s\n", 
-				sqlite3_errmsg(chatroomsdb));
-
-	}
-	sqlite3_finalize(stmt);
-	free(sql);
-
+	sqlite_prep_stmt(chatroomsdb, sql, db_store_message_callback, NULL);
 
 	return 1;
 }
+
 
 static int 
 callback_search_chatrooms(data, argc, argv, azColName)
@@ -287,37 +304,43 @@ db_init_login(cr, ws)
 	return 1;
 }
 
+int
+db_get_chatroom_users_callback(stmt, data)
+  sqlite3_stmt *stmt;
+  void *data;
+{
+	int rc = 0;
+	Clist *c = ((Clist **)data)[0];
+	char *current = ((char **)data)[1];
+
+	while((rc = sqlite3_step(stmt)) == SQLITE_ROW){
+		printf("%s_users row: %s\n", current, sqlite3_column_text(stmt, 0));
+		c->list = (char **)dynamicArrayResize((void **)c->list, c->len + 1, sizeof(char *));
+
+		const unsigned char * text = sqlite3_column_text(stmt, 0);
+		c->list[c->len] = strdup((char *)text);
+		c->list[c->len][strlen((char *)text)] = 0;
+		c->len++;
+	}
+	return rc;
+}
+
 Clist
 db_get_chatroom_users(current)
   char *current;
 {
 	Clist c;
 	c.len = 0;
-	int rc = 0;
-	sqlite3_stmt *res;
 	c.list = NULL;
+
+	void *data[2];
+	data[0] = &c;
+	data[1] = current;
 
 	char *sql = NULL;
 	asprintf(&sql, "SELECT * FROM %s_users", current);
 
-	rc = sqlite3_prepare_v2(chatroomsdb, sql, -1, &res, 0);
-
-	if(rc != SQLITE_OK){
-		fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(chatroomsdb));
-	}
-
-	while((rc = sqlite3_step(res)) == SQLITE_ROW){
-		printf("%s_users row: %s\n", current, sqlite3_column_text(res, 0));
-		c.list = (char **)dynamicArrayResize((void **)c.list, c.len + 1, sizeof(char *));
-
-		const unsigned char * text = sqlite3_column_text(res, 0);
-		c.list[c.len] = strdup((char *)text);
-		c.list[c.len][strlen((char *)text)] = 0;
-		c.len++;
-	}
-
-	sqlite3_finalize(res);
-	free(sql);
+	sqlite_prep_stmt(chatroomsdb, sql, db_get_chatroom_users_callback, data);
 
 	return c;
 }
