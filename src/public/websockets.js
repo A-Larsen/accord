@@ -356,3 +356,4 @@ function messageKeydown(e){
 
 el_msg.addEventListener('keydown', messageKeydown, false);
 
+ws = null;
