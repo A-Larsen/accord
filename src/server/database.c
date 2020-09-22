@@ -3,6 +3,9 @@
 static sqlite3 *usersdb;
 static sqlite3 *chatroomsdb;
 
+int db_step_callback(sqlite3_stmt *stmt, void *data)
+{return sqlite3_step(stmt); };
+
 void
 sqlite_prep_stmt(db, sql, callback, data)
   sqlite3 *db;
@@ -138,14 +141,7 @@ db_find_user(name, password, cr)
 	return rc;
 }
 
-int /* callback */ 
-db_store_message_callback(stmt, data)
-	sqlite3_stmt *stmt;
-	void *data;
-{
-	return sqlite3_step(stmt);
-
-} int 
+int 
 db_store_message(cr, name, msg, date)
   Chatrooms *cr;
   const char *name;
@@ -180,7 +176,7 @@ db_store_message(cr, name, msg, date)
 			parse, 
 			date);
 
-	sqlite_prep_stmt(chatroomsdb, sql, db_store_message_callback, NULL);
+	sqlite_prep_stmt(chatroomsdb, sql, db_step_callback, NULL);
 
 	free(sql);
 
@@ -369,14 +365,7 @@ db_create_table_chatroom(id)
 	return 1;
 }
 
-int
-db_create_table_chatroom_users_callback(stmt, data)
-	sqlite3_stmt *stmt;
-	void *data;
-{
-	return sqlite3_step(stmt); 
-
-} static int
+static int
 db_create_table_chatroom_users(id)
   char *id;
 {
@@ -387,7 +376,7 @@ db_create_table_chatroom_users(id)
 			id);
 
 	sqlite_prep_stmt(chatroomsdb, sql, 
-			db_create_table_chatroom_users_callback, NULL);
+			db_step_callback, NULL);
 
 	free(sql);
 
@@ -431,7 +420,7 @@ db_check_if_user_in_chatroom(current, check)
 	asprintf(&sql, "SELECT * FROM %s_users", current);
 
 	sqlite_prep_stmt(chatroomsdb, sql, 
-			db_create_table_chatroom_users_callback, data);
+			db_check_if_user_in_chatroom_callback, data);
 
 	free(sql);
 
@@ -484,39 +473,16 @@ db_insert_into_chatroom_users(id, name)
 	if(!db_check_if_user_exists(name) || db_check_if_user_in_chatroom(id, name))
 		return 0;
 
-	int rc = 0;
+
 	char *sql = NULL;
 
 	asprintf(&sql, 
 			"INSERT INTO %s_users values('%s')", 
 			id, name);
 
-	sqlite3_stmt *stmt = NULL;
+	sqlite_prep_stmt(chatroomsdb, sql, 
+			db_step_callback, NULL);
 
-	rc = sqlite3_prepare_v2(chatroomsdb, 
-							sql, 
-							strlen(sql), 
-							&stmt, 
-							NULL);
-	printf("SQL: %s\n", sql);
-
-	if(rc != SQLITE_OK){
-		fprintf(stderr, "failed to insert into chatroom users: %s\n", 
-				sqlite3_errmsg(chatroomsdb));
-	}
-
-
-	rc = sqlite3_step(stmt);
-
-	if(rc != SQLITE_DONE){
-		fprintf(stderr, "prepare failed: %s\n", 
-				sqlite3_errmsg(chatroomsdb));
-
-		free(sql);
-		return 0;
-	}
-
-	sqlite3_finalize(stmt);
 	free(sql);
 	return 1;
 }
@@ -571,42 +537,21 @@ db_update_users_chatrooms(chatrooms, name, id, alias)
 	char *cat = NULL;
 	if(!strcmp(chatrooms, "")){
 		asprintf(&cat, "%s;%s;", alias, id);
-
 	}else{
 		asprintf(&cat, "%s%s;%s;", chatrooms, alias, id);
-
 	}
 
-	int rc = 0;
-	sqlite3_stmt *res1;
-
-	char *sql2 = NULL;
+	char *sql = NULL;
 
 	printf("sql cat: %s\n", cat);
 	printf("sql alias: %s\n", alias);
-	asprintf(&sql2, "UPDATE users SET chatrooms='%s' WHERE name='%s'", cat, name);
-	printf("sql2: %s\n", sql2);
-	rc = sqlite3_prepare_v2(usersdb, sql2, -1, &res1, 0);
+	asprintf(&sql, "UPDATE users SET chatrooms='%s' WHERE name='%s'", cat, name);
+	printf("sql: %s\n", sql);
+	sqlite_prep_stmt(usersdb, sql, 
+			db_step_callback, NULL);
 
-	if(rc != SQLITE_OK){
-		fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(usersdb));
-	}
-
-	rc = sqlite3_step(res1);
-
-	if(rc != SQLITE_DONE){
-		fprintf(stderr, "prepare failed: %s\n", 
-				sqlite3_errmsg(chatroomsdb));
-
-		free(sql2);
-		return 0;
-	}
-
-	sqlite3_finalize(res1);
-
-	free(sql2);
+	free(sql);
 	free(cat);
-
 	return 1;
 }
 
