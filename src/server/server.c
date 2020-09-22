@@ -104,23 +104,21 @@ server_add_dir(urls, dir)
 			data.length = len;
 
 			if(!strcmp(dir, "views/")){
-				/* memcpy(&VIEWS[n], &data, sizeof(data)); */
-				memcpy(&VIEWS.list[n], &data, sizeof(data));
-				/* VIEWSN++; */
+				VIEWS.list[n] = data;
 				VIEWS.size++;
 			}
 			else if(!strcmp(dir, "public/")){
-				memcpy(&PUBLIC.list[n], &data, sizeof(data));
+				PUBLIC.list[n] = data;
 				server_add_static_file(urls, "public/", PUBLIC.list[n].name);
 				PUBLIC.size++;
 			}
 			else if(!strcmp(dir, "xmlp/")){
-				memcpy(&XML.list[n], &data, sizeof(data));
+				XML.list[n] = data;
 				server_add_static_file(urls, "xmlp/", XML.list[n].name);
 				XML.size++;
 			}
 			else if(!strcmp(dir, "popups/")){
-				memcpy(&POPUPS.list[n], &data, sizeof(data));
+				POPUPS.list[n] = data;
 				server_add_static_file(urls, "popups/", POPUPS.list[n].name);
 				POPUPS.size++;
 			}
