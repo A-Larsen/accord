@@ -172,7 +172,7 @@ user_create(name, password, cr)
 }
 
 FileData VIEWSLISTP[4];
-FileData PUBLICLISTP[3];
+FileData PUBLICLISTP[4];
 FileData XMLLISTP[1];
 FileData POPUPSLISTP[3];
 
