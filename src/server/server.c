@@ -206,9 +206,13 @@ server_add_static_file(urls, route, name)
   char *route;
   char *name;
 {
-	size_t len = strlen(name) + 8;
+	int routelen = strlen(route);
+	int len = routelen + strlen(name) + 1;
+
 	char file[len];
-	snprintf(file, len, "%s%s", route, name);
+	strlcpy(file, route, routelen+1);
+	strlcat(file, name, len);
+
 	FILE *fp = fopen(file, "r");
 
 	char filestr[MAX_FILESIZE];
