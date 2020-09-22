@@ -28,6 +28,11 @@ typedef struct _FileData{
 	long int length;
 }FileData;
 
+typedef struct _FileDataList {
+	FileData list[10];
+	int size;
+}FileDataList;
+
 
 typedef struct _ConnectedUsers{
 	int *indices;

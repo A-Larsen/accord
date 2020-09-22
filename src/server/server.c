@@ -20,44 +20,49 @@
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
 
-/* char OPTIONS = 0; */
-/* #define AUTOLOGIN  1 << 0 */
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
 
 static bool FOUNDUSER      = false;
 static User **USERS;
 
-static int VIEWSN          = 0;
-
-static int PUBLICN         = 0;
-
-static int XMLN            = 0;
-
-static int POPUPSN         = 0;
 // zero indexed count
 static int usercount       = -1;
 
-static FileData VIEWS         [10];
-static FileData PUBLIC        [10];
-static FileData XML           [10];
-static FileData POPUPS        [10];
+FileDataList VIEWS;
+FileDataList PUBLIC;
+FileDataList XML;
+FileDataList POPUPS;
 
 static bool RELOGIN = false;
 static User *RELOGIN_USER = NULL;
+
+enum diradd {NONE, STATIC};
 
 char *
 server_get_view(name)
   char *name;
 {
 
-	for(int i = 0; i < VIEWSN; i++){
-		if(!strcmp(VIEWS[i].name, name)){
-			return VIEWS[i].data;
+	/* for(int i = 0; i < VIEWSN; i++){ */
+	for(int i = 0; i < VIEWS.size; i++){
+		if(!strcmp(VIEWS.list[i].name, name)){
+			return VIEWS.list[i].data;
 		}
 	}
 
 	return NULL;
+}
+
+void 
+add_dir_callback(data, dir)
+	FileData data;
+	enum diradd dir;
+{
+	if(dir == NONE){
+
+	}
+
 }
 
 void 
@@ -100,23 +105,25 @@ server_add_dir(urls, dir)
 			data.length = len;
 
 			if(!strcmp(dir, "views/")){
-				memcpy(&VIEWS[n], &data, sizeof(data));
-				VIEWSN++;
+				/* memcpy(&VIEWS[n], &data, sizeof(data)); */
+				memcpy(&VIEWS.list[n], &data, sizeof(data));
+				/* VIEWSN++; */
+				VIEWS.size++;
 			}
 			else if(!strcmp(dir, "public/")){
-				memcpy(&PUBLIC[n], &data, sizeof(data));
-				server_add_static_file(urls, "public/", PUBLIC[n].name);
-				PUBLICN++;
+				memcpy(&PUBLIC.list[n], &data, sizeof(data));
+				server_add_static_file(urls, "public/", PUBLIC.list[n].name);
+				PUBLIC.size++;
 			}
 			else if(!strcmp(dir, "xmlp/")){
-				memcpy(&XML[n], &data, sizeof(data));
-				server_add_static_file(urls, "xmlp/", XML[n].name);
-				XMLN++;
+				memcpy(&XML.list[n], &data, sizeof(data));
+				server_add_static_file(urls, "xmlp/", XML.list[n].name);
+				XML.size++;
 			}
 			else if(!strcmp(dir, "popups/")){
-				memcpy(&POPUPS[n], &data, sizeof(data));
-				server_add_static_file(urls, "popups/", POPUPS[n].name);
-				POPUPSN++;
+				memcpy(&POPUPS.list[n], &data, sizeof(data));
+				server_add_static_file(urls, "popups/", POPUPS.list[n].name);
+				POPUPS.size++;
 			}
 
 			n++;
@@ -168,6 +175,11 @@ int
 server_init(urls)
   onion_url *urls;
 {
+	VIEWS.size = 0;
+	PUBLIC.size = 0;
+	XML.size = 0;
+	POPUPS.size = 0;
+
 	srand(time(0));
 	int rc;
 	server_add_dir(NULL, "views/");
