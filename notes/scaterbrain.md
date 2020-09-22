@@ -159,5 +159,56 @@ CREATE TABLE zygzpiifxwbrrqrcvssr_users(user varchar(255));
 	
 TODO:
 - use iframe or something for popup window
--
 
+
+
+
+# lambdas
+
+well I would say no to this. because it is a comlie specific situation. But 
+since it is a website that will be running on linux what could it hurt ?
+Ubuntu also uses gcc.
+
+[https://hackaday.com/2019/09/11/lambdas-for-c-sort-of/]()
+
+
+```
+#define lambda(lambda$_ret, lambda$_args, lambda$_body)\
+({\
+lambda$_ret lambda$__anon$ lambda$_args\
+lambda$_body\
+&amp;lambda$__anon$;\
+})
+```
+
+This takes advantage of the gcc features I mentioned and the fact that gcc 
+will let you use dollar signs in identifiers. That means that you might need 
+to pass -std=gnu99 on the gcc command line to make this work properly. 
+This should do it:
+
+```sh
+gcc -o clambda2 --std=gnu99 clambda2.c
+```
+
+# CAVEATS
+
+There are caveats. You can’t depend on the lambda having a scope beyond the 
+enclosing function so an asynchronous callback would not work. Accessing local
+variables in the enclosing scope is iffy. Consider this code:
+
+```c
+int factor=10;
+printf("%f\n",average_apply(lambda(float,(float x),{ return x/factor; })));
+```
+
+This compiles and ought to work. It does work for this online compiler. 
+However, using the Linux system for Windows 10, the same code would seg fault. 
+In fact, if you didn’t set the gcc -O2 option, the other examples would seg 
+fault, too. On my Linux boxes, it works fine. I can’t tell if this is a bug in
+Windows or if Linux is just covering up something wrong. However, it seems like
+if it compiles it ought to work and — mostly — it does.
+
+Granted, you don’t have to have lambdas with C. Even if you want them, they 
+aren’t very portable. But it is still interesting to see how some gcc-specific
+compiler features work and it is also an interesting intellectual exercise to 
+try to match it.
