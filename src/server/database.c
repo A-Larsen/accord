@@ -461,7 +461,6 @@ db_check_if_user_exists(name)
 			db_check_if_user_exists_callback, data);
 
 	return found;
-
 }
 
 // do not insert if the name already exists
@@ -487,39 +486,31 @@ db_insert_into_chatroom_users(id, name)
 	return 1;
 }
 
-char * 
+
+int
+db_select_chatroom_callback(stmt, data)
+	sqlite3_stmt *stmt;
+	void *data;
+{
+	int rc = sqlite3_step(stmt);
+	char **chatrooms = (char **)data;
+
+	if(rc == SQLITE_ROW){
+		*chatrooms = strdup((char *)sqlite3_column_text(stmt, 0));
+	}
+
+	return SQLITE_DONE; 
+
+} char * 
 db_select_chatroom(name)
   char *name;
 {
-	int rc = 0;
-	sqlite3_stmt *res;
-
 	char *sql = NULL;
 	asprintf(&sql, "SELECT chatrooms FROM users WHERE name='%s'", name);
-
-	rc = sqlite3_prepare_v2(usersdb, sql, -1, &res, 0);
-
-	if(rc != SQLITE_OK){
-		fprintf(stderr, "Failed querry: %s\n %s\n", 
-				sqlite3_errmsg(chatroomsdb),
-				sql
-			);
-
-		free(sql);
-
-		return NULL;
-	}
-
-	rc = sqlite3_step(res);
-
 	char *chatrooms = NULL;
 
-	if(rc == SQLITE_ROW){
-		chatrooms = strdup((char *)sqlite3_column_text(res, 0));
-	}
-
-	sqlite3_finalize(res);
-	free(sql);
+	sqlite_prep_stmt(usersdb, sql, 
+			db_select_chatroom_callback, (void *)&chatrooms);
 
 	return chatrooms;
 }

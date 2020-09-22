@@ -50,6 +50,7 @@ main(int argc, char **argv)
 	signal(SIGINT, shutdown_server);
 	signal(SIGTERM, shutdown_server);
 
+
 	o = onion_new(O_THREADED);
 
 	if(port)
