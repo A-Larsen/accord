@@ -29,7 +29,7 @@ typedef struct _FileData{
 }FileData;
 
 typedef struct _FileDataList {
-	FileData list[10];
+	FileData *list;
 	int size;
 }FileDataList;
 

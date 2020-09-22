@@ -171,13 +171,25 @@ user_create(name, password, cr)
 	return 1;
 }
 
+FileData VIEWSLISTP[4];
+FileData PUBLICLISTP[3];
+FileData XMLLISTP[1];
+FileData POPUPSLISTP[3];
+
 int 
 server_init(urls)
   onion_url *urls;
 {
+	VIEWS.list = VIEWSLISTP;
 	VIEWS.size = 0;
+
+	PUBLIC.list = PUBLICLISTP;
 	PUBLIC.size = 0;
+
+	XML.list = XMLLISTP;
 	XML.size = 0;
+
+	POPUPS.list = POPUPSLISTP;
 	POPUPS.size = 0;
 
 	srand(time(0));
