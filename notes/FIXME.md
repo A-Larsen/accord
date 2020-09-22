@@ -22,5 +22,8 @@ in a browser console I can do something like
 > ws.send("<root><user closing=\"false\" id=\"73\"></user><message chatroom=\"ktclilwwceccxmjcqxzc\" date=\"1600794987\">not good&lt;br&gt;</message></root>")
 ```
 
-I don't want users to be able to send messages throught the console
+I don't want users to be able to send messages throught the console.
+
+this also means that you could send a message as a different user than the one 
+you are logged into
 
