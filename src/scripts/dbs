@@ -10,8 +10,15 @@ while getopts "c:l:" opt; do
 					sqlite3 databases/users.db 'DELETE FROM users WHERE name != "#ONE" AND name != "#TWO"'
 
 					if [ -f "databases/chatrooms.db" ]; then
-						doas rm -r databases/chatrooms.db 
+
+						if command -v doas > /dev/null; then
+							doas rm -r databases/chatrooms.db 
+						else
+							sudo rm -r databases/chatrooms.db 
+						fi
+
 					fi
+
 					echo "cleared all data"
 				;;
 
@@ -30,9 +37,6 @@ while getopts "c:l:" opt; do
 			esac
 		;;
 
-		# *)
-		# 	echo "not a valid argument"
-		# ;;
 	esac
 
 done
