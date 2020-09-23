@@ -533,15 +533,8 @@ server_connection_chat(data, req, res)
 
 				onion_dict *h = onion_response_get_headers(res);
 
-				/* onion_response_add_cookie(res, "logedin", "true", 5*3600, */ 
-				/* 							"/", "0.0.0.0", 0); */
-				/* onion_response_add_cookie(res, "logedin", "true", -1, */ 
-				/* 							"/", "0.0.0.0", 0); */
-
-				/* onion_response_add_cookie(res, "logedin", "true", -1, */ 
-				/* 		NULL, NULL, 0); */
-
-				onion_response_add_cookie(res, "logedin", "true", -1, NULL, NULL, 0);
+				onion_response_add_cookie(res, "loggedin", "true", -1, NULL, 
+																NULL, 0);
 
 				COOKIES_CHAT = strdup(onion_dict_get(h, "Set-Cookie"));
 
