@@ -77,6 +77,7 @@ main(int argc, char **argv)
 
 	onion_url_add_static(urls, "login", loginview, HTTP_OK);
 
+
 	char * signupview = strdup(server_get_view("signup.html"));
 
 	if(!signupview){

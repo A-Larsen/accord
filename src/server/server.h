@@ -6,6 +6,7 @@
 #include <signal.h>
 #include <onion/log.h>
 #include <onion/onion.h>
+#include <onion/dict.h>
 #include <errno.h>
 #include <dirent.h>
 #include <stdbool.h>
