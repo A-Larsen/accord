@@ -10,13 +10,9 @@ while getopts "c:l:" opt; do
 					sqlite3 databases/users.db 'DELETE FROM users WHERE name != "#ONE" AND name != "#TWO"'
 
 					if [ -f "databases/chatrooms.db" ]; then
-
-						if command -v doas > /dev/null; then
-							doas rm -r databases/chatrooms.db 
-						else
-							sudo rm -r databases/chatrooms.db 
-						fi
-
+						command -v doas > /dev/null &&
+						doas rm -r databases/chatrooms.db || 
+						sudo rm -r databases/chatrooms.db 
 					fi
 
 					echo "cleared all data"
