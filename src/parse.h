@@ -70,5 +70,6 @@ long int fileToStr(FILE *fp, char *str);
 void nsort(void **data, int len);
 char * parseToJSONforClient(const char *name, ClientData md);
 char * arrayToJSONArray(char **a, int len);
+char * parseCookie(const char *cookie);
 
 #endif

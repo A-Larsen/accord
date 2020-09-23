@@ -20,7 +20,7 @@
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
 
-const char *COOKIES_CHAT;
+const char *COOKIES_CHAT = NULL;
 
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
@@ -416,7 +416,7 @@ server_websocket_chat(data, ws, data_ready_len)
   onion_websocket *ws;
   ssize_t data_ready_len;
 {
-	ONION_INFO("COOKIES %s\n", COOKIES_CHAT);
+
 
 	if(CLOSING && closinguser){
 		user_close(closinguser);
@@ -495,6 +495,15 @@ server_connection_chat(data, req, res)
   onion_request *req;
   onion_response *res;
 {
+	bool loggedin = false;
+
+	// handle relogin on client side
+	if(COOKIES_CHAT){
+		ONION_INFO("COOKIES %s\n", COOKIES_CHAT);
+		loggedin = !strcmp(parseCookie((char *)COOKIES_CHAT), "true");
+		ONION_INFO("LOGGED IN: %d", loggedin);
+	}
+
 
 	if(OPTIONS & AUTOLOGIN){
 		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);

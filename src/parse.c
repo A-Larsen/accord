@@ -362,3 +362,13 @@ admin_search(admin)
 
 	return NULL;
 }
+
+char *
+parseCookie(cookie)
+	const char *cookie;
+{
+	char *c = (char *)cookie;
+	strsep( &c, "=");
+	
+	return c;
+}
