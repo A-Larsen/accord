@@ -20,6 +20,8 @@
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
 
+const char *COOKIES_CHAT;
+
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
 
@@ -414,6 +416,7 @@ server_websocket_chat(data, ws, data_ready_len)
   onion_websocket *ws;
   ssize_t data_ready_len;
 {
+	ONION_INFO("COOKIES %s\n", COOKIES_CHAT);
 
 	if(CLOSING && closinguser){
 		user_close(closinguser);
@@ -527,6 +530,21 @@ server_connection_chat(data, req, res)
 			char *view = strdup(server_get_view("socket.html"));
 
 			if(view){
+
+				onion_dict *h = onion_response_get_headers(res);
+
+				/* onion_response_add_cookie(res, "logedin", "true", 5*3600, */ 
+				/* 							"/", "0.0.0.0", 0); */
+				/* onion_response_add_cookie(res, "logedin", "true", -1, */ 
+				/* 							"/", "0.0.0.0", 0); */
+
+				/* onion_response_add_cookie(res, "logedin", "true", -1, */ 
+				/* 		NULL, NULL, 0); */
+
+				onion_response_add_cookie(res, "logedin", "true", -1, NULL, NULL, 0);
+
+				COOKIES_CHAT = strdup(onion_dict_get(h, "Set-Cookie"));
+
 				onion_response_write0(res, view);
 			}
 
