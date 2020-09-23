@@ -7,12 +7,12 @@ let el_addroom = document.getElementById('addroom');
 let el_addfriend = document.getElementById('addfriend');
 let el_friends = document.getElementById('friends');
 
-let Chatrooms = new Map();
-let currentChatroomid = null;
-let currentChatroomname = null;
-let chatroomlength = 0;
+let Chatrooms = {
+	rooms: new Map(),
+	current: {id: null, name: null},
+};
+
 let xmlDoc = createXML("root");
-let chatroom = null;
 let wsid = Math.floor(Math.random() * 100);
 var elUser = xmlDoc.addChild("user", null, null);
 
@@ -66,8 +66,7 @@ ws.onmessage = function(ev){
 
 		userdata.initchatrooms.forEach((room, idx) => {
 			if(idx%2 == 0){
-				chatroomlength++;
-				Chatrooms.set(room, userdata.initchatrooms[idx+1]);
+				Chatrooms.rooms.set(room, userdata.initchatrooms[idx+1]);
 
 				let rooms = document.getElementsByClassName('rooms');
 				for(let i = 0; i < rooms.length; i++){
@@ -85,14 +84,13 @@ ws.onmessage = function(ev){
 			for(let i = 0; i < el_rooms.length; i++){
 				el_rooms[i].onclick = () => {
 					document.getElementById('chat').innerHTML = "";
-					currentChatroomname = 
+
+					Chatrooms.current.name = 
 						el_rooms[i].getElementsByTagName('span')[0].innerText;
 
-					chatroom = 
-						Chatrooms.get(el_rooms[i]
+					Chatrooms.current.id = 
+						Chatrooms.rooms.get(el_rooms[i]
 							.getElementsByTagName('span')[0].innerText);
-
-					currentChatroomid = chatroom;
 
 					el_rooms[i].style.backgroundColor = "#525959";
 
@@ -102,7 +100,7 @@ ws.onmessage = function(ev){
 						}
 					}
 
-					ws.send("<init_room>"+chatroom+"</init_room>");
+					ws.send("<init_room>"+Chatrooms.current.id+"</init_room>");
 				};
 			}
 
@@ -124,15 +122,15 @@ ws.onmessage = function(ev){
 handleRequestPath('/popups/addroom.html', html => {
 
 	let doc = html.getElementById("popupform");
-
 	let buttons = doc.getElementsByTagName("button");
+	let input = doc.getElementsByTagName('input')[0]; 
 
 	buttons[0].onclick = function(){
-		let addroom_name = doc.getElementsByTagName('input')[0].value;
+		let addroom_name = input.value;
 
 		let nameExists = false;
 
-		Chatrooms.forEach((id, name) =>{
+		Chatrooms.rooms.forEach((id, name) =>{
 			if(addroom_name == name){
 				nameExists = true;
 				return;
@@ -143,7 +141,8 @@ handleRequestPath('/popups/addroom.html', html => {
 			alert('chatroom already exists');
 		}
 
-		else if(chatroomlength >= 10){
+		// else if(chatroomlength >= 10){
+		else if(Chatrooms.rooms.size >= 10){
 			alert('maximum amount of chatrooms');
 		}
 
@@ -176,6 +175,7 @@ handleRequestPath('/popups/addroom.html', html => {
 
 	el_addroom.onclick = function(){
 		document.body.appendChild(doc);
+		input.focus();
 	}
 
 });
@@ -184,16 +184,17 @@ handleRequestPath('/popups/addfriend.html', html => {
 	let doc = html.getElementById("popupform");
 
 	let buttons = doc.getElementsByTagName("button");
+	let input = doc.getElementsByTagName('input')[0]; 
 
 	buttons[0].onclick = function(){
 		
-		let name = doc.getElementsByTagName('input')[0].value;
+		let name = input.value;
 
-		if(currentChatroomid && name != ""){
+		if(Chatrooms.current.id && name != ""){
 			let doc = createXML("addfriend");
 			doc.textContent = name;
-			doc.setAttribute("id",currentChatroomid);
-			doc.setAttribute("name", currentChatroomname);
+			doc.setAttribute("id",Chatrooms.current.id);
+			doc.setAttribute("name", Chatrooms.current.name);
 			ws.send(getxmlDocStr(doc));
 		}
 
@@ -206,6 +207,7 @@ handleRequestPath('/popups/addfriend.html', html => {
 
 	el_addfriend.onclick = function(){
 		document.body.appendChild(doc);
+		input.focus();
 	}
 
 });
@@ -279,7 +281,7 @@ function parseMesage(msg){
 
 function sendMessage(element){
 	console.log(element.value);
-	if(element.value === "" || element.value === "\n" || !chatroom){
+	if(element.value === "" || element.value === "\n" || !Chatrooms.current.id){
 		element.value = "";
 		return;
 	}
@@ -291,7 +293,7 @@ function sendMessage(element){
 
 	var elMessage = xmlDoc.addChild("message", null, null);
 
-	elMessage.setAttribute("chatroom", chatroom);
+	elMessage.setAttribute("chatroom", Chatrooms.current.id);
 
 	elMessage.setAttribute("date", timestamp);
 
