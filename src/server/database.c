@@ -337,14 +337,7 @@ db_get_chatroom_users(current)
 	return c;
 }
 
-int
-db_create_table_chatroom_callback(stmt, data)
-	sqlite3_stmt *stmt;
-	void *data;
-{
-	return sqlite3_step(stmt); 
-
-} static int
+static int
 db_create_table_chatroom(id)
 	char *id;
 {
@@ -359,7 +352,7 @@ db_create_table_chatroom(id)
 			id);
 
 	sqlite_prep_stmt(chatroomsdb, sql, 
-			db_create_table_chatroom_callback, NULL);
+			db_step_callback, NULL);
 
 	free(sql);
 	return 1;
