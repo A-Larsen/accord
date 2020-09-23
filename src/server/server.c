@@ -500,7 +500,7 @@ server_connection_chat(data, req, res)
 	// handle relogin on client side
 	if(COOKIES_CHAT){
 		ONION_INFO("COOKIES %s\n", COOKIES_CHAT);
-		loggedin = !strcmp(parseCookie((char *)COOKIES_CHAT), "true");
+		loggedin = !strcmp(parseCookie(COOKIES_CHAT), "true");
 		ONION_INFO("LOGGED IN: %d", loggedin);
 	}
 
