@@ -50,6 +50,10 @@ console.log(getxmlDocStr(xmlDoc));
 let userdata = null;
 
 ws.onopen = function(){
+	// console.log(getCookie("loggedin"));
+	if(getCookie("loggedin") === "true"){
+		console.log("loggin in\n");
+	}
 	ws.send(getxmlDocStr(xmlDoc));
 }
 
