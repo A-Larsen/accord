@@ -509,8 +509,10 @@ server_connection_chat(data, req, res)
 		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);
 		char * pass = admin_search(OPTION_VALUE);
 
-		if(!pass)
+		if(!pass){
 			fprintf(stderr, "could not find password for admin");
+			exit(EXIT_FAILURE);
+		}
 
 		Chatrooms cr;
 		db_find_user(OPTION_VALUE, pass, &cr);
