@@ -1,5 +1,21 @@
 // it seems that javascript strings end with the \n character
 // but I add it for safe mesure
+//
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
 
 let el_msg = document.getElementById('msg');
 let el_chat = document.getElementById('chat');
@@ -18,6 +34,7 @@ var elUser = xmlDoc.addChild("user", null, null);
 
 elUser.setAttribute("closing", "false");
 elUser.setAttribute("id", wsid);
+document.cookie = "userid="+wsid;
 
 el_msg.focus();
 

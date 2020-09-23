@@ -499,9 +499,19 @@ server_connection_chat(data, req, res)
 
 	// handle relogin on client side
 	if(COOKIES_CHAT){
-		ONION_INFO("COOKIES %s\n", COOKIES_CHAT);
-		loggedin = !strcmp(parseCookie(COOKIES_CHAT), "true");
-		ONION_INFO("LOGGED IN: %d", loggedin);
+
+		ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
+		char *cookiecpy = strdup(COOKIES_CHAT);
+		char *value = parseCookie(cookiecpy);
+
+		ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
+
+		if(value){
+			loggedin = !strcmp(value, "true");
+			ONION_INFO("LOGGED IN: %d", loggedin);
+		}
+
+		free(cookiecpy);
 	}
 
 

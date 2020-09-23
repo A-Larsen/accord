@@ -364,11 +364,14 @@ admin_search(admin)
 }
 
 char *
-parseCookie(cookie)
-	const char *cookie;
+parseCookie(cookiecpy)
+	char *cookiecpy;
 {
-	char *c = (char *)cookie;
-	strsep( &c, "=");
+	if(!strstr(cookiecpy, "="))
+		return NULL;
+
+	/* char *c = strdup((char *)cookiecpy); */
+	strsep( &cookiecpy, "=");
 	
-	return c;
+	return cookiecpy;
 }
