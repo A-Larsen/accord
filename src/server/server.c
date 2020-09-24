@@ -557,6 +557,7 @@ server_connection_chat(data, req, res)
 			user_close(closinguser);
 			/* return OCS_CLOSE_CONNECTION; */
 		}
+
 		Chatrooms cr;
 		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
 		FOUNDUSER = user_create(RELOGIN_USER->name, RELOGIN_USER->password, cr);
