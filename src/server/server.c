@@ -489,6 +489,32 @@ server_websocket_chat(data, ws, data_ready_len)
 }
 
 
+void
+loadHTML(res, filestr)
+  onion_response *res;
+  char *filestr;
+{
+
+	char *view = strdup(server_get_view("socket.html"));
+
+	if(view){
+
+		onion_dict *h = onion_response_get_headers(res);
+
+		onion_response_add_cookie(res, "loggedin", "true", -1, NULL, 
+														NULL, 0);
+
+		COOKIES_CHAT = strdup(onion_dict_get(h, "Set-Cookie"));
+
+		onion_response_write0(res, view);
+	}
+
+	else{
+		onion_response_write0(res, "file not found");
+	}
+
+	free(view);
+}
 
 onion_connection_status 
 server_connection_chat(data, req, res) 
@@ -521,6 +547,9 @@ server_connection_chat(data, req, res)
 	if(usercount >= 0  && USERS[usercount]){
 
 		if(!FOUNDUSER){
+			// we need a notLoggedin.html
+			// to handle things
+
 			if(COOKIES_CHAT){
 
 				ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
@@ -535,36 +564,22 @@ server_connection_chat(data, req, res)
 				}
 
 				free(cookiecpy);
+				loadHTML(res, "socket.html");
+				return OCS_PROCESSED; 
+
+			}else{
+
+				onion_response_write0(res, "not logged in");
+				return OCS_PROCESSED;
 			}
 
-			onion_response_write0(res, "not logged in");
-			return OCS_PROCESSED;
 		}
 
 
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
 
 		if(!USERS[usercount]->ws){
-			char *view = strdup(server_get_view("socket.html"));
-
-			if(view){
-
-				onion_dict *h = onion_response_get_headers(res);
-
-				onion_response_add_cookie(res, "loggedin", "true", -1, NULL, 
-																NULL, 0);
-
-				COOKIES_CHAT = strdup(onion_dict_get(h, "Set-Cookie"));
-
-				onion_response_write0(res, view);
-			}
-
-			else{
-				onion_response_write0(res, "file not found");
-			}
-
-			free(view);
-
+			loadHTML(res, "socket.html");
 			return OCS_PROCESSED;
 		}
 	}
