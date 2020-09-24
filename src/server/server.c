@@ -21,7 +21,6 @@
 //
 
 static bool CLOSING        = false;
-static User *closinguser   = NULL;
 
 static bool FOUNDUSER      = false;
 static User **USERS;
@@ -438,8 +437,8 @@ server_websocket_chat(data, ws, data_ready_len)
 	int len = onion_websocket_read(ws, tmp, data_ready_len);
 
 	if (len <= 0) {
-		if(CLOSING && closinguser){
-			user_close(closinguser);
+		if(CLOSING && RELOGIN_USER){
+			user_close(RELOGIN_USER);
 			return OCS_NEED_MORE_DATA;
 		}
 		ONION_ERROR("Error reading data: %d: %s (%d)", errno, strerror(errno),
@@ -473,9 +472,8 @@ server_websocket_chat(data, ws, data_ready_len)
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
 			RELOGIN = true;
-			RELOGIN_USER = user;
-			closinguser = user;
 			CLOSING = true;
+			RELOGIN_USER = user;
 
 			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}");
 
@@ -530,8 +528,8 @@ server_connection_chat(data, req, res)
 		FOUNDUSER = user_create(OPTION_VALUE, pass, cr);
 	}
 	else if(RELOGIN && RELOGIN_USER){
-		if(CLOSING && closinguser){
-			user_close(closinguser);
+		if(CLOSING){
+			user_close(RELOGIN_USER);
 		}
 
 		Chatrooms cr;
@@ -547,6 +545,8 @@ server_connection_chat(data, req, res)
 			return OCS_PROCESSED;
 		}
 
+		// we have to make a ne websocket for RELOGGIN
+		// lets not have that
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
 
 		if(!USERS[usercount]->ws){

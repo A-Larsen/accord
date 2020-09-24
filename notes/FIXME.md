@@ -1,11 +1,11 @@
-# ISSUE 1
+# ~~ISSUE 1~~
 
 you can send a message when no chatrooms are selected. If you do so you get a 
 segfault
 
 if you click send on a popup this problem doesn't seem to occur
 
-# ISSUE 2
+# ~~ISSUE 2~~
 going to
 
 ```
@@ -42,3 +42,18 @@ ws = null
 ```
 .. this doesn't work because the socket needs to stay open for messages and 
 adding rooms and friends
+
+# ISSUE 4
+
+logging in as user one and then logging into user two.
+if you proceed to close user ones page then user two 
+cannot send messages without a page refresh.
+
+I belive changing how new websockets are chreated in
+`server_connection_chat()` could fix this.
+
+```c
+// we have to make a ne websocket for RELOGGIN
+// lets not have that
+USERS[usercount]->ws = onion_websocket_new(req, res); 
+```
