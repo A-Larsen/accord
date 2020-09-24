@@ -443,7 +443,10 @@ server_websocket_chat(data, ws, data_ready_len)
 	parseXML(tmp, &md);
 	if(loggedin){
 		printf("WAIT IM LOGGED IN\n");
+		printf("serverid = %d", md.user.id);
+		return OCS_NEED_MORE_DATA;
 	}
+
 	ONION_INFO("FOUND CHATROOM %s\n", md.message.chatroom);
 
 	User *user = getUser(md.user.id);

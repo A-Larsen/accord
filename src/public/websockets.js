@@ -29,12 +29,22 @@ let Chatrooms = {
 };
 
 let xmlDoc = createXML("root");
-let wsid = Math.floor(Math.random() * 100);
 var elUser = xmlDoc.addChild("user", null, null);
 
 elUser.setAttribute("closing", "false");
-elUser.setAttribute("id", wsid);
-document.cookie = "userid="+wsid;
+
+if(getCookie("loggedin") === "true" && getCookie("userid") !== undefined){
+	// console.log("loggin in");
+	// console.log(console.log(getCookie("userid")));
+	elUser.setAttribute("id", getCookie("userid"));
+}
+else{
+	let wsid = Math.floor(Math.random() * 100);
+	elUser.setAttribute("id", wsid);
+	document.cookie = "userid="+wsid;
+
+}
+
 
 el_msg.focus();
 
@@ -50,10 +60,12 @@ console.log(getxmlDocStr(xmlDoc));
 let userdata = null;
 
 ws.onopen = function(){
-	if(getCookie("loggedin") === "true" && getCookie("userid") !== undefined){
-		console.log("loggin in");
-		console.log(console.log(getCookie("userid")));
-	}
+	// if(getCookie("loggedin") === "true" && getCookie("userid") !== undefined){
+	// 	console.log("loggin in");
+	// 	console.log(console.log(getCookie("userid")));
+	// 	elUser.setAttribute("id", getCookie);
+	// }
+
 	ws.send(getxmlDocStr(xmlDoc));
 }
 
