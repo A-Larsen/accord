@@ -528,9 +528,9 @@ server_connection_chat(data, req, res)
 		FOUNDUSER = user_create(OPTION_VALUE, pass, cr);
 	}
 	else if(RELOGIN && RELOGIN_USER){
-		if(CLOSING){
-			user_close(RELOGIN_USER);
-		}
+		/* if(CLOSING){ */
+		/* 	user_close(RELOGIN_USER); */
+		/* } */
 
 		Chatrooms cr;
 		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
