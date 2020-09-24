@@ -171,7 +171,7 @@ user_create(name, password, cr)
 	return 1;
 }
 
-FileData VIEWSLISTP[4];
+FileData VIEWSLISTP[5];
 FileData PUBLICLISTP[3];
 FileData XMLLISTP[1];
 FileData POPUPSLISTP[3];
@@ -490,22 +490,15 @@ server_websocket_chat(data, ws, data_ready_len)
 
 
 void
-loadHTML(res, filestr)
+loadHTML(res, filename)
   onion_response *res;
-  char *filestr;
+  char *filename;
 {
 
-	char *view = strdup(server_get_view("socket.html"));
+	/* char *view = strdup(server_get_view("socket.html")); */
+	char *view = strdup(server_get_view(filename));
 
 	if(view){
-
-		onion_dict *h = onion_response_get_headers(res);
-
-		onion_response_add_cookie(res, "loggedin", "true", -1, NULL, 
-														NULL, 0);
-
-		COOKIES_CHAT = strdup(onion_dict_get(h, "Set-Cookie"));
-
 		onion_response_write0(res, view);
 	}
 
@@ -552,19 +545,19 @@ server_connection_chat(data, req, res)
 
 			if(COOKIES_CHAT){
 
-				ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
-				char *cookiecpy = strdup(COOKIES_CHAT);
-				char *value = parseCookie(cookiecpy);
+				/* ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT); */
+				/* char *cookiecpy = strdup(COOKIES_CHAT); */
+				/* char *value = parseCookie(cookiecpy); */
 
-				ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
+				/* ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT); */
 
-				if(value){
-					loggedin = !strcmp(value, "true");
-					ONION_INFO("LOGGED IN: %d", loggedin);
-				}
+				/* if(value){ */
+				/* 	loggedin = !strcmp(value, "true"); */
+				/* 	ONION_INFO("LOGGED IN: %d", loggedin); */
+				/* } */
 
-				free(cookiecpy);
-				loadHTML(res, "socket.html");
+				/* free(cookiecpy); */
+				loadHTML(res, "notloggedin.html");
 				return OCS_PROCESSED; 
 
 			}else{
@@ -579,6 +572,10 @@ server_connection_chat(data, req, res)
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
 
 		if(!USERS[usercount]->ws){
+			onion_dict *h = onion_response_get_headers(res);
+			onion_response_add_cookie(res, "loggedin", "true", -1, NULL, 
+															NULL, 0);
+			COOKIES_CHAT = strdup(onion_dict_get(h, "Set-Cookie"));
 			loadHTML(res, "socket.html");
 			return OCS_PROCESSED;
 		}
