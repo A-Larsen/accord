@@ -47,6 +47,8 @@ typedef struct _User{
 	onion_websocket *ws;
 	bool active;
 	bool refresh;
+	bool loggedin;
+	char * cookie;
 	Chatrooms chatroom;
 	ConnectedUsers cu;
 } User;

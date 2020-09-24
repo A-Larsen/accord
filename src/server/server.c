@@ -19,7 +19,7 @@
 //
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
-bool loggedin = false;
+/* bool loggedin = false; */
 
 const char *COOKIES_CHAT = NULL;
 
@@ -447,7 +447,7 @@ server_websocket_chat(data, ws, data_ready_len)
 	User *user = getUser(md.user.id);
 
 
-	if(USERS[usercount] && USERS[usercount]->id == -1){
+	if(!user && USERS[usercount] && USERS[usercount]->id == -1){
 		USERS[usercount]->id = md.user.id;
 
 		if(USERS[usercount]->chatroom.rooms.len > 0)
@@ -457,12 +457,25 @@ server_websocket_chat(data, ws, data_ready_len)
 	}
 	
 	if(user){
-		if(loggedin && user->refresh){
+		if(user->loggedin && user->refresh){
 			printf("WAIT IM LOGGED IN ID = %d\n", md.user.id);
 			server_websocket_send_chatrooms(user);
 			user->refresh = false;
 			/* return OCS_NEED_MORE_DATA; */
 		}
+
+		ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
+		char *cookiecpy = strdup(COOKIES_CHAT);
+		char *value = parseCookie(cookiecpy);
+
+		ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
+
+		if(value){
+			user->loggedin = !strcmp(value, "true");
+			ONION_INFO("LOGGED IN: %d", user->loggedin);
+		}
+
+		free(cookiecpy);
 
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
@@ -508,9 +521,9 @@ server_connection_chat(data, req, res)
   onion_response *res;
 {
 	/* printf("RESET\n"); */
-	if(loggedin){
-		printf("GETTING THERE\n");
-	}
+	/* if(loggedin){ */
+	/* 	printf("GETTING THERE\n"); */
+	/* } */
 
 	if(OPTIONS & AUTOLOGIN){
 		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);
@@ -540,18 +553,19 @@ server_connection_chat(data, req, res)
 
 			if(COOKIES_CHAT){
 
-				ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
-				char *cookiecpy = strdup(COOKIES_CHAT);
-				char *value = parseCookie(cookiecpy);
+				/* ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT); */
+				/* char *cookiecpy = strdup(COOKIES_CHAT); */
+				/* char *value = parseCookie(cookiecpy); */
 
-				ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
+				/* ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT); */
 
-				if(value){
-					loggedin = !strcmp(value, "true");
-					ONION_INFO("LOGGED IN: %d", loggedin);
-				}
+				/* if(value){ */
+				/* 	USERS[usercount]->loggedin = !strcmp(value, "true"); */
+				/* 	ONION_INFO("LOGGED IN: %d", USERS[usercount]->loggedin); */
+				/* } */
 
-				free(cookiecpy);
+				/* free(cookiecpy); */
+
 				/* loadHTML(res, "notloggedin.html"); */
 				/* onion_response_write0(res, */ 
 				/* 		server_get_view("notloggedin.html")); */
