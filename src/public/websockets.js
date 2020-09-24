@@ -74,13 +74,17 @@ ws.onmessage = function(ev){
 		});
 	}
 
+
 	if(userdata && userdata.error){
 		alert(userdata.error);
 	}
 
 	if(userdata && userdata.reload){
+		if(userdata && userdata.getInfo){
+			console.log("getInfo recieved");
+		}
 		console.log("aye");
-		window.location.replace(userdata.reload);
+		// window.location.replace(userdata.reload);
 	}
 
 	if(userdata.initchatrooms){

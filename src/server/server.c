@@ -19,6 +19,7 @@
 //
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
+bool loggedin = false;
 
 const char *COOKIES_CHAT = NULL;
 
@@ -417,6 +418,7 @@ server_websocket_chat(data, ws, data_ready_len)
   onion_websocket *ws;
   ssize_t data_ready_len;
 {
+	/* printf("what\n"); */
 
 
 	if(CLOSING && closinguser){
@@ -455,10 +457,11 @@ server_websocket_chat(data, ws, data_ready_len)
 	if(user){
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
-			ONION_INFO("ABOUT TO CLOSE");
-			closinguser = user;
-			CLOSING = true;
-			return OCS_NEED_MORE_DATA;
+			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}");
+			/* ONION_INFO("ABOUT TO CLOSE"); */
+			/* closinguser = user; */
+			/* CLOSING = true; */
+			/* return OCS_NEED_MORE_DATA; */
 		}
 
 		else if(md.addfriend.roomname){
@@ -495,7 +498,10 @@ server_connection_chat(data, req, res)
   onion_request *req;
   onion_response *res;
 {
-	bool loggedin = false;
+	/* printf("RESET\n"); */
+	if(loggedin){
+		printf("GETTING THERE\n");
+	}
 
 	if(OPTIONS & AUTOLOGIN){
 		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);
@@ -525,22 +531,24 @@ server_connection_chat(data, req, res)
 
 			if(COOKIES_CHAT){
 
-				/* ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT); */
-				/* char *cookiecpy = strdup(COOKIES_CHAT); */
-				/* char *value = parseCookie(cookiecpy); */
+				ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
+				char *cookiecpy = strdup(COOKIES_CHAT);
+				char *value = parseCookie(cookiecpy);
 
-				/* ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT); */
+				ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
 
-				/* if(value){ */
-				/* 	loggedin = !strcmp(value, "true"); */
-				/* 	ONION_INFO("LOGGED IN: %d", loggedin); */
-				/* } */
+				if(value){
+					loggedin = !strcmp(value, "true");
+					ONION_INFO("LOGGED IN: %d", loggedin);
+				}
 
-				/* free(cookiecpy); */
+				free(cookiecpy);
 				/* loadHTML(res, "notloggedin.html"); */
-				onion_response_write0(res, 
-						server_get_view("notloggedin.html"));
-				return OCS_PROCESSED; 
+				/* onion_response_write0(res, */ 
+				/* 		server_get_view("notloggedin.html")); */
+				/* onion_response_write0(res, */ 
+				/* 		 "{\"reload\": \"/chat\"}"); */
+				/* return OCS_PROCESSED; */ 
 
 			}else{
 
