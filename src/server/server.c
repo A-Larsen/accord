@@ -42,6 +42,24 @@ static User *RELOGIN_USER = NULL;
 
 enum diradd {NONE, STATIC};
 
+void
+userGetLoggedIn(user)
+  User *user;
+{
+	ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
+	char *cookiecpy = strdup(COOKIES_CHAT);
+	char *value = parseCookie(cookiecpy);
+
+	ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
+
+	if(value){
+		user->loggedin = !strcmp(value, "true");
+		ONION_INFO("LOGGED IN: %d", user->loggedin);
+	}
+
+	free(cookiecpy);
+}
+
 char *
 server_get_view(name)
   char *name;
@@ -461,21 +479,10 @@ server_websocket_chat(data, ws, data_ready_len)
 			printf("WAIT IM LOGGED IN ID = %d\n", md.user.id);
 			server_websocket_send_chatrooms(user);
 			user->refresh = false;
-			/* return OCS_NEED_MORE_DATA; */
 		}
 
-		ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
-		char *cookiecpy = strdup(COOKIES_CHAT);
-		char *value = parseCookie(cookiecpy);
+		userGetLoggedIn(user);
 
-		ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
-
-		if(value){
-			user->loggedin = !strcmp(value, "true");
-			ONION_INFO("LOGGED IN: %d", user->loggedin);
-		}
-
-		free(cookiecpy);
 
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
