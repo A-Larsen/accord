@@ -186,7 +186,8 @@ user_create(name, password, cr)
 	USERS[usercount]->chatroom.current = NULL;
 
 	USERS[usercount]->active = false; 
-	USERS[usercount]->refresh = true; 
+	/* USERS[usercount]->refresh = true; */ 
+	USERS[usercount]->refresh = false; 
 	return 1;
 }
 
@@ -476,16 +477,29 @@ server_websocket_chat(data, ws, data_ready_len)
 	
 	if(user){
 		if(user->loggedin && user->refresh){
-			printf("WAIT IM LOGGED IN ID = %d\n", md.user.id);
-			server_websocket_send_chatrooms(user);
-			user->refresh = false;
+			/* printf("WAIT IM LOGGED IN ID = %d\n", md.user.id); */
+			/* server_websocket_send_chatrooms(user); */
+			/* user->refresh = false; */
+			/* RELOGIN = true; */
+			/* RELOGIN_USER = user; */
+
+			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}"); */
 		}
 
 		userGetLoggedIn(user);
+		/* user->refresh = md.user.refresh; */
 
 
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
+			user->refresh = false;
+			RELOGIN = true;
+			RELOGIN_USER = user;
+
+			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}");
+
+
+
 			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}"); */
 			/* ONION_INFO("ABOUT TO CLOSE"); */
 			/* closinguser = user; */
@@ -548,6 +562,8 @@ server_connection_chat(data, req, res)
 	else if(RELOGIN && RELOGIN_USER){
 		Chatrooms cr;
 		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
+		/* RELOGIN_USER->refresh = true; */
+		/* RELOGIN_USER->refresh = false; */
 		FOUNDUSER = user_create(RELOGIN_USER->name, RELOGIN_USER->password, cr);
 		RELOGIN = false;
 	}
@@ -590,7 +606,7 @@ server_connection_chat(data, req, res)
 
 
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
-		USERS[usercount]->refresh = true;
+		/* USERS[usercount]->refresh = true; */
 
 		if(!USERS[usercount]->ws){
 			onion_dict *h = onion_response_get_headers(res);
