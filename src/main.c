@@ -68,26 +68,13 @@ main(int argc, char **argv)
 	onion_url_add(urls, "signup/data", server_connection_signup);
 	onion_url_add(urls, "sitemap.xml", server_connection_sitemap);
 
-	
-	char * loginview = strdup(server_get_view("login.html"));
 
-	if(!loginview){
-		fprintf(stderr, "could not read login.html");
-	}
-
-	onion_url_add_static(urls, "login", loginview, HTTP_OK);
+	onion_url_add_static(urls, "login",
+			server_get_view("login.html"), HTTP_OK);
 
 
-	char * signupview = strdup(server_get_view("signup.html"));
-
-	if(!signupview){
-		fprintf(stderr, "cound not read signup.html");
-	}
-
-	onion_url_add_static(urls, "signup", signupview, HTTP_OK);
-
-	free(loginview);
-	free(signupview);
+	onion_url_add_static(urls, "signup", 
+			server_get_view("signup.html"), HTTP_OK);
 
 	onion_listen(o);
 

@@ -19,9 +19,6 @@
 //
 //	https://stackoverflow.com/questions/381300/how-can-i-read-an-xml-file-into-a-buffer-in-c
 //
-/* bool loggedin = false; */
-
-const char *COOKIES_CHAT = NULL;
 
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
@@ -46,11 +43,11 @@ void
 userGetLoggedIn(user)
   User *user;
 {
-	ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
-	char *cookiecpy = strdup(COOKIES_CHAT);
+	ONION_INFO("COOKIES '%s'\n", user->cookie);
+	char *cookiecpy = strdup(user->cookie);
 	char *value = parseCookie(cookiecpy);
 
-	ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
+	ONION_INFO("COOKIES AFTER PARSE '%s'\n", user->cookie);
 
 	if(value){
 		user->loggedin = !strcmp(value, "true");
@@ -64,7 +61,6 @@ char *
 server_get_view(name)
   char *name;
 {
-
 	for(int i = 0; i < VIEWS.size; i++){
 		if(!strcmp(VIEWS.list[i].name, name)){
 			return VIEWS.list[i].data;
@@ -82,7 +78,6 @@ add_dir_callback(data, dir)
 	if(dir == NONE){
 
 	}
-
 }
 
 void 
@@ -435,13 +430,6 @@ server_websocket_chat(data, ws, data_ready_len)
   onion_websocket *ws;
   ssize_t data_ready_len;
 {
-	/* printf("what\n"); */
-
-
-	/* if(CLOSING && closinguser){ */
-	/* 	user_close(closinguser); */
-	/* 	return OCS_CLOSE_CONNECTION; */
-	/* } */
 
 	char tmp[500];
 	if ((long unsigned int)data_ready_len > sizeof(tmp))
@@ -449,17 +437,16 @@ server_websocket_chat(data, ws, data_ready_len)
 
 	int len = onion_websocket_read(ws, tmp, data_ready_len);
 
-	// actually close user here ?
 	if (len <= 0) {
 		if(CLOSING && closinguser){
 			user_close(closinguser);
-			/* return OCS_CLOSE_CONNECTION; */
 			return OCS_NEED_MORE_DATA;
 		}
 		ONION_ERROR("Error reading data: %d: %s (%d)", errno, strerror(errno),
 					data_ready_len);
 		return OCS_NEED_MORE_DATA;
 	}
+
 	tmp[len] = 0;
 
 	ClientData md;
@@ -483,7 +470,6 @@ server_websocket_chat(data, ws, data_ready_len)
 
 		userGetLoggedIn(user);
 
-
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
 			RELOGIN = true;
@@ -493,11 +479,6 @@ server_websocket_chat(data, ws, data_ready_len)
 
 			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}");
 
-
-
-			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}"); */
-			/* ONION_INFO("ABOUT TO CLOSE"); */
-			/* return OCS_NEED_MORE_DATA; */
 		}
 
 		else if(md.addfriend.roomname){
@@ -534,10 +515,6 @@ server_connection_chat(data, req, res)
   onion_request *req;
   onion_response *res;
 {
-	/* printf("RESET\n"); */
-	/* if(loggedin){ */
-	/* 	printf("GETTING THERE\n"); */
-	/* } */
 
 	if(OPTIONS & AUTOLOGIN){
 		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);
@@ -555,7 +532,6 @@ server_connection_chat(data, req, res)
 	else if(RELOGIN && RELOGIN_USER){
 		if(CLOSING && closinguser){
 			user_close(closinguser);
-			/* return OCS_CLOSE_CONNECTION; */
 		}
 
 		Chatrooms cr;
@@ -567,13 +543,9 @@ server_connection_chat(data, req, res)
 	if(usercount >= 0  && USERS[usercount]){
 
 		if(!FOUNDUSER){
-			// we need a notLoggedin.html
-			// to handle things
 			onion_response_write0(res, "not logged in");
 			return OCS_PROCESSED;
-
 		}
-
 
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
 
@@ -581,7 +553,8 @@ server_connection_chat(data, req, res)
 			onion_dict *h = onion_response_get_headers(res);
 			onion_response_add_cookie(res, "loggedin", "true", -1, NULL, 
 															NULL, 0);
-			COOKIES_CHAT = strdup(onion_dict_get(h, "Set-Cookie"));
+
+			USERS[usercount]->cookie= strdup(onion_dict_get(h, "Set-Cookie"));
 			onion_response_write0(res, 
 					server_get_view("socket.html"));
 			return OCS_PROCESSED;
