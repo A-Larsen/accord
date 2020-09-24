@@ -186,8 +186,6 @@ user_create(name, password, cr)
 	USERS[usercount]->chatroom.current = NULL;
 
 	USERS[usercount]->active = false; 
-	/* USERS[usercount]->refresh = true; */ 
-	USERS[usercount]->refresh = false; 
 	return 1;
 }
 
@@ -440,10 +438,10 @@ server_websocket_chat(data, ws, data_ready_len)
 	/* printf("what\n"); */
 
 
-	if(CLOSING && closinguser){
-		user_close(closinguser);
-		return OCS_CLOSE_CONNECTION;
-	}
+	/* if(CLOSING && closinguser){ */
+	/* 	user_close(closinguser); */
+	/* 	return OCS_CLOSE_CONNECTION; */
+	/* } */
 
 	char tmp[500];
 	if ((long unsigned int)data_ready_len > sizeof(tmp))
@@ -451,7 +449,12 @@ server_websocket_chat(data, ws, data_ready_len)
 
 	int len = onion_websocket_read(ws, tmp, data_ready_len);
 
+	// actually close user here ?
 	if (len <= 0) {
+		if(CLOSING && closinguser){
+			user_close(closinguser);
+			return OCS_CLOSE_CONNECTION;
+		}
 		ONION_ERROR("Error reading data: %d: %s (%d)", errno, strerror(errno),
 					data_ready_len);
 		return OCS_NEED_MORE_DATA;
@@ -476,23 +479,12 @@ server_websocket_chat(data, ws, data_ready_len)
 	}
 	
 	if(user){
-		if(user->loggedin && user->refresh){
-			/* printf("WAIT IM LOGGED IN ID = %d\n", md.user.id); */
-			/* server_websocket_send_chatrooms(user); */
-			/* user->refresh = false; */
-			/* RELOGIN = true; */
-			/* RELOGIN_USER = user; */
-
-			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}"); */
-		}
 
 		userGetLoggedIn(user);
-		/* user->refresh = md.user.refresh; */
 
 
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
-			user->refresh = false;
 			RELOGIN = true;
 			RELOGIN_USER = user;
 
@@ -502,8 +494,8 @@ server_websocket_chat(data, ws, data_ready_len)
 
 			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}"); */
 			/* ONION_INFO("ABOUT TO CLOSE"); */
-			/* closinguser = user; */
-			/* CLOSING = true; */
+			closinguser = user;
+			CLOSING = true;
 			/* return OCS_NEED_MORE_DATA; */
 		}
 
@@ -562,8 +554,6 @@ server_connection_chat(data, req, res)
 	else if(RELOGIN && RELOGIN_USER){
 		Chatrooms cr;
 		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
-		/* RELOGIN_USER->refresh = true; */
-		/* RELOGIN_USER->refresh = false; */
 		FOUNDUSER = user_create(RELOGIN_USER->name, RELOGIN_USER->password, cr);
 		RELOGIN = false;
 	}
@@ -573,40 +563,13 @@ server_connection_chat(data, req, res)
 		if(!FOUNDUSER){
 			// we need a notLoggedin.html
 			// to handle things
-
-			if(COOKIES_CHAT){
-
-				/* ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT); */
-				/* char *cookiecpy = strdup(COOKIES_CHAT); */
-				/* char *value = parseCookie(cookiecpy); */
-
-				/* ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT); */
-
-				/* if(value){ */
-				/* 	USERS[usercount]->loggedin = !strcmp(value, "true"); */
-				/* 	ONION_INFO("LOGGED IN: %d", USERS[usercount]->loggedin); */
-				/* } */
-
-				/* free(cookiecpy); */
-
-				/* loadHTML(res, "notloggedin.html"); */
-				/* onion_response_write0(res, */ 
-				/* 		server_get_view("notloggedin.html")); */
-				/* onion_response_write0(res, */ 
-				/* 		 "{\"reload\": \"/chat\"}"); */
-				/* return OCS_PROCESSED; */ 
-
-			}else{
-
-				onion_response_write0(res, "not logged in");
-				return OCS_PROCESSED;
-			}
+			onion_response_write0(res, "not logged in");
+			return OCS_PROCESSED;
 
 		}
 
 
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
-		/* USERS[usercount]->refresh = true; */
 
 		if(!USERS[usercount]->ws){
 			onion_dict *h = onion_response_get_headers(res);

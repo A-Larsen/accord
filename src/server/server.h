@@ -46,7 +46,6 @@ typedef struct _User{
 	char *password;
 	onion_websocket *ws;
 	bool active;
-	bool refresh;
 	bool loggedin;
 	char * cookie;
 	Chatrooms chatroom;
