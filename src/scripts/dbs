@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# sqlite3 ~/.config/chromium/Default/Cookies "SELECT * FROM cookies WHERE host_key='0.0.0.0'" | less
 while getopts "c:l:" opt; do
 	
 	case $opt in 
@@ -8,6 +9,7 @@ while getopts "c:l:" opt; do
 				all)
 					sqlite3 databases/users.db 'UPDATE users SET chatrooms = ""'
 					sqlite3 databases/users.db 'DELETE FROM users WHERE name != "#ONE" AND name != "#TWO"'
+					sqlite3 ~/.config/chromium/Default/Cookies 'DELETE FROM cookies WHERE host_key="0.0.0.0"' 
 
 					if [ -f "databases/chatrooms.db" ]; then
 						command -v doas > /dev/null &&
@@ -28,7 +30,13 @@ while getopts "c:l:" opt; do
 				;;
 
 				all)
+					echo "---USERS---"
 					sqlite3 databases/users.db "SELECT name FROM users"
+					echo -e "-----------\n"
+					echo "--COOKIES--"
+					sqlite3 ~/.config/chromium/Default/Cookies "SELECT * FROM cookies WHERE host_key='0.0.0.0'" 
+					echo "-----------"
+
 				;;
 			esac
 		;;

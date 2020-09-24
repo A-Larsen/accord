@@ -437,10 +437,13 @@ server_websocket_chat(data, ws, data_ready_len)
 	int len = onion_websocket_read(ws, tmp, data_ready_len);
 
 	if (len <= 0) {
-		if(CLOSING && RELOGIN_USER){
-			user_close(RELOGIN_USER);
-			return OCS_NEED_MORE_DATA;
-		}
+		/* if(CLOSING && RELOGIN_USER){ */
+		/* 	user_close(RELOGIN_USER); */
+		/* 	/1* return OCS_NEED_MORE_DATA; *1/ */
+		/* 	return OCS_CLOSE_CONNECTION; */
+		/* } */
+		return OCS_CLOSE_CONNECTION;
+
 		ONION_ERROR("Error reading data: %d: %s (%d)", errno, strerror(errno),
 					data_ready_len);
 		return OCS_NEED_MORE_DATA;
@@ -531,6 +534,11 @@ server_connection_chat(data, req, res)
 		/* if(CLOSING){ */
 		/* 	user_close(RELOGIN_USER); */
 		/* } */
+		if(CLOSING){
+			user_close(RELOGIN_USER);
+			/* return OCS_NEED_MORE_DATA; */
+			/* return OCS_CLOSE_CONNECTION; */
+		}
 
 		Chatrooms cr;
 		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
