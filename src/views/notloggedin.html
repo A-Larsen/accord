@@ -1,1 +1,9 @@
+<script>
+	let ws = new WebSocket('ws://'+window.location.host+window.location.pathname);
+
+	ws.onopen = function(){
+		ws.send("hello");
+	}
+</script>
+
 not logged in though
