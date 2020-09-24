@@ -24,6 +24,7 @@ const char *COOKIES_CHAT = NULL;
 
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
+static VIEWPASS = false;
 
 static bool FOUNDUSER      = false;
 static User **USERS;
@@ -497,24 +498,6 @@ server_connection_chat(data, req, res)
 {
 	bool loggedin = false;
 
-	// handle relogin on client side
-	if(COOKIES_CHAT){
-
-		ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
-		char *cookiecpy = strdup(COOKIES_CHAT);
-		char *value = parseCookie(cookiecpy);
-
-		ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
-
-		if(value){
-			loggedin = !strcmp(value, "true");
-			ONION_INFO("LOGGED IN: %d", loggedin);
-		}
-
-		free(cookiecpy);
-	}
-
-
 	if(OPTIONS & AUTOLOGIN){
 		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);
 		char * pass = admin_search(OPTION_VALUE);
@@ -528,18 +511,32 @@ server_connection_chat(data, req, res)
 		db_find_user(OPTION_VALUE, pass, &cr);
 		FOUNDUSER = user_create(OPTION_VALUE, pass, cr);
 	}
-
-	if(RELOGIN && RELOGIN_USER){
+	else if(RELOGIN && RELOGIN_USER){
 		Chatrooms cr;
 		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
 		FOUNDUSER = user_create(RELOGIN_USER->name, RELOGIN_USER->password, cr);
 		RELOGIN = false;
 	}
 
-
 	if(usercount >= 0  && USERS[usercount]){
 
 		if(!FOUNDUSER){
+			if(COOKIES_CHAT){
+
+				ONION_INFO("COOKIES '%s'\n", COOKIES_CHAT);
+				char *cookiecpy = strdup(COOKIES_CHAT);
+				char *value = parseCookie(cookiecpy);
+
+				ONION_INFO("COOKIES AFTER PARSE '%s'\n", COOKIES_CHAT);
+
+				if(value){
+					loggedin = !strcmp(value, "true");
+					ONION_INFO("LOGGED IN: %d", loggedin);
+				}
+
+				free(cookiecpy);
+			}
+
 			onion_response_write0(res, "not logged in");
 			return OCS_PROCESSED;
 		}
