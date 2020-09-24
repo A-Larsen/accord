@@ -441,6 +441,9 @@ server_websocket_chat(data, ws, data_ready_len)
 
 	ClientData md;
 	parseXML(tmp, &md);
+	if(loggedin){
+		printf("WAIT IM LOGGED IN\n");
+	}
 	ONION_INFO("FOUND CHATROOM %s\n", md.message.chatroom);
 
 	User *user = getUser(md.user.id);
@@ -457,7 +460,7 @@ server_websocket_chat(data, ws, data_ready_len)
 	if(user){
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
-			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}");
+			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}"); */
 			/* ONION_INFO("ABOUT TO CLOSE"); */
 			/* closinguser = user; */
 			/* CLOSING = true; */
