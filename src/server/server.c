@@ -25,7 +25,6 @@ const char *COOKIES_CHAT = NULL;
 
 static bool CLOSING        = false;
 static User *closinguser   = NULL;
-static VIEWPASS = false;
 
 static bool FOUNDUSER      = false;
 static User **USERS;
@@ -169,6 +168,7 @@ user_create(name, password, cr)
 	USERS[usercount]->chatroom.current = NULL;
 
 	USERS[usercount]->active = false; 
+	USERS[usercount]->refresh = true; 
 	return 1;
 }
 
@@ -441,15 +441,11 @@ server_websocket_chat(data, ws, data_ready_len)
 
 	ClientData md;
 	parseXML(tmp, &md);
-	if(loggedin){
-		printf("WAIT IM LOGGED IN\n");
-		printf("serverid = %d", md.user.id);
-		return OCS_NEED_MORE_DATA;
-	}
 
 	ONION_INFO("FOUND CHATROOM %s\n", md.message.chatroom);
 
 	User *user = getUser(md.user.id);
+
 
 	if(USERS[usercount] && USERS[usercount]->id == -1){
 		USERS[usercount]->id = md.user.id;
@@ -461,6 +457,13 @@ server_websocket_chat(data, ws, data_ready_len)
 	}
 	
 	if(user){
+		if(loggedin && user->refresh){
+			printf("WAIT IM LOGGED IN ID = %d\n", md.user.id);
+			server_websocket_send_chatrooms(user);
+			user->refresh = false;
+			/* return OCS_NEED_MORE_DATA; */
+		}
+
 		ONION_INFO("FOUND USER");
 		if(md.user.closing){
 			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}"); */
@@ -566,6 +569,7 @@ server_connection_chat(data, req, res)
 
 
 		USERS[usercount]->ws = onion_websocket_new(req, res); 
+		USERS[usercount]->refresh = true;
 
 		if(!USERS[usercount]->ws){
 			onion_dict *h = onion_response_get_headers(res);
