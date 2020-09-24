@@ -36,11 +36,11 @@ while getopts "c:l:" opt; do
 					echo -e "COOKIES\n"
 
 					echo -e "  chromium\n"
-					sqlite3 ~/.config/chromium/Default/Cookies "SELECT * FROM cookies WHERE host_key='0.0.0.0'"  | sed 's/^/  /'
+					sqlite3 ~/.config/chromium/Default/Cookies "SELECT * FROM cookies WHERE host_key='0.0.0.0'"  | sed 's/^/    /'
 					echo -e "\n"
 
 					echo -e "  brave\n"
-					sqlite3 ~/.config/BraveSoftware/Brave-Browser/Default/Cookies "SELECT * FROM cookies WHERE host_key='0.0.0.0'" | sed 's/^/  /'
+					sqlite3 ~/.config/BraveSoftware/Brave-Browser/Default/Cookies "SELECT * FROM cookies WHERE host_key='0.0.0.0'" | sed 's/^/    /'
 
 					echo "-----------"
 
