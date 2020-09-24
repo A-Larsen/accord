@@ -33,17 +33,6 @@ var elUser = xmlDoc.addChild("user", null, null);
 
 elUser.setAttribute("closing", "false");
 
-if(getCookie("loggedin") === "true" && getCookie("userid") !== undefined){
-	// console.log("loggin in");
-	// console.log(console.log(getCookie("userid")));
-	elUser.setAttribute("id", getCookie("userid"));
-}
-else{
-	let wsid = Math.floor(Math.random() * 100);
-	elUser.setAttribute("id", wsid);
-	document.cookie = "userid="+wsid;
-
-}
 
 
 el_msg.focus();
@@ -65,6 +54,19 @@ ws.onopen = function(){
 	// 	console.log(console.log(getCookie("userid")));
 	// 	elUser.setAttribute("id", getCookie);
 	// }
+	let userid = getCookie("userid");
+	if(getCookie("loggedin") === "true" && userid !== ""){
+		// console.log("loggin in");
+		// console.log(console.log(getCookie("userid")));
+		elUser.setAttribute("id", userid);
+	}
+	else{
+		console.log("settting wsid");
+		let wsid = Math.floor(Math.random() * 100);
+		elUser.setAttribute("id", wsid);
+		document.cookie = "userid="+wsid;
+		document.cookie = "loggedin=true";
+	}
 
 	ws.send(getxmlDocStr(xmlDoc));
 }
@@ -92,11 +94,11 @@ ws.onmessage = function(ev){
 	}
 
 	if(userdata && userdata.reload){
-		if(userdata && userdata.getInfo){
-			console.log("getInfo recieved");
-		}
-		console.log("aye");
-		// window.location.replace(userdata.reload);
+		// if(userdata && userdata.getInfo){
+		// 	console.log("getInfo recieved");
+		// }
+		// console.log("aye");
+		window.location.replace(userdata.reload);
 	}
 
 	if(userdata.initchatrooms){
