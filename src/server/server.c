@@ -453,7 +453,8 @@ server_websocket_chat(data, ws, data_ready_len)
 	if (len <= 0) {
 		if(CLOSING && closinguser){
 			user_close(closinguser);
-			return OCS_CLOSE_CONNECTION;
+			/* return OCS_CLOSE_CONNECTION; */
+			return OCS_NEED_MORE_DATA;
 		}
 		ONION_ERROR("Error reading data: %d: %s (%d)", errno, strerror(errno),
 					data_ready_len);
@@ -487,6 +488,8 @@ server_websocket_chat(data, ws, data_ready_len)
 		if(md.user.closing){
 			RELOGIN = true;
 			RELOGIN_USER = user;
+			closinguser = user;
+			CLOSING = true;
 
 			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}");
 
@@ -494,8 +497,6 @@ server_websocket_chat(data, ws, data_ready_len)
 
 			/* onion_websocket_printf(user->ws, "{\"reload\": \"/chat\", \"getInfo\": [\"userid\"]}"); */
 			/* ONION_INFO("ABOUT TO CLOSE"); */
-			closinguser = user;
-			CLOSING = true;
 			/* return OCS_NEED_MORE_DATA; */
 		}
 
@@ -552,6 +553,10 @@ server_connection_chat(data, req, res)
 		FOUNDUSER = user_create(OPTION_VALUE, pass, cr);
 	}
 	else if(RELOGIN && RELOGIN_USER){
+		if(CLOSING && closinguser){
+			user_close(closinguser);
+			/* return OCS_CLOSE_CONNECTION; */
+		}
 		Chatrooms cr;
 		db_find_user(RELOGIN_USER->name, RELOGIN_USER->password, &cr);
 		FOUNDUSER = user_create(RELOGIN_USER->name, RELOGIN_USER->password, cr);
