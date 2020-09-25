@@ -25,7 +25,7 @@ main(int argc, char **argv)
 
 	int ch;
 
-	while((ch = getopt(argc, argv, "a:p:")) != -1){
+	while((ch = getopt(argc, argv, "qa:p:")) != -1){
 
 		switch(ch){
 
@@ -38,6 +38,12 @@ main(int argc, char **argv)
 
 			case 'p':
 				port = strdup(optarg);
+				break;
+
+			case 'q':
+				/* port = strdup(optarg); */
+				/* system("export ONION_LOG='noinfo'"); */
+				putenv("ONION_LOG=noinfo");
 				break;
 
 			case '?':

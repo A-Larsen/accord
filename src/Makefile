@@ -3,13 +3,16 @@ CFLAGS = -lm -lsqlite3 -lpthread -lonion -lxml2 -lbsd -Wall -Wextra
 buildpath = build
 
 build: main.c server/server.c parse.c sort.c
+	export ONION_LOG=
 	${CC} ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 
 
 run: main.c server/server.c parse.c sort.c
+	export ONION_LOG=
 	${CC} ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 
 	$(buildpath)/a.out
 
 debug: main.c server/server.c parse.c server/database.c
+	export ONION_LOG=
 	${CC} -g ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 
 	gdb $(buildpath)/a.out 
 
