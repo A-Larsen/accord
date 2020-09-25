@@ -519,7 +519,7 @@ server_connection_chat(data, req, res)
   onion_response *res;
 {
 
-	if(OPTIONS & AUTOLOGIN){
+	if(OPTIONS & OPTIONAUTOLOGIN){
 		ONION_INFO("OPTION_VALUE: '%s'\n", OPTION_VALUE);
 		char * pass = admin_search(OPTION_VALUE);
 

@@ -39,24 +39,27 @@ main(int argc, char **argv)
 
 	int ch;
 
-	while((ch = getopt(argc, argv, "qa:p:")) != -1){
+	while((ch = getopt(argc, argv, "cqa:p:")) != -1){
 
 		switch(ch){
 
 			case 'a':
-				OPTIONS |= AUTOLOGIN;
+				OPTIONS |= OPTIONAUTOLOGIN;
 				char * val = strdup(optarg);
 				OPTION_VALUE = val;
 				OPTION_VALUE[strlen(val)] = 0;
 				break;
-
+		
 			case 'p':
 				port = strdup(optarg);
 				break;
 
 			case 'q':
-				/* port = strdup(optarg); */
-				/* system("export ONION_LOG='noinfo'"); */
+				putenv("ONION_LOG=noinfo");
+				break;
+
+			case 'c':
+				OPTIONS |= OPTIONCLI;
 				putenv("ONION_LOG=noinfo");
 				break;
 
@@ -96,8 +99,10 @@ main(int argc, char **argv)
 	onion_url_add_static(urls, "signup", 
 			server_get_view("signup.html"), HTTP_OK);
 
-    pthread_t newthread;
-    pthread_create(&newthread, NULL, cli_start, NULL);
+	if(OPTIONS & OPTIONCLI){
+		pthread_t newthread;
+		pthread_create(&newthread, NULL, cli_start, NULL);
+	}
 
 	onion_listen(o);
 
