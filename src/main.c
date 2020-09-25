@@ -5,8 +5,22 @@
 #include <stdio.h>
 #include <signal.h>
 #include <getopt.h>
+#include "cli/cli.h"
+#include <pthread.h>
 
 #include "server/server.h"
+
+// if you include this in another c file define this at the top of
+// that file
+//
+const void *
+COMMANDS[CMDLEN] = {
+	// name        function        description
+	"none",        notcmd,         "not a commad.. or is it ?",
+	"hello",       cmd_hello,      "hello description",
+	"getcmd",      cmd_getCmd,     "cmd_getCmd",
+	"help",        cmd_listcmds,    "list all commads",
+};
 
 onion *o = NULL;
 char OPTIONS = 0;
@@ -81,6 +95,9 @@ main(int argc, char **argv)
 
 	onion_url_add_static(urls, "signup", 
 			server_get_view("signup.html"), HTTP_OK);
+
+    pthread_t newthread;
+    pthread_create(&newthread, NULL, cli_start, NULL);
 
 	onion_listen(o);
 
