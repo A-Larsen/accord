@@ -494,6 +494,7 @@ server_websocket_chat(data, ws, data_ready_len)
 			RELOGIN = true;
 			RELOGIN_USER = user;
 
+
 			onion_websocket_printf(user->ws, "{\"reload\": \"/chat\"}");
 		}
 
