@@ -6,7 +6,6 @@
 #include <signal.h>
 #include <getopt.h>
 #include "cli/cli.h"
-#include <pthread.h>
 
 #include "server/server.h"
 
@@ -100,6 +99,7 @@ main(int argc, char **argv)
 			server_get_view("signup.html"), HTTP_OK);
 
 	if(OPTIONS & OPTIONCLI){
+		#include <pthread.h>
 		pthread_t newthread;
 		pthread_create(&newthread, NULL, cli_start, NULL);
 	}
