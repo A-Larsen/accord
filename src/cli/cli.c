@@ -183,6 +183,7 @@ cli_keyHandle()
 
 		case CTRL_KEY('c'): 
 		case CTRL_KEY('d'): {
+			write(STDOUT_FILENO, "exiting\r\n", 9);
 			exit(0);
 			break;
 		}
@@ -192,10 +193,13 @@ cli_keyHandle()
 		}
 
 		case 127: {
-			*--cmdp = 0;
-			write(STDOUT_FILENO, "\x1b[D", 3);
-			write(STDOUT_FILENO, " ", 1);
-			write(STDOUT_FILENO, "\x1b[D", 3);
+			if(strlen(cmdp) > strlen(PS1)){
+				*--cmdp = 0;
+				write(STDOUT_FILENO, "\x1b[D", 3);
+				write(STDOUT_FILENO, " ", 1);
+				write(STDOUT_FILENO, "\x1b[D", 3);
+
+			}
 			break;
 	  	}
 
