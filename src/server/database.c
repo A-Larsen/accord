@@ -4,8 +4,7 @@ static sqlite3 *usersdb;
 static sqlite3 *chatroomsdb;
 
 int db_step_callback(sqlite3_stmt *stmt, void *data)
-/* {return sqlite3_step(stmt); }; */
-{sqlite3_step(stmt); return SQLITE_DONE;};
+{return sqlite3_step(stmt); };
 
 void
 sqlite_prep_stmt(db, sql, callback, data)
