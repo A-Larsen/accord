@@ -9,7 +9,9 @@ typedef void (*cmd_t)(void *);
 
 
 char cmd[10] = {};
-char *cmdp = cmd;
+/* char *cmdp = cmd; */
+int cmdind = 0;
+int PS1LEN = 0;
 
 extern const void *COMMANDS[CMDLEN];
 
@@ -174,9 +176,11 @@ cli_keyHandle()
 	switch(c){
 
 		case 13:{
-			*cmdp++ = 0;
+			/* *cmdp++ = 0; */
+			cmd[cmdind++] = 0;
 			getCommand(cmd);
-			cmdp = cmd;
+			/* cmdp = cmd; */
+			cmdind = 0;
 
 			break;
 		}
@@ -193,8 +197,8 @@ cli_keyHandle()
 		}
 
 		case 127: {
-			if(strlen(cmdp) > strlen(PS1)){
-				*--cmdp = 0;
+			if((cmdind+PS1LEN) > PS1LEN){
+				cmdind--;
 				write(STDOUT_FILENO, "\x1b[D", 3);
 				write(STDOUT_FILENO, " ", 1);
 				write(STDOUT_FILENO, "\x1b[D", 3);
@@ -206,7 +210,8 @@ cli_keyHandle()
 		default: if(c != 0) {
 			char str[1] = {c};
 
-			*cmdp++ = c;
+			/* *cmdp++ = c; */
+			cmd[cmdind++] = c;
 			write(STDOUT_FILENO, str, 1);
 			 break;
 		 }
@@ -217,6 +222,7 @@ cli_keyHandle()
 void
 cli_init()
 {
+	PS1LEN = strlen(PS1);
 	cli_clear();
 }
 
