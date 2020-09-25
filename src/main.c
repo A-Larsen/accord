@@ -5,9 +5,12 @@
 #include <stdio.h>
 #include <signal.h>
 #include <getopt.h>
-#include "cli/cli.h"
-
 #include "server/server.h"
+
+
+#ifdef CLI
+#include <pthread.h>
+#include "cli/cli.h"
 
 // if you include this in another c file define this at the top of
 // that file
@@ -20,6 +23,7 @@ COMMANDS[CMDLEN] = {
 	"getcmd",      cmd_getCmd,     "cmd_getCmd",
 	"help",        cmd_listcmds,    "list all commads",
 };
+#endif
 
 onion *o = NULL;
 char OPTIONS = 0;
@@ -58,8 +62,13 @@ main(int argc, char **argv)
 				break;
 
 			case 'c':
+#ifdef CLI
 				OPTIONS |= OPTIONCLI;
 				putenv("ONION_LOG=noinfo");
+#else
+				fprintf(stderr, "CLI feature not compiled in\n");
+				exit(EXIT_FAILURE);
+#endif
 				break;
 
 			case '?':
@@ -98,11 +107,12 @@ main(int argc, char **argv)
 	onion_url_add_static(urls, "signup", 
 			server_get_view("signup.html"), HTTP_OK);
 
+#ifdef CLI
 	if(OPTIONS & OPTIONCLI){
-		#include <pthread.h>
 		pthread_t newthread;
 		pthread_create(&newthread, NULL, cli_start, NULL);
 	}
+#endif
 
 	onion_listen(o);
 

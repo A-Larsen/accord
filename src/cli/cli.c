@@ -7,9 +7,7 @@ typedef void (*cmd_t)(void *);
 // eval might be a good thing to use 
 // to look a memory in program
 
-
-char cmd[10] = {};
-/* char *cmdp = cmd; */
+char cmd[255] = {};
 int cmdind = 0;
 int PS1LEN = 0;
 
@@ -75,16 +73,6 @@ cmd_listcmds(data)
 	}
 }
 
-// if you include this in another c file define this at the top of
-// that file
-/* const void * */
-/* COMMANDS[CMDLEN] = { */
-/* 	// name        function        description */
-/* 	"none",        notcmd,         "not a commad.. or is it ?", */
-/* 	"hello",       cmd_hello,      "hello description", */
-/* 	"getcmd",      cmd_getCmd,     "cmd_getCmd", */
-/* 	"help",        cmd_listcmds,    "list all commads", */
-/* }; */
 
 void *
 searchcmds(query)
@@ -103,7 +91,6 @@ searchcmds(query)
 struct termios orig_termios;
 
 
-/*** terminal **/
 void die(const char *s){
 	perror(s);
 	exit(1);
@@ -176,10 +163,8 @@ cli_keyHandle()
 	switch(c){
 
 		case 13:{
-			/* *cmdp++ = 0; */
 			cmd[cmdind++] = 0;
 			getCommand(cmd);
-			/* cmdp = cmd; */
 			cmdind = 0;
 
 			break;
@@ -210,7 +195,6 @@ cli_keyHandle()
 		default: if(c != 0) {
 			char str[1] = {c};
 
-			/* *cmdp++ = c; */
 			cmd[cmdind++] = c;
 			write(STDOUT_FILENO, str, 1);
 			 break;
@@ -240,14 +224,3 @@ cli_start(data)
 	return NULL;
 }
 
-/* int main(){ */
-/* 	enableRawMode(); */
-/* 	init(); */
-
-/* 	while(1){ */
-/* 		keyHandle(); */
-/* 	} */
-
-
-/* 	return 0; */
-/* } */

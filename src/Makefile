@@ -1,17 +1,21 @@
-cfiles = mem.c parse.c sort.c convert.c server/database.c server/server.c cli/cli.c main.c
+cfiles = mem.c parse.c sort.c convert.c server/database.c server/server.c main.c
 CFLAGS = -lm -lsqlite3 -lpthread -lonion -lxml2 -lbsd -Wall -Wextra 
 buildpath = build
 
-build: main.c server/server.c parse.c sort.c
+build: $(cfiles)
 	export ONION_LOG=
 	${CC} ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 
 
-run: main.c server/server.c parse.c sort.c
+cli: $(cfiles) cli/cli.c
+	export ONION_LOG='noinfo'
+	${CC} -DCLI ${CFLAGS} -o $(buildpath)/a.out $(cfiles) cli/cli.c
+
+run: $(cfiles)
 	export ONION_LOG=
 	${CC} ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 
 	$(buildpath)/a.out
 
-debug: main.c server/server.c parse.c server/database.c
+debug: $(cfiles)
 	export ONION_LOG=
 	${CC} -g ${CFLAGS} -o $(buildpath)/a.out $(cfiles) 
 	gdb $(buildpath)/a.out 
