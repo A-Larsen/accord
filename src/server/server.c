@@ -88,7 +88,7 @@ server_add_dir(urls, dir)
 	DIR *dr = opendir(dir);
 
 	if(!dr){
-		fprintf(stderr, "Could not open views directory");
+		ONION_ERROR("Could not open views directory");
 		return;
 	}
 	
@@ -308,7 +308,7 @@ void server_websocket_get_connectedUsers(user, exclude)
 	if(ja && len > 0)
 		asprintf(&tmp, "{\"friends\":%s}", ja);
 
-	printf("SENDING %s\n", tmp);
+	ONION_INFO("SENDING %s\n", tmp);
 
 	for(int i = 0; i < c.len; i++){
 		for(int j = 0; j <= usercount; j++){
@@ -342,11 +342,11 @@ user_close(user)
 	/* server_websocket_get_connectedUsers(user, user->name); */
 
 	onion_websocket_close(user->ws, "1001");
-	printf("closing: %s %d\n", user->name, user->id);
+	ONION_INFO("closing: %s %d\n", user->name, user->id);
 
 	for(int i = 0; i <= usercount; i++){
 		if(USERS[i] && USERS[i]->name == user->name){
-			printf("setting user with name %s to NULL\n", USERS[i]->name);
+			ONION_INFO("setting user with name %s to NULL\n", USERS[i]->name);
 			USERS[i] = NULL;
 		}
 	}
@@ -372,7 +372,7 @@ server_websocket_send_chatrooms(user)
 
 	if(a){
 		asprintf(&tmp, "{\"initchatrooms\":%s}", a);
-		printf("JSON ROOMS: %s\n", tmp);
+		ONION_INFO("JSON ROOMS: %s\n", tmp);
 		onion_websocket_printf(user->ws, "%s", tmp);
 		free(tmp);
 		free(a);
@@ -385,8 +385,8 @@ server_add_friend(user, md)
   User *user;
   ClientData md;
 {
-	printf("ADDING A FRINED: %s\n", md.addfriend.name);
-	printf("ADDING A FRINED ID: %s\n", md.addfriend.roomid);
+	ONION_INFO("ADDING A FRINED: %s\n", md.addfriend.name);
+	ONION_INFO("ADDING A FRINED ID: %s\n", md.addfriend.roomid);
 	if(db_check_if_user_exists(md.addfriend.name)){
 		db_insert_into_chatroom_users(md.addfriend.roomid, md.addfriend.name);
 		char * chatrooms = db_select_chatroom(md.addfriend.name);
@@ -444,9 +444,9 @@ server_websocket_chat(data, ws, data_ready_len)
 		/* } */
 		return OCS_CLOSE_CONNECTION;
 
-		ONION_ERROR("Error reading data: %d: %s (%d)", errno, strerror(errno),
-					data_ready_len);
-		return OCS_NEED_MORE_DATA;
+		/* ONION_ERROR("Error reading data: %d: %s (%d)", errno, strerror(errno), */
+		/* 			data_ready_len); */
+		/* return OCS_NEED_MORE_DATA; */
 	}
 
 	tmp[len] = 0;
@@ -487,9 +487,10 @@ server_websocket_chat(data, ws, data_ready_len)
 		}
 
 		else if(md.addroom.id){
-			printf("ROOMID: %s\n", md.addroom.id);
-			printf("ROOM ALIAS: %s\n", md.addroom.alias);
+			ONION_INFO("ROOMID: %s\n", md.addroom.id);
+			ONION_INFO("ROOM ALIAS: %s\n", md.addroom.alias);
 			db_add_chatroom(md.addroom.id, md.addroom.alias, user->name);
+
 			RELOGIN = true;
 			RELOGIN_USER = user;
 
@@ -518,11 +519,11 @@ server_connection_chat(data, req, res)
 {
 
 	if(OPTIONS & AUTOLOGIN){
-		printf("OPTION_VALUE: '%s'\n", OPTION_VALUE);
+		ONION_INFO("OPTION_VALUE: '%s'\n", OPTION_VALUE);
 		char * pass = admin_search(OPTION_VALUE);
 
 		if(!pass){
-			fprintf(stderr, "could not find password for admin");
+			ONION_ERROR("could not find password for admin");
 			exit(EXIT_FAILURE);
 		}
 
@@ -659,7 +660,7 @@ server_connection_signup(_, req, res)
 		return OCS_PROCESSED;
 	}
 
-	printf("%s %s\n", user_name, user_password);
+	ONION_INFO("%s %s\n", user_name, user_password);
 
 	if(db_create_user(user_name, user_password)){
 		onion_response_write0(res, 

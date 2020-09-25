@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <onion/log.h>
 
 #include "convert.h"
 

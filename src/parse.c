@@ -22,7 +22,7 @@ fileToStr(fp, str)
   char *str;
 {
 	if(!fp){
-		fprintf(stderr, "Could not open file\n");
+		ONION_ERROR("Could not open file\n");
 		return 1;
 	}
 
@@ -36,7 +36,7 @@ fileToStr(fp, str)
 	fsetpos(fp, &position);
 
 	if(!fread(str, size, 1, fp)){
-		fprintf(stderr, "file with descriptor %d failed to read\n", 
+		ONION_ERROR("file with descriptor %d failed to read\n", 
 				fileno(fp));
 		return 0;
 	}
@@ -73,7 +73,7 @@ parseXML(data, md)
   // and nodes there shouldn't be too much of a problem
 {
 
-	printf("XML----\n%s\n------\n", data);
+	ONION_INFO("XML----\n%s\n------\n", data);
 	md->message.chatroom = NULL;
 	md->initchatroom = NULL;
 
@@ -85,7 +85,7 @@ parseXML(data, md)
 	doc = xmlParseDoc((const xmlChar *)data);
 
 	if(!doc){
-		fprintf(stderr, "Document not parsed succesfully. \n");
+		ONION_ERROR("Document not parsed succesfully. \n");
 		return;
 	}
 
@@ -151,7 +151,7 @@ parseXML(data, md)
 						
 						free(date_tmp);
 					}else{
-						printf("message not found\n");
+						ONION_INFO("message not found\n");
 					}
 
 				}
@@ -313,7 +313,7 @@ admin_search(admin)
 	FILE *fp = fopen("PWADMINS", "r");
 
 	if(!fp){
-		fprintf(stderr, "could not find file: PWADMINS");
+		ONION_ERROR("could not find file: PWADMINS");
 	}
 
 	int ch = 0;

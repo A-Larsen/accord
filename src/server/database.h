@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+/* #include <onion/log.h> */
 #include <onion/websocket.h>
 #include <time.h>
 

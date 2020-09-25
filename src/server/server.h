@@ -4,7 +4,7 @@
 #define _GNU_SOURCE
 #endif
 #include <signal.h>
-#include <onion/log.h>
+/* #include <onion/log.h> */
 #include <onion/onion.h>
 #include <onion/dict.h>
 #include <errno.h>

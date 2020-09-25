@@ -4,7 +4,8 @@ static sqlite3 *usersdb;
 static sqlite3 *chatroomsdb;
 
 int db_step_callback(sqlite3_stmt *stmt, void *data)
-{return sqlite3_step(stmt); };
+/* {return sqlite3_step(stmt); }; */
+{sqlite3_step(stmt); return SQLITE_DONE;};
 
 void
 sqlite_prep_stmt(db, sql, callback, data)
@@ -16,15 +17,16 @@ sqlite_prep_stmt(db, sql, callback, data)
 	sqlite3_stmt *stmt;
 
 	if(sqlite3_prepare_v2(db, sql, -1, &stmt, 0) != SQLITE_OK){
-		fprintf(stderr, "Failed sql: %s\n %s\n", 
+		ONION_ERROR("Failed sql: %s\n %s\n", 
 					sqlite3_errmsg(db),
 					sql);
 		return;
 	}
 
-	if(callback(stmt, data) != SQLITE_DONE){
-		fprintf(stderr, "prepare failed: %s\n", 
-				sqlite3_errmsg(chatroomsdb));
+	int ret = callback(stmt, data);
+	if((ret != SQLITE_DONE) && (ret != SQLITE_ROW)){ 
+		ONION_ERROR("prepare failed: %s\n", 
+				sqlite3_errmsg(db));
 	}
 
 	sqlite3_finalize(stmt);
@@ -83,7 +85,7 @@ int db_init()
 	rc = sqlite3_open("databases/users.db", &usersdb);
 
 	if(rc){
-		fprintf(stderr, "Can't open users database: %s\n", 
+		ONION_ERROR("Can't open users database: %s\n", 
 				sqlite3_errmsg(usersdb));
 		return 0;
 	}
@@ -91,7 +93,7 @@ int db_init()
 	rc = sqlite3_open("databases/chatrooms.db", &chatroomsdb);
 
 	if(rc){
-		fprintf(stderr, "Can't open chatrooms database: %s\n", 
+		ONION_ERROR("Can't open chatrooms database: %s\n", 
 				sqlite3_errmsg(chatroomsdb));
 		return 0;
 	}
@@ -127,7 +129,7 @@ db_find_user(name, password, cr)
 					 &zErrMsg);
 
 	if(rc != SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		ONION_ERROR("SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 0;
 	}
@@ -167,7 +169,7 @@ db_store_message(cr, name, msg, date)
 
 	char *sql = NULL;
 
-	printf("MESSAGE: %s\n", parse);
+	ONION_INFO("MESSAGE: %s\n", parse);
 
 	asprintf(&sql, 
 			"INSERT INTO %s (user, message, date) VALUES ('%s', '%s', %ld)", 
@@ -258,7 +260,7 @@ db_init_login(cr, ws)
 
 	rc = sqlite3_prepare_v2(chatroomsdb, sql1, -1, &res, 0);
 	if(rc != SQLITE_OK){
-		fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(chatroomsdb));
+		ONION_ERROR("Failed to fetch data: %s\n", sqlite3_errmsg(chatroomsdb));
 	}
 
 	rc = sqlite3_step(res);
@@ -267,7 +269,7 @@ db_init_login(cr, ws)
 		cr->chatlen = sqlite3_column_int64(res, 0); 
 	}
 
-	printf("last messageid: %lld\n", cr->chatlen);
+	ONION_INFO("last messageid: %lld\n", cr->chatlen);
 
 	sqlite3_finalize(res);
 
@@ -285,7 +287,7 @@ db_init_login(cr, ws)
 					 (void *)data, &zErrMsg);
 
 	if(rc != SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		ONION_ERROR("SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 0;
 	}
@@ -306,7 +308,7 @@ db_get_chatroom_users_callback(stmt, data)
 	char *current = ((char **)data)[1];
 
 	while((rc = sqlite3_step(stmt)) == SQLITE_ROW){
-		printf("%s_users row: %s\n", current, sqlite3_column_text(stmt, 0));
+		ONION_INFO("%s_users row: %s\n", current, sqlite3_column_text(stmt, 0));
 		c->list = (char **)dynamicArrayResize((void **)c->list, c->len + 1, sizeof(char *));
 
 		const unsigned char * text = sqlite3_column_text(stmt, 0);
@@ -355,7 +357,7 @@ db_create_table_chatroom(id)
 			db_step_callback, NULL);
 
 	free(sql);
-	return 1;
+	return SQLITE_DONE;
 }
 
 static int
@@ -373,7 +375,7 @@ db_create_table_chatroom_users(id)
 
 	free(sql);
 
-	return 1;
+	return SQLITE_DONE;
 }
 
 int
@@ -387,7 +389,7 @@ db_check_if_user_in_chatroom_callback(stmt, data)
 	bool *found  = ((bool **)data)[2];
 
 	while((rc = sqlite3_step(stmt)) == SQLITE_ROW){
-		printf("%s_users row: %s\n", current, sqlite3_column_text(stmt, 0));
+		ONION_INFO("%s_users row: %s\n", current, sqlite3_column_text(stmt, 0));
 		if(!strcmp((char *)sqlite3_column_text(stmt, 0), check)){
 			*found = true;
 			break;
@@ -427,7 +429,7 @@ db_check_if_user_exists_callback(stmt, data)
 {
 	int rc = 0;
 	char *name = ((char **)data)[0];
-	printf("NAME: %s\n", name);
+	ONION_INFO("NAME: %s\n", name);
 	bool *found = ((bool **)data)[1];
 
 
@@ -476,7 +478,8 @@ db_insert_into_chatroom_users(id, name)
 			db_step_callback, NULL);
 
 	free(sql);
-	return 1;
+
+	return SQLITE_DONE;
 }
 
 
@@ -527,16 +530,16 @@ db_update_users_chatrooms(chatrooms, name, id, alias)
 
 	char *sql = NULL;
 
-	printf("sql cat: %s\n", cat);
-	printf("sql alias: %s\n", alias);
+	ONION_INFO("sql cat: %s\n", cat);
+	ONION_INFO("sql alias: %s\n", alias);
 	asprintf(&sql, "UPDATE users SET chatrooms='%s' WHERE name='%s'", cat, name);
-	printf("sql: %s\n", sql);
+	ONION_INFO("sql: %s\n", sql);
 	sqlite_prep_stmt(usersdb, sql, 
 			db_step_callback, NULL);
 
 	free(sql);
 	free(cat);
-	return 1;
+	return SQLITE_DONE;
 }
 
 int
@@ -547,9 +550,7 @@ db_add_chatroom(id, alias, name)
 {	
 
 	db_create_table_chatroom(id);
-
 	db_create_table_chatroom_users(id);
-
 	db_insert_into_chatroom_users(id, name);
 
 	char * chatrooms = db_select_chatroom(name);
@@ -557,7 +558,8 @@ db_add_chatroom(id, alias, name)
 	db_update_users_chatrooms(chatrooms, name, id, alias);
 
 	free(chatrooms);
-	return 1;
+
+	return SQLITE_DONE;
 }
 
 int 
