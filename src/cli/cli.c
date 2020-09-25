@@ -159,6 +159,13 @@ readKey()
 	return c;
 }
 
+void 
+cli_clear(){
+	write(STDOUT_FILENO, "\x1b[2J", 4);
+	write(STDOUT_FILENO, "\x1b[H", 3);
+	write(STDOUT_FILENO, PS1, 2);
+}
+
 void
 cli_keyHandle()
 {
@@ -177,6 +184,10 @@ cli_keyHandle()
 		case CTRL_KEY('c'): 
 		case CTRL_KEY('d'): {
 			exit(0);
+			break;
+		}
+		case CTRL_KEY('l'): {
+			cli_clear();
 			break;
 		}
 
@@ -198,6 +209,13 @@ cli_keyHandle()
 	}
 }
 
+
+void
+cli_init()
+{
+	cli_clear();
+}
+
 void *
 cli_start(data)
   void *data;
@@ -210,12 +228,6 @@ cli_start(data)
 	}
 
 	return NULL;
-}
-
-void
-cli_init()
-{
-	write(STDOUT_FILENO, PS1, 2);
 }
 
 /* int main(){ */
